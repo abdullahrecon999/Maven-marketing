@@ -28,9 +28,9 @@ module.exports = {
       blue: "hsl(214,100%,55%)"
     },
     fontFamily:{
-      railway = ['Raleway', 'sans-serif'],
-      imFellFrenchCannon = ['IM Fell French Canon', 'serif'],
-      Andika = ['Andika', 'sans-serif']
+      railway : ['Raleway', 'sans-serif'],
+      imFellFrenchCannon : ['IM Fell French Canon', 'serif'],
+      Andika : ['Andika', 'sans-serif']
     }
   
   }
