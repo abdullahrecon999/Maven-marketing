@@ -2,7 +2,7 @@ import React from 'react'
 
 const GettingStartedButton = () => {
   return (
-    <a className='px-3 pt-2 font-bold text-white rounded-full md:p-3 bg-blue baseline'>Get Started</a>
+    <button className='px-3 pt-2 font-bold text-center text-white rounded-full drop-shadow-md md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Get Started</button>
   )
 }
 
