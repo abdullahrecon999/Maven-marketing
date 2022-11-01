@@ -6,40 +6,25 @@ import GoogleSignup from '../Components/GoogleSignup';
 
 
 
-
 const SignUpPageBusiness = () => {
   return (
     <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
-            <div className='px-4 pt-2  mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-4'>
+            <div className='px-4 pt-8 mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row'>
                 <div className='flex flex-col justify-center  px-10 space-y-6 md:w-[50%] '>
                     <div>
                         <h1 className='text-left sm:text-lg md:text-xl font-railway'>Sign Up</h1>
                         <p className= "text-sm text-grey">Its quick and easy</p>
                     </div>
-                    <div className='flex flex-col space-y-3 '>
+                    <div className='flex flex-col space-y-5 '>
                       
-                        <TextField autoComplete size='small' id="outlined-basic" label="Business Email" variant="outlined"  />
-                        <TextField size='small' id="outlined-basic" label="Business Name" variant="outlined" />
-                        <div className='flex space-x-5'>
-                        <select className='w-[50%] border-grey border rounded-md h-10 px-2 blur-0'>
-                            <option value="0">Select car:</option>
-                            <option value="1">Audi</option>
-                        
-                        </select>
-                        <select className='w-[50%] border-grey border rounded-md h-10 px-2'>
-                            <option value="0">Select car:</option>
-                            <option value="1">Audi</option>
-                        
-                        </select>
-                        
-                        </div>
-                        <TextField autoComplete size='small' id="outlined-basic" label="PAs" variant="outlined"  />
-                        <TextField size='small' id="outlined-basic" label="Business Name" variant="outlined" />
+                        <TextField size='small' id="outlined-basic" label="Enter Email" variant="outlined" />
+                        <TextField size='small' id="outlined-basic" label="Password" variant="outlined"  />
+                        <TextField size='small' id="outlined-basic" label="Confirm Password" variant="outlined" />
                         <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
-                                <button className='px-3 py-2  font-bold text-center text-white rounded-full drop-shadow-md sm:text-center justify-center items-center md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Create Accpunt</button>
+                                <button className='px-3 py-2  font-bold text-center text-white rounded-full drop-shadow-md sm:text-center justify-center items-center md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Get Started</button>
                                 
                             </div >
                             <p className='font-railway text-sm text-grey'>or</p>
@@ -53,7 +38,9 @@ const SignUpPageBusiness = () => {
                 </div>
                 <div className='flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start '>
                     <h1 className='text-3xl text-blue font-semibold font-railway md:text-4xl'>Maven Marketing</h1>
-                    <p className='font-semibold text-xl'>An Expert Marketing Solution</p>
+                    
+                    <p className='font-semibold text-xl'>A Platform To Earn Money By Collaborating With Brands And Businesses</p>
+
                     {/* <div className='flex items-center justify-start space-x-2'>
                         
                        <h1><Person3Icon></Person3Icon></h1> 
