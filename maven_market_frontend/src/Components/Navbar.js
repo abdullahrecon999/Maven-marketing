@@ -10,6 +10,7 @@ import { Input } from '@mui/icons-material';
 import LoginModalBrand from './LoginModalInfluencer';
 import { Link } from 'react-router-dom';
 
+
 const Navbar = () => {
     const [openSignupModal, setOpenSignup] = useState(false);
     const [openloginModal, setOpenlogin] = useState(false)
@@ -38,6 +39,7 @@ const Navbar = () => {
             <button onClick={()=> setOpenlogin(true)} className='p-3 text-grey baseline font-railway text-sm hover:text-blue'> Influencer login</button>
             <button onClick={()=> setOpenlogin(true)} className='p-3 text-grey baseline font-railway text-sm hover:text-blue'> Brand login</button>
                    
+            
         
         </div>
         <button onClick={()=>{

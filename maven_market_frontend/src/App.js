@@ -10,6 +10,9 @@ import Services from './Pages/Services';
 import Aboutus from './Pages/Aboutus';
 import Whyus from './Pages/Whyus';
 
+import AdminLogin from './Pages/AdminLogin';
+import AdminHome from './Pages/AdminHome';
+
 function App() {
   return (
     <Router>
@@ -23,6 +26,8 @@ function App() {
             <Route path='/whyus' element={<Whyus/>} ></Route>
             <Route path='/businesshome' element={<Whyus/>} ></Route>
             <Route path='/influencerhome' element={<Whyus/>} ></Route>
+            <Route path='/admin' element={<AdminLogin/>}></Route>
+            <Route path='/admin/home' element={<AdminHome/>}></Route>
            
           </Routes>
         </div>
