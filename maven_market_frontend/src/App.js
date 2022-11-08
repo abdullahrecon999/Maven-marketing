@@ -12,6 +12,7 @@ import Whyus from './Pages/Whyus';
 
 import AdminLogin from './Pages/AdminLogin';
 import AdminHome from './Pages/AdminHome';
+import AccountVerification from './Pages/AccountVerification';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path='/influencerhome' element={<Whyus/>} ></Route>
             <Route path='/admin' element={<AdminLogin/>}></Route>
             <Route path='/admin/home' element={<AdminHome/>}></Route>
+            <Route path='/verify' element={<AccountVerification/>}></Route>
            
           </Routes>
         </div>

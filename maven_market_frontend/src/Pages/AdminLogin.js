@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
+import AdminNavbar from '../Components/AdminNavbar';
 
 
 
@@ -35,16 +36,7 @@ const AdminLogin = () => {
     }
   return (
     <>
-    <nav className='container relative px-2 py-6 mx-auto'>
-        <div className='flex items-center justify-between'>
-            <h1 className='text-black font-railway'>Maven Marketing</h1>
-
-            <Link className='text-black font-railway  hover:text-blue hover:-translate-y-0.5' to="/">
-                Home
-            </Link> 
-        </div>
-
-   </nav>
+    <AdminNavbar></AdminNavbar>
     <section className='flex justify-center items-center p-20'>
         <div className='flex flex-col space-y-4 items-center border border-grey py-7 px-3 rounded-lg drop-shadow-sm'>
             <h1>Admin Login</h1>
