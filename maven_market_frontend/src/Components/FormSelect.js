@@ -1,13 +1,19 @@
 import React from 'react'
 import {TextField, MenuItem} from "@mui/material"
+import { useField, ErrorMessage } from 'formik'
 
-const FormSelect = ({data, props}) => {
+const FormSelect = ({data,...props}) => {
+  const [feild, meta] = useField(props)
+  
   return (
-    <TextField required sx={{width : {md:300}}} id="select" {...props}value="0" select>
-    <MenuItem value = "0">Select {props.label}</MenuItem>
-    <MenuItem value="10">Ten</MenuItem>
-    <MenuItem value="20">Twenty</MenuItem>
+    <div className='flex flex-col'>
+    <TextField required sx={{width : {md:300}}} id="select" {...props} {...feild} select >
+      
+      
+      {data.map(ele => {return(<MenuItem value={ele}>{ele}</MenuItem>)})}
     </TextField>
+    <ErrorMessage component="div" className='text-sm text-red-600' name={feild.name}></ErrorMessage>
+    </div>
 
   )
 }

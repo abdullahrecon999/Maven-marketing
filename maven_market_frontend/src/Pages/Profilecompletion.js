@@ -1,15 +1,17 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import TextField from '@mui/material/TextField';
-import {styled} from "@mui/system"
-import image from "../images/profile.jpg"
+import { Formik, Form } from 'formik';
+
 import Button from '@mui/material/Button';
-import Select from '@mui/material/Select'
-import MenuItem from "@mui/material/MenuItem"
-import InputLable from "@mui/material/InputLabel"
-import { Formik } from 'formik';
+
+
 import FormTextField from '../Components/FormTextField';
+import profileSchema from '../ValidationSchemas/profileSchema';
+import Textarea from '../Components/Textarea';
 import FormSelect from '../Components/FormSelect';
+import ProfileImage from '../Components/ProfileImage';
+
 const style = {
     width:{md:600},
     "& .MuiInputBase-root":{
@@ -18,12 +20,9 @@ const style = {
 
 }
 const countries = [
-    {value: 1,
-    name: "Pakistan"
-    },
-    {value: 2,
-        name: "China"
-    }
+    "pakistan",
+    "China",
+    "India"
 ]
 
 const languages = [
@@ -34,19 +33,18 @@ const languages = [
     
 ]
 
+const platforms = [
+    "twitter",
+    "instagram"
+]
+
 
 
 const Profilecompletion = () => {
-    const [uImage, setImage] = useState(image)
-    const imageHandler = (e)=> {
-        const reader = new FileReader();
-        reader.onload = () => {
-            if(reader.readyState === 2 ){
-                setImage(reader.result)
-            }
-        }
-        reader.readAsDataURL(e.target.files[0])
+    const handleSubmit=(values)=>{
+        console.log(values)
     }
+    
   return (
     <>
     <nav className='container relative px-2 py-6 mx-auto'>
@@ -59,7 +57,24 @@ const Profilecompletion = () => {
         </div>
 
    </nav>
-   <section id ="profileCompletion" className='container mx-auto'>
+   <Formik
+   initialValues={
+    {
+        name: "",
+        country: "",
+        language: "",
+        discription: "",
+        platform: "",
+        url: "",
+        file:""
+    }
+   }
+   onSubmit = {values=> handleSubmit(values)}
+   validationSchema= {profileSchema}
+   >
+    {formik => (
+        <Form>
+            <section id ="profileCompletion" className='container mx-auto'>
         <div  className='flex flex-col px-6 py-8 border drop-shadow-sm space-y-5'>
             <div className='space-y-3' >
                 <div>
@@ -74,15 +89,7 @@ const Profilecompletion = () => {
                     
                 <div className='flex flex-col space-y-3'>
                     <h1 className='font-railway text-sm md:text-base '>Upload your Profile Pic</h1>
-                    <div>
-                    <img 
-                    onChange={imageHandler}
-                    className=' border rounded-full max-h-[80px] max-w-[80px] md:max-h-[130px] md:max-w-[130px]' 
-                    src={uImage} 
-                    alt={uImage}/>
-                    </div>
-                    
-                    <input id= "uImage" accept='image/*' type="file"></input>
+                    <ProfileImage></ProfileImage>
 
                 </div>
                 <div className='flex flex-col space-y-2' >
@@ -93,29 +100,17 @@ const Profilecompletion = () => {
                 </div>
                 <h1  className='font-railway text-sm md:text-base '>Select Country and languages</h1>
                 <div className='flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3'>
-                    
-                    <TextField required 
-                    sx={
-                        {width : {sm: 500 ,md:300}}} id="select" label="country" value="0" select>
-                        <MenuItem value = "0">Select Country</MenuItem>
-                        {countries.map(country => {
-                            return (<MenuItem value={country.value}>{country.name}</MenuItem>)
-                        })}
-                    </TextField>
-
-                    <TextField required sx={{width : {md:300}}} id="select" label="Language" value="0" select>
-                        <MenuItem value = "0">Select languages</MenuItem>
-                        <MenuItem value="10">Ten</MenuItem>
-                        <MenuItem value="20">Twenty</MenuItem>
-                    </TextField>
+                   
+                    <FormSelect data = {countries} name ="country" label="Country" placeholder= 'Country'></FormSelect>
+                    <FormSelect data={languages} name="language" label="Language"></FormSelect>
                     
 
                 </div>
                
                 <div className='flex flex-col space-y-2' >
                     <h1 className='font-railway text-sm md:text-base '>Discription </h1>
-                    <textarea id="message" rows="5" class=" resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue focus:border-blue dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter discription about your self......"></textarea>
-
+                    {/* <textarea name='discription' id="message" rows="5" class=" resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue focus:border-blue dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter discription about your self......"></textarea> */}
+                    <Textarea name="discription"></Textarea>
                 </div>
 
 
@@ -129,11 +124,12 @@ const Profilecompletion = () => {
                    
                 </div>
                {/* need to add functionality for multiple feilds */}
-               <TextField required sx={{width : {md:300}}} id="select" label="Plateform" value="0" select>
+               <FormSelect data={platforms} name="platform" label="platform"></FormSelect>
+               {/* <TextField required sx={{width : {md:300}}} id="select" label="Plateform" value="0" select>
                         <MenuItem value = "0">Select Plateform</MenuItem>
                         <MenuItem value="10">Twitter</MenuItem>
                         <MenuItem value="20">Instagram</MenuItem>
-                </TextField>
+                </TextField> */}
                 <div className='flex flex-col space-y-2' >
                     <h2  className='font-railway text-sm md:text-base '>Social Media Url</h2>
                     <FormTextField name="url" label="Enter your social media profile link"></FormTextField>
@@ -142,11 +138,16 @@ const Profilecompletion = () => {
                 
             </div>
            <div>
-           <Button className='bg-blue' variant="contained">Submit for verification</Button>
+            {console.log(formik.dirty)}
+           <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
 
            </div>
         </div>
    </section>
+        </Form>
+        
+    )}
+   </Formik>
     </>
     
   )
