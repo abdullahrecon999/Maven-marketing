@@ -37,7 +37,7 @@ const Navbar = () => {
         <div className='hidden space-x-0.5 md:flex'>
             <button onClick={()=>setOpenSignup(true)} className='px-3 pt-2 font-bold text-center text-white rounded-full drop-shadow-md md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Get Started</button>
             <button onClick={()=> setOpenlogin(true)} className='p-3 text-grey baseline font-railway text-sm hover:text-blue'> Influencer login</button>
-            <button onClick={()=> setOpenlogin(true)} className='p-3 text-grey baseline font-railway text-sm hover:text-blue'> Brand login</button>
+            <button onClick={()=> SetBrandLogin(true)} className='p-3 text-grey baseline font-railway text-sm hover:text-blue'> Brand login</button>
                    
             
         

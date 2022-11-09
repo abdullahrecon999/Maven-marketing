@@ -19,7 +19,7 @@ const LoginModal = ({visible, onClose}) => {
             <h1 className='text-base font-bold font-railway'>Welcome!</h1>
             <p className='text-xs text-grey'>Enter Details to login your Business account</p>
             </div>
-            <div className='flex flex-col space-y-2'>
+            <div className='flex flex-col space-y-1'>
                 <TextField required size='small' id="outlined-basic" label="Enter Email" variant="outlined" />
                 <TextField size='small' id="outlined-basic" label="Enter password" variant="outlined" />
                 <div className='flex justify-center pt-1 '>

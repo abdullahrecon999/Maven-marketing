@@ -12,13 +12,15 @@ import Whyus from './Pages/Whyus';
 
 import AdminLogin from './Pages/AdminLogin';
 import AdminHome from './Pages/AdminHome';
+import AccountVerification from './Pages/AccountVerification';
+import Profilecompletion from './Pages/Profilecompletion';
 
 function App() {
   return (
     <Router>
         <div className='app'>
           <Routes>
-            <Route path='/' element={<Home/>} ></Route> 
+            <Route path='/' element={<Profilecompletion/>} ></Route> 
             <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
@@ -28,6 +30,7 @@ function App() {
             <Route path='/influencerhome' element={<Whyus/>} ></Route>
             <Route path='/admin' element={<AdminLogin/>}></Route>
             <Route path='/admin/home' element={<AdminHome/>}></Route>
+            <Route path='/verify' element={<AccountVerification/>}></Route>
            
           </Routes>
         </div>

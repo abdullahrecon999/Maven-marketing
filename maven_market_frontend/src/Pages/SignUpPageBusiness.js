@@ -4,15 +4,19 @@ import TextField from '@mui/material/TextField';
 import {styled} from "@mui/system"
 import GoogleSignup from '../Components/GoogleSignup';
 
-
+import { useNavigate } from 'react-router-dom';
 
 
 const SignUpPageBusiness = () => {
+    const navigate = useNavigate();
+    const navigateToVerificationPage = ()=> {
+        navigate("/verify");
+    }
   return (
     <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
-            <div className='px-4 pt-2  mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-4'>
+            <div className='px-4 pt-2  mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-1'>
                 <div className='flex flex-col justify-center  px-10 space-y-6 md:w-[50%] '>
                     <div>
                         <h1 className='text-left sm:text-lg md:text-xl font-railway'>Sign Up</h1>
@@ -22,24 +26,26 @@ const SignUpPageBusiness = () => {
                       
                         <TextField autoComplete size='small' id="outlined-basic" label="Business Email" variant="outlined"  />
                         <TextField size='small' id="outlined-basic" label="Business Name" variant="outlined" />
+                        <TextField size='small' id="outlined-basic" label="Contact number" variant="outlined" />
+
                         <div className='flex space-x-5'>
                         <select className='w-[50%] border-grey border rounded-md h-10 px-2 blur-0'>
-                            <option value="0">Select car:</option>
+                            <option value="0">Brand Category</option>
                             <option value="1">Audi</option>
                         
                         </select>
                         <select className='w-[50%] border-grey border rounded-md h-10 px-2'>
-                            <option value="0">Select car:</option>
+                            <option value="0">Country</option>
                             <option value="1">Audi</option>
                         
                         </select>
                         
                         </div>
-                        <TextField autoComplete size='small' id="outlined-basic" label="PAs" variant="outlined"  />
-                        <TextField size='small' id="outlined-basic" label="Business Name" variant="outlined" />
+                        <TextField autoComplete size='small' id="outlined-basic" label="Password" variant="outlined"  />
+                        <TextField size='small' id="outlined-basic" label="Confirm Password" variant="outlined" />
                         <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
-                                <button className='px-3 py-2  font-bold text-center text-white rounded-full drop-shadow-md sm:text-center justify-center items-center md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Create Accpunt</button>
+                                <button onClick={()=> navigateToVerificationPage()} className='px-3 py-2  font-bold text-center text-white rounded-full drop-shadow-md sm:text-center justify-center items-center md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Create Account</button>
                                 
                             </div >
                             <p className='font-railway text-sm text-grey'>or</p>

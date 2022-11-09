@@ -1,3 +1,7 @@
 backend/node_modules
 /node_modules
+<<<<<<< HEAD
 Scripts/.venv
+=======
+/Scripts/.venv
+>>>>>>> hassanajmal
