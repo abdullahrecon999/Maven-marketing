@@ -16,6 +16,7 @@ import AccountVerification from './Pages/AccountVerification';
 import Profilecompletion from './Pages/Profilecompletion';
 import Users from './Pages/adminPages/Users';
 import BrandUsers from './Pages/adminPages/Users';
+import BusinessHome from './Pages/brandPages/BusinessHome';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
             <Route path='/services' element={<Services/>} ></Route>
             <Route path='/whyus' element={<Whyus/>} ></Route>
-            <Route path='/businesshome' element={<Whyus/>} ></Route>
+            <Route path='/businesshome' element={<BusinessHome/>} ></Route>
             <Route path='/influencerhome' element={<Whyus/>} ></Route>
             <Route path='/admin' element={<AdminLogin/>}></Route>
             <Route path='/admin/home' element={<AdminHome/>}></Route>
