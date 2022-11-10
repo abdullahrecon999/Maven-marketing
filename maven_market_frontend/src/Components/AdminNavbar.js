@@ -1,14 +1,18 @@
 import React from 'react'
 import {Link} from "react-router-dom"
-const AdminNavbar = () => {
+const AdminNavbar = ({authenticated}) => {
+
   return (
     <nav className='container relative px-2 py-6 mx-auto'>
         <div className='flex items-center justify-between'>
             <h1 className='text-black font-railway'>Maven Marketing</h1>
 
+            {authenticated?<Link className='text-blue font-railway  hover:text-grey hover:-translate-y-0.5' to="/">
+                Logout
+            </Link> :
             <Link className='text-blue font-railway  hover:text-grey hover:-translate-y-0.5' to="/">
-                Home
-            </Link> 
+            Home
+        </Link> }
         </div>
 
    </nav>

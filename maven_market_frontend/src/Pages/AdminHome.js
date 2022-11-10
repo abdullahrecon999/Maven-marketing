@@ -7,7 +7,7 @@ import AdminNavbar from "../Components/AdminNavbar"
 const AdminHome = () => {
   return (
     <div>
-      <AdminNavbar ></AdminNavbar>
+      <AdminNavbar authenticated={true}></AdminNavbar>
       <section className='flex flex-1 bg-slate-100'>
         <div className='flex '>
           <div className='bg-blue flex  w-auto duration-100md:w-[300px] px-4'>
