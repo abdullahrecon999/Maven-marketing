@@ -25,7 +25,7 @@ const AdminLogin = () => {
     }
 
     const login = ()=>{
-        if (state.email === "h@g.com" && state.password === "abc"){
+        if (state.email === "abc" && state.password === "abc"){
             navigate("/admin/home")
         }
         else{
