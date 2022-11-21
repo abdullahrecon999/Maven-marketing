@@ -38,7 +38,7 @@ const BusinessHome = () => {
           <h1
             className={`text-white font-railway origin-left font-medium duration-200 ${
               !open && "scale-0"
-            } md:text-xl `}
+            } md:text-xl`}
           >
            Maven Marketing
           </h1>
