@@ -138,4 +138,73 @@ router.get('/:userId/confirmation/:token', async (req, res) => {
   }
 })
 
+// Forgot Password
+router.post('/password-reset', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    console.log(user._id)
+
+    if (!user) {
+      return res.status(400).send("user with given email doesn't exist");
+    }
+
+    let token = await Token.findOne({ userId: user._id });
+    if (!token) {
+        token = await new Token({
+            userId: user._id,
+            token: crypto.randomBytes(32).toString("hex"),
+        }).save();
+    }
+
+    const link = `${process.env.BASE_URL}users/${user._id}/${token.token}`;
+    await sendEmail(user.email, "Password reset", link);
+
+    res.send("password reset link sent to your email account");
+
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.post('/:userId/:token', async (req, res) => {
+  try {
+
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(400).send("invalid link or expired");
+
+    const token = await Token.findOne({
+        userId: user._id,
+        token: req.params.token,
+    });
+    if (!token) return res.status(400).send("Invalid link or expired");
+
+    Newpassword = req.body.password;
+
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(Newpassword, salt, (err, hash) => {
+        if (err) throw err;
+        user.password = hash;
+        user
+          .save()
+          .then(async user => {
+            req.flash(
+              'success_msg',
+              'Password Updated'
+            );
+          })
+          .catch(err => console.log(err));
+      });
+    });
+
+    console.log(req.body.password);
+    //await user.save();
+    await token.delete();
+
+    res.send("password reset sucessfully.");
+  } catch (error) {
+      res.send("An error occured");
+      console.log(error);
+  }
+})
+
 module.exports = router;

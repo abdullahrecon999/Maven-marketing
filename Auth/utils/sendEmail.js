@@ -24,7 +24,7 @@ module.exports = async (email, subject, text) => {
         
         await transporter.sendMail(mailOptions, function(err, data) {
             if (err) {
-              console.log("Error " + err);
+              console.log("Error in Email " + err);
             } else {
               console.log("Email sent successfully");
             }

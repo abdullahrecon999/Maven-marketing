@@ -7,6 +7,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 // Load User model
 const User = require('../models/User');
 const Token = require('../models/Token');
+const { Console } = require('console');
 
 module.exports = function(passport) {
 
@@ -77,16 +78,18 @@ module.exports = function(passport) {
                   userId: user._id,
                   token: crypto.randomBytes(32).toString('hex')
                 }).save()
-                const url = `${process.env.BASE_URL}/users/${user._id}/confirmation/${token.token}`
+                console.log("SENDING EMAIL AGAIN");
+                const url = `${process.env.BASE_URL}users/${user._id}/confirmation/${token.token}`
                 await sendEmail(user.email, "Verify Email", url);
               } else{
-                console.log('Email not verified');
+                console.log('Email not verified!');
               }
             } else {
               return done(null, user);
             }
 
           } else {
+            console.log('Password incorrect');
             return done(null, false, { message: 'Password incorrect' });
           }
         });
