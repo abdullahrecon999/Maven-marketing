@@ -23,7 +23,7 @@ function App() {
     <Router>
         <div className='app'>
           <Routes>
-            <Route path='/' element={<Home/>} ></Route> 
+            {/* <Route path='/' element={<Home/>} ></Route> 
             <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
@@ -34,8 +34,8 @@ function App() {
             <Route path='/admin' element={<AdminLogin/>}></Route>
             <Route path='/admin/home' element={<AdminHome/>}></Route>
             <Route path='/verify' element={<AccountVerification/>}></Route>
-            <Route path='/admin/users' element={<Users/>}></Route>
-            <Route path='/admin/bUsers' element={<BrandUsers/>}></Route>
+            <Route path='/admin/users' element={<Users/>}></Route> */}
+            <Route path='/' element={<BusinessHome/>}></Route>
            
           </Routes>
         </div>
