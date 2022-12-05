@@ -3,12 +3,12 @@ import GettingStartedButton from '../Components/GettingStartedButton'
 import Navbar from '../Components/Navbar'
 import SignupModal from '../Components/SignupModal';
 import img from "../images/Marketing-cuate.png"
-
+import { useNavigate } from 'react-router-dom';
 const Home = () => {
   
   const [openSignupModal, setOpenSignup] = useState(false);
   const handleClose = ()=> setOpenSignup(false)
-  
+  const navigate = useNavigate();
   return (
     <>
     

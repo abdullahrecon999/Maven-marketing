@@ -18,13 +18,15 @@ import Users from './Pages/adminPages/Users';
 import BrandUsers from './Pages/adminPages/Users';
 import BusinessHome from './Pages/brandPages/BusinessHome';
 import CampaginCreation from './Pages/brandPages/CampaginCreation';
+import InfluencerLogin from './Pages/InfluencerLogin';
 
 function App() {
   return (
     <Router>
         <div className='app'>
           <Routes>
-            {/* <Route path='/' element={<Home/>} ></Route>  */}
+            <Route path='/' element={<Home/>} ></Route> 
+            <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
             {/* <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
@@ -37,7 +39,7 @@ function App() {
             <Route path='/verify' element={<AccountVerification/>}></Route>
             <Route path='/admin/users' element={<Users/>}></Route>
             <Route path='/' element={<Profilecompletion/>}></Route> */}
-           <Route path='/' element={<CampaginCreation/>} ></Route>
+           {/* <Route path='/' element={<CampaginCreation/>} ></Route> */}
           </Routes>
         </div>
     </Router>

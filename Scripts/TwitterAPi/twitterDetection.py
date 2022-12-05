@@ -1,12 +1,5 @@
 
-from selenium.webdriver.chrome.options import Options
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import json
-from datetime import datetime
 
-from datetime import date
 options = Options()
 options.headless = True
 
