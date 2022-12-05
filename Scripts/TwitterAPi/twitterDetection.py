@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import json
 from datetime import datetime
-from dateutil import relativedelta
+
 from datetime import date
 options = Options()
 options.headless = True
