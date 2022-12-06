@@ -101,7 +101,7 @@ const Profilecompletion = () => {
                 <h1  className='font-railway text-sm md:text-base '>Select Country and languages</h1>
                 <div className='flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3'>
                    
-                    <FormSelect data = {countries} name ="country" label="Country" placeholder= 'Country'></FormSelect>
+                <FormSelect data = {countries} name ="country" label="Country" placeholder= 'Country'></FormSelect>
                     <FormSelect data={languages} name="language" label="Language"></FormSelect>
                     
 
