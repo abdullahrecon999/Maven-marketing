@@ -12,6 +12,7 @@ import { NavLink } from 'react-router-dom';
 import TextField  from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { Height } from '@mui/icons-material';
+import UsersTable from '../../Components/admindasboardcompents/UsersTable';
 
 // Generate Order Data
 function createData(id, date, name, shipTo, paymentMethod, amount) {
@@ -120,33 +121,13 @@ const Users = () => {
                       <Button onClick={handleClick} className='bg-blue' variant="contained"><SearchIcon></SearchIcon></Button>
                       </div>
                     </div>
-                    <div className='flex flex-col bg-white py-7 px-8 mb-12 '>
+                    <div className=' '>
                       
-                      <h1 className='font-railway text-blue text-base'>Influencers</h1>
+                      <h1 className='font-railway text-blue text-base pr-3'>Influencers</h1>
                       
-                      <Table size="small">
-                          <TableHead>
-                          <TableRow>
-                              <TableCell className='text-blue'>Date Joined</TableCell>
-                              <TableCell className='text-blue' >Id</TableCell>
-                              <TableCell className='text-blue'>Name</TableCell>
-                              <TableCell className='text-blue'>Platforms</TableCell>
-                              <TableCell className='text-blue'>Status</TableCell>
-                              <TableCell className='text-blue' align="right"></TableCell>
-                          </TableRow>
-                          </TableHead>
-                          <TableBody>
-                          {rows.map((row) => (
-                              <TableRow  key={row.id}>
-                              <TableCell>{row.date}</TableCell>
-                              <TableCell>{row.name}</TableCell>
-                              <TableCell>{row.shipTo}</TableCell>
-                              <TableCell>Pending</TableCell>
-                              <TableCell align="right"><Link>View</Link></TableCell>
-                              </TableRow>
-                          ))}
-                          </TableBody>
-                      </Table>
+                      <div className='w-[900px]'>
+                      <UsersTable type="influencer"></UsersTable>
+                      </div>
                       
                       </div>
           </div>
