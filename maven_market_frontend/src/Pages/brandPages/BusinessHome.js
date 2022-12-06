@@ -15,6 +15,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import HelpOutlineTwoToneIcon from '@mui/icons-material/HelpOutlineTwoTone';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import useViewportState from 'beautiful-react-hooks/useViewportState';
+import BusinessDashboard from './BusinessDashboard';
+import Campaign from './Campaign';
+import { useNavigate } from 'react-router-dom';
 
 const campaigns = [{
   title: "campaign 1",
@@ -101,8 +104,17 @@ const Menus = [
 ];
 const BusinessHome = () => {
   const [open, setOpen] = useState(true)
-  const [notifications, setNotification] = useState(true)
+  const [openDashboard,setOpenDashboar] = useState(true)
+  const [openCampaigns, setOpenCampaigns] = useState(true)
+  const navigate = useNavigate()
   const { width, height, scrollX, scrollY } = useViewportState();
+
+  const handleClick = (e)=> {
+    if (e.currentTarget.currentTarget.textContent === "Dashboard"){
+      console.log("hello")
+    }
+  }
+
   console.log(width)
   return (
     <div className='flex '>
@@ -130,6 +142,19 @@ const BusinessHome = () => {
         <ul className="pt-6">
           {Menus.map((Menu, index) => (
             <li
+              onClick={(e)=>{
+                if(e.currentTarget.textContent === "Dashboard")
+                {
+                  setOpenDashboar(true)
+                  setOpenCampaigns(false)
+                }
+                else if(e.currentTarget.textContent === "Campaigns")
+                {
+                  setOpenDashboar(false)
+                  setOpenCampaigns(true)
+                }
+                console.log(e.currentTarget.textContent)
+              }}
               key={index}
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 
               ${Menu.gap ? "mt-9" : "mt-2"} ${
@@ -144,70 +169,8 @@ const BusinessHome = () => {
           ))}
         </ul>
       </div>
-      <div className='flex  flex-col pl-16 py-6 md:pl-0 w-[100%]'>
-            
-        <div className='flex justify-between  w-[100%] pr-10 pl-2 md:pl-4 pr-16'>
-          <h1 className='font-railway text-grey text-sm'>Dashboard</h1>
-          <div className='flex'>
-            <div >
-            <input className='border' placeholder='search.....'></input>
-            <Button><SearchIcon className='text-sm'></SearchIcon></Button>
-            </div>
-            {notifications === true ? <NotificationsActiveIcon className= "animate-bounce text-gray-600 "/> : <NotificationsIcon/>}
-
-            </div>
-          </div>
-          <div className='px-6 pt-6 space-y-5 md:flex md:space-y-0 md:space-x-8 '>
-            <div className='border flex  flex-col justify-center items-center py-10 px-16 border-spacing-y-5 drop-shadow-sm hover:drop-shadow-2xl'>
-              <div className='flex space-x-2'>
-                <span className='font-railway text-black text-sm'>Campaigns</span>
-                <HelpOutlineTwoToneIcon className='text-grey text-sm mt-1'></HelpOutlineTwoToneIcon>
-              </div>
-              <h1 className='font-Andika text-xl text-green'>100</h1>
-            </div>
-            <div className='border flex  flex-col justify-center items-center py-10 px-16 border-spacing-y-5 drop-shadow-sm md:w-[600px] hover:drop-shadow-2xl'>
-              
-              <h1 className='font-Andika text-xl text-green'>Show a graph here</h1>
-            </div>
-
-          </div>
-          <div className=' px-6 pt-4'>
-            <div className='flex flex-col space-y-1 px-4 py-1 border'>
-              <div className='flex justify-between space-x-1 px-4 py-2 border rounded-sm bg-gray-100'>
-                <h1 className='text-sm font-railway md:text-base'>Campaigns</h1>
-
-                <div>
-                <FilterAltIcon className='hover:text-blue'/>
-                <input placeholder='Search.....' className='rounded-full'></input>
-                <SearchIcon className="hover:text-blue"/>
-                </div>
-              </div>
-              <div className='flex flex-col space-y-2 px-6 py-4'>
-                {campaigns.map(items=> {return (<div className='flex flex-col space-y-2'>
-                <h1 className='font-railway text-blue' >{items.title}</h1>
-                <p className='font-Andika text-black text-xs'>{items.disc}</p>
-                <ul className='flex flex-wrap  md:w-[400px]'>
-                  {items.platforms.map(platform=> {
-                    return (<li className='font-Andika text-white px-2 py-1 mr-1 mb-2 rounded-full text-xxs w-[80px] bg-green text-center'>{platform}</li>
-                    )
-                  })}
-                  
-
-                </ul>
-                <hr></hr>
-
-              </div>)})}
-              
-
-              </div>
-            </div>
-            
-          </div>
-
-
-
-            
-      </div>
+      {openDashboard && <BusinessDashboard></BusinessDashboard>}
+      {openCampaigns && <Campaign></Campaign>}
     </div>
   )
 }
