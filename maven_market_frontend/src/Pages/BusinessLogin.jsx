@@ -5,15 +5,36 @@ import {styled} from "@mui/system"
 import GoogleSignup from '../Components/GoogleSignup';
 
 import { useNavigate } from 'react-router-dom';
+import { Formik, Form } from 'formik';
+import FormTextField2 from '../Components/FormTextFeild2';
 
+import {Button} from '@mui/material';
+import loginSchema from '../ValidationSchemas/loginSchema';
 
 const InfluencerLogin = () => {
     const navigate = useNavigate();
     const navigateToVerificationPage = ()=> {
         navigate("/verify");
     }
+    const handleSubmit=(values)=>{
+        console.log(values)
+    }
   return (
-    <div>
+    <Formik
+    initialValues={
+     {
+         email: "",
+         
+         password: ""
+        
+     }
+    }
+    onSubmit = {values=> handleSubmit(values)}
+    validationSchema= {loginSchema}
+    >
+     {formik => (
+         <Form>
+            <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
             <div className='px-4 pt-2  mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-1'>
@@ -24,8 +45,8 @@ const InfluencerLogin = () => {
                     </div>
                     <div className='flex flex-col space-y-3 '>
                       
-                        <TextField autoComplete size='small' id="outlined-basic" label="Enter Email" variant="outlined"  />
-                        <TextField size='small' id="outlined-basic" label="Password" variant="outlined" />
+                    <FormTextField2 name= "email" label= "Email"></FormTextField2>
+                        <FormTextField2 name= "password" label= "Password" ></FormTextField2>
                         
                         
                         <div className='flex flex-col justify-center items-center space-y-2'>
@@ -50,6 +71,8 @@ const InfluencerLogin = () => {
             </div>
         </section>
     </div>
+         </Form>)}
+         </Formik>
   )
 }
 

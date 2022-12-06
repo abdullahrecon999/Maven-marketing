@@ -1,51 +1,117 @@
 import React from 'react'
 import Navbar from '../Components/Navbar'
 import TextField from '@mui/material/TextField';
+import {Button} from '@mui/material';
+import { Autocomplete } from '@mui/material';
 import {styled} from "@mui/system"
 import GoogleSignup from '../Components/GoogleSignup';
-
+import { Formik, Form } from 'formik';
+import profileSchema from '../ValidationSchemas/profileSchema';
+import FormTextField2 from '../Components/FormTextFeild2';
 import { useNavigate } from 'react-router-dom';
+import { Category } from '@mui/icons-material';
+import FormSelect2 from '../Components/FormSelect2';
+const countries = [
+    "pakistan",
+    "China",
+    "India"
+]
 
-
+const category = [
+    "Beauty"
+]
+const Categories = [
+    { label: 'Beauty products'},
+    { label: 'Mobile' },
+    { label: 'Food' }]
+   
+const Countries = [
+    { label: 'Pakistan'},
+    { label: 'America' }
+    ]
+       
 const SignUpPageBusiness = () => {
     const navigate = useNavigate();
+    const handleSubmit=(values)=>{
+        console.log(values)
+    }
     const navigateToVerificationPage = ()=> {
         navigate("/verify");
     }
   return (
-    <div>
+    <Formik
+   initialValues={
+    {
+        email: "",
+        name: "",
+        category: "",
+        country: "",
+        password: "",
+       
+    }
+   }
+   onSubmit = {values=> handleSubmit(values)}
+   validationSchema= {profileSchema}
+   >
+    {formik => (
+        <Form>
+             <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
+            
             <div className='px-4 pt-2  mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-1'>
                 <div className='flex flex-col justify-center  px-10 space-y-6 md:w-[50%] '>
+                    
                     <div>
                         <h1 className='text-left sm:text-lg md:text-xl font-railway'>Sign Up</h1>
                         <p className= "text-sm text-grey">Its quick and easy</p>
                     </div>
                     <div className='flex flex-col space-y-3 '>
                       
-                        <TextField autoComplete size='small' id="outlined-basic" label="Business Email" variant="outlined"  />
-                        <TextField size='small' id="outlined-basic" label="Business Name" variant="outlined" />
-                        <TextField size='small' id="outlined-basic" label="Contact number" variant="outlined" />
+                    <FormTextField2 name= "email" label= "Business Email"></FormTextField2>
+                    <FormTextField2 name= "name" label="Business Name"></FormTextField2>
+                    <FormTextField2 name= "contact" label="Contact number"></FormTextField2>
+                       
+                        <div className='flex space-x-5 '>
+                        <FormSelect2 data = {countries} name ="country" label="Country" placeholder= 'Country'></FormSelect2>
 
-                        <div className='flex space-x-5'>
-                        <select className='w-[50%] border-grey border rounded-md h-10 px-2 blur-0'>
+                        {/* <Autocomplete
+                            size='small'
+                            disablePortal
+                            id="combo-box-demo"
+                            options={Categories}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Category" />
+                            }
+                        /> */}
+                        <FormSelect2 data = {category} name ="category" label="category" placeholder= 'category'></FormSelect2>
+                        {/* <Autocomplete
+                            size='small'
+                            disablePortal
+                            id="combo-box-demo"
+                            options={Countries}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Countries" />
+                            } */}
+                     
+                        {/* <select className='w-[50%] border-grey border rounded-md h-10 px-2 blur-0'>
                             <option value="0">Brand Category</option>
                             <option value="1">Audi</option>
                         
-                        </select>
-                        <select className='w-[50%] border-grey border rounded-md h-10 px-2'>
+                        </select> */}
+                        
+                        {/* <select className='w-[50%] border-grey border rounded-md h-10 px-2'>
                             <option value="0">Country</option>
                             <option value="1">Audi</option>
                         
-                        </select>
+                        </select> */}
                         
                         </div>
-                        <TextField autoComplete size='small' id="outlined-basic" label="Password" variant="outlined"  />
+                        <FormTextField2  label="Password" name= "password" />
                         <TextField size='small' id="outlined-basic" label="Confirm Password" variant="outlined" />
                         <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
-                                <button onClick={()=> navigateToVerificationPage()} className='px-3 py-2  font-bold text-center text-white rounded-full drop-shadow-md sm:text-center justify-center items-center md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Create Account</button>
+                            <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Sign Up</Button>
                                 
                             </div >
                             <p className='font-railway text-sm text-grey'>or</p>
@@ -90,6 +156,9 @@ const SignUpPageBusiness = () => {
             </div>
         </section>
     </div>
+        </Form>
+    )}
+    </Formik>
   )
 }
 

@@ -33,7 +33,7 @@ function App() {
             <Route path='/admin/users' element={<Users/>}></Route>
             <Route path='/admin/bUsers' element={<BrandUsers/>}></Route>
             <Route path='/p' element={<Profilecompletion/>}></Route> 
-            {/* <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
+            <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
             <Route path='/services' element={<Services/>} ></Route>
@@ -44,8 +44,8 @@ function App() {
             <Route path='/admin/home' element={<AdminHome/>}></Route>
             <Route path='/verify' element={<AccountVerification/>}></Route>
             <Route path='/admin/users' element={<Users/>}></Route>
-            <Route path='/' element={<Profilecompletion/>}></Route> */}
-           {/* <Route path='/' element={<CampaginCreation/>} ></Route> */}
+            <Route path='/' element={<Profilecompletion/>}></Route> 
+            <Route path='/' element={<CampaginCreation/>} ></Route>
           </Routes>
         </div>
     </Router>

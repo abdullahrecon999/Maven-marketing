@@ -1,14 +1,34 @@
 import React from 'react'
 import Navbar from '../Components/Navbar'
 import TextField from '@mui/material/TextField';
+import FormSelect from '../Components/FormSelect';
 import {styled} from "@mui/system"
 import GoogleSignup from '../Components/GoogleSignup';
-
-
-
+import { Formik, Form } from 'formik';
+import FormTextField2 from '../Components/FormTextFeild2';
+import FormSelect2 from '../Components/FormSelect2';
+import loginSchema from '../ValidationSchemas/loginSchema';
+import { Button } from '@mui/material';
 const SignUpPageBusiness = () => {
+    const handleSubmit=(values)=>{
+        console.log(values)
+    }
   return (
-    <div>
+    <Formik
+    initialValues={
+     {
+         email: "",
+         password: "",
+         confirmPass: "",
+         
+     }
+    }
+    onSubmit = {values=> handleSubmit(values)}
+    validationSchema= {loginSchema}
+    >
+     {formik => (
+         <Form>
+             <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
             <div className='px-4 pt-8 mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row'>
@@ -18,13 +38,12 @@ const SignUpPageBusiness = () => {
                         <p className= "text-sm text-grey">Its quick and easy</p>
                     </div>
                     <div className='flex flex-col space-y-5 '>
-                      
-                        <TextField size='small' id="outlined-basic" label="Enter Email" variant="outlined" />
-                        <TextField size='small' id="outlined-basic" label="Password" variant="outlined"  />
-                        <TextField size='small' id="outlined-basic" label="Confirm Password" variant="outlined" />
-                        <div className='flex flex-col justify-center items-center space-y-2'>
+                        <FormTextField2 name= "email" label= "Email"></FormTextField2>
+                        <FormTextField2 name= "password" label= "Password" ></FormTextField2>
+                        <FormTextField2 name= "confirmPass" label= "Confirm Password" ></FormTextField2>
+                          <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
-                                <button className='px-3 py-2  font-bold text-center text-white rounded-full drop-shadow-md sm:text-center justify-center items-center md:p-3 bg-blue baseline hover:bg-grey drop-shadow-xl'>Get Started</button>
+                            <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Sign Up</Button>
                                 
                             </div >
                             <p className='font-railway text-sm text-grey'>or</p>
@@ -71,6 +90,8 @@ const SignUpPageBusiness = () => {
             </div>
         </section>
     </div>
+         </Form>)}
+         </Formik>
   )
 }
 
