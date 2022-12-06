@@ -15,10 +15,11 @@ import AdminHome from './Pages/AdminHome';
 import AccountVerification from './Pages/AccountVerification';
 import Profilecompletion from './Pages/Profilecompletion';
 import Users from './Pages/adminPages/Users';
-import BrandUsers from './Pages/adminPages/Users';
+import BrandUsers from './Pages/adminPages/BrandUsers';
 import BusinessHome from './Pages/brandPages/BusinessHome';
 import CampaginCreation from './Pages/brandPages/CampaginCreation';
 import InfluencerLogin from './Pages/InfluencerLogin';
+import InfluencerDetails from './Pages/InfluencerDetails';
 
 function App() {
   return (
@@ -27,6 +28,11 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>} ></Route> 
             <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
+            <Route path='/admin/home' element={<AdminHome/>}></Route>
+            <Route path='/admin/home/influencer/:id' element={<InfluencerDetails/>}></Route>
+            <Route path='/admin/users' element={<Users/>}></Route>
+            <Route path='/admin/bUsers' element={<BrandUsers/>}></Route>
+            <Route path='/p' element={<Profilecompletion/>}></Route> 
             {/* <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
