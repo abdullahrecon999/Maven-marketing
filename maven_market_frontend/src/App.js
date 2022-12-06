@@ -27,6 +27,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>} ></Route> 
             <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
+            <Route path='/admin/home' element={<AdminHome/>}></Route>
             {/* <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
