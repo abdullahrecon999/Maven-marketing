@@ -21,6 +21,8 @@ import CampaginCreation from './Pages/brandPages/CampaginCreation';
 import InfluencerLogin from './Pages/InfluencerLogin';
 import InfluencerDetails from './Pages/InfluencerDetails';
 import NewCampaignPage from './Pages/brandPages/NewCampaign';
+import Campaign from './Pages/brandPages/Campaign';
+import CampaignDetail from './Pages/brandPages/CampaignDetail';
 
 function App() {
   return (
@@ -48,6 +50,8 @@ function App() {
             <Route path='/' element={<Profilecompletion/>}></Route> 
             <Route path='/' element={<CampaginCreation/>} ></Route>
             <Route path='/createCampaign' element={<NewCampaignPage/>} ></Route>
+            <Route path='/campaigns' element={<Campaign/>} ></Route>
+            <Route path='/campaigns/:title' element={<CampaignDetail/>} ></Route>
             
           </Routes>
         </div>

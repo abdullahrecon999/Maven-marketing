@@ -18,6 +18,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import useViewportState from 'beautiful-react-hooks/useViewportState';
 import campaigns from './campaigndata';
 import CampaignComponent from './CampaignComponent';
+import { useNavigate } from 'react-router-dom';
 const Menus = [
     { title: "Dashboard", src: <DashboardIcon/> },
     { title: "Inbox", src: <MailIcon/> },
@@ -32,7 +33,7 @@ const SideBar = () => {
     const [open, setOpen] = useState(true)
     const [openDashboard,setOpenDashboar] = useState(true)
   const [openCampaigns, setOpenCampaigns] = useState(true)
- 
+    const navigate = useNavigate()
     const { width, height, scrollX, scrollY } = useViewportState();
   return (
     <div  className={`z-10  bg-blue ${ 
@@ -62,13 +63,11 @@ const SideBar = () => {
             onClick={(e)=>{
               if(e.currentTarget.textContent === "Dashboard")
               {
-                setOpenDashboar(true)
-                setOpenCampaigns(false)
+                navigate("/businesshome")
               }
               else if(e.currentTarget.textContent === "Campaigns")
               {
-                setOpenDashboar(false)
-                setOpenCampaigns(true)
+                navigate("/campaigns")
               }
               console.log(e.currentTarget.textContent)
             }}

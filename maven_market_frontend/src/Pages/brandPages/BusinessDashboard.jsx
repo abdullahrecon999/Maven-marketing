@@ -19,7 +19,7 @@ import useViewportState from 'beautiful-react-hooks/useViewportState';
 import campaigns from './campaigndata';
 import CampaignComponent from './CampaignComponent';
 
-const BusinessDashboard = () => {
+const BusinessDashboard = ({data}) => {
     const [notifications, setNotification] = useState(true)
   return (
     <div className='flex  flex-col pl-16 py-6 md:pl-0 w-[100%]'>
@@ -49,7 +49,7 @@ const BusinessDashboard = () => {
             </div>
 
           </div>
-          <CampaignComponent></CampaignComponent>
+          <CampaignComponent ></CampaignComponent>
 
 
 

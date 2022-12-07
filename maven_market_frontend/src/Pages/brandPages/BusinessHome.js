@@ -1,4 +1,4 @@
-import React ,{useState} from 'react'
+import React ,{useState, useEffect} from 'react'
 import ArrowBackIosNewTwoToneIcon from '@mui/icons-material/ArrowBackIosNewTwoTone';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -8,90 +8,13 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Button, TextField } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import HelpOutlineTwoToneIcon from '@mui/icons-material/HelpOutlineTwoTone';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import useViewportState from 'beautiful-react-hooks/useViewportState';
 import BusinessDashboard from './BusinessDashboard';
 import Campaign from './Campaign';
 import { useNavigate } from 'react-router-dom';
-
-const campaigns = [{
-  title: "campaign 1",
-  disc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-  platforms:[
-    "twitter",
-    "facebook",
-    "instagram",
-    "redit",
-    "pinterest"
-  ]
-
-},
-{
-  title: "campaign 1",
-  disc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-  platforms:[
-    "twitter",
-    "facebook",
-    "instagram",
-    "redit",
-    "pinterest"
-  ]
-
-},
-{
-  title: "campaign 1",
-  disc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-  platforms:[
-    "twitter",
-    "facebook",
-    "instagram",
-    "redit",
-    "pinterest"
-  ]
-
-},
-{
-  title: "campaign 1",
-  disc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-  platforms:[
-    "twitter",
-    "facebook",
-    "instagram",
-    "redit",
-    "pinterest"
-  ]
-
-},
-{
-  title: "campaign 1",
-  disc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-  platforms:[
-    "twitter",
-    "facebook",
-    "instagram",
-    "redit",
-    "pinterest"
-  ]
-
-},
-{
-  title: "campaign 1",
-  disc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-  platforms:[
-    "twitter",
-    "facebook",
-    "instagram",
-    "redit",
-    "pinterest"
-  ]
-
-}]
-
+import { useLocation } from 'react-router-dom';
+import campaigns from './campaigndata';
+import SideBar from './SideBar';
 const Menus = [
   { title: "Dashboard", src: <DashboardIcon/> },
   { title: "Inbox", src: <MailIcon/> },
@@ -106,8 +29,15 @@ const BusinessHome = () => {
   const [open, setOpen] = useState(true)
   const [openDashboard,setOpenDashboar] = useState(true)
   const [openCampaigns, setOpenCampaigns] = useState(true)
+  const [camp, setCamp] = useState({})
   const navigate = useNavigate()
   const { width, height, scrollX, scrollY } = useViewportState();
+  const location = useLocation()
+
+  // useEffect(()=>{
+  //   console.log(location.state.data)
+  //   setCamp(location.state.data)
+  // })
 
   const handleClick = (e)=> {
     if (e.currentTarget.currentTarget.textContent === "Dashboard"){
@@ -118,7 +48,8 @@ const BusinessHome = () => {
   console.log(width)
   return (
     <div className='flex '>
-      <div  className={`z-10  bg-blue ${ 
+      <SideBar></SideBar>
+      {/* <div  className={`z-10  bg-blue ${ 
           open ? "w-40 md:w-72" : "w-16 md:w-20 "
         } bg-dark-purple p-5  pt-8 ${width<786 ? "h-[100%]":" "} fixed  md:relative duration-300 `}>
         <ArrowBackIosNewTwoToneIcon className= {`text-white text-xl absolute cursor-pointer duration-100 -right-3 top-9 w-7 bg-green border-dark-purple
@@ -168,9 +99,9 @@ const BusinessHome = () => {
             </li>
           ))}
         </ul>
-      </div>
-      {openDashboard && <BusinessDashboard></BusinessDashboard>}
-      {openCampaigns && <Campaign></Campaign>}
+      </div> */}
+     <BusinessDashboard data ={campaigns} ></BusinessDashboard>
+      
     </div>
   )
 }

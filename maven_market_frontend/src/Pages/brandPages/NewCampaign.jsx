@@ -8,6 +8,8 @@ import { Formik, Form } from 'formik';
 import { TextField , MenuItem, Button} from '@mui/material';
 import campaingSchema from '../../ValidationSchemas/campaignSchema';
 import Textarea from '../../Components/Textarea';
+import campaigns from './campaigndata';
+import { useNavigate } from 'react-router-dom';
 const countries = [
     "pakistan",
     "China",
@@ -37,8 +39,15 @@ const Feild = ({ props, data})=> {
     )
 }
 const NewCampaignPage = () => {
-    const handleSubmit = ({values})=> {
-        console.log(values)
+    const navigate = useNavigate()
+    const handleSubmit = (values)=> {
+
+        const  newCampaign = [...campaigns ,{title:values.title, disc: values.description, platform: [values.platform]} ]
+        alert("your campaign is being created")
+        alert("Campaign registered successfully")
+        navigate("/businesshome")
+        console.log(newCampaign)
+
     }
   return (
     <Formik
@@ -58,6 +67,7 @@ const NewCampaignPage = () => {
    >
     {formik => (
         <Form>
+            {console.log(formik)}
             <div className='flex'>
         <SideBar></SideBar>
         <div className= 'flex  flex-col pl-16 py-12 md:pl-0 w-[100%]'>
@@ -74,11 +84,11 @@ const NewCampaignPage = () => {
             <h1 className='font-railway text-green text-base md:text-xl'>Create Campaign</h1>
             <div>
                 <h1 className='font-railway text-xs md:text-sm'>Campaign Title</h1>
-                <FormFeild3 name="title" label="Enter Title"></FormFeild3>
+                <FormTextField2 name="title" label="Enter Title"></FormTextField2>
             </div>
             <div>
                 <h1 className='font-railway text-xs md:text-sm'>Campaign Description</h1>
-                <Textarea name= "discription" placeholder = "Please Describe what is your business and what is your campaign about" ></Textarea>
+                <Textarea name= "description" placeholder = "Please Describe what is your business and what is your campaign about" ></Textarea>
             </div>
             <div className='flex space-x-4'>
                 <div>
@@ -95,7 +105,7 @@ const NewCampaignPage = () => {
                 <h1 className='font-railway text-xs md:text-sm'>Platforms</h1>
                 <FormSelect2 name = "platform"   data= {platforms}></FormSelect2>         
                    </div>
-            <Button className='bg-blue' variant='contained' onClick={handleSubmit}>Create Campaign</Button>
+            <Button type='submit' className='bg-blue' variant='contained' onClick={handleSubmit}>Create Campaign</Button>
         </div>
         </div>
         

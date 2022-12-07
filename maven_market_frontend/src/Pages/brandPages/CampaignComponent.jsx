@@ -3,7 +3,13 @@ import React from 'react'
 import campaigns from './campaigndata'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
-const CampaignComponent = () => {
+import { useNavigate } from 'react-router-dom';
+const CampaignComponent = ({data}) => {
+  const navigate = useNavigate()
+  const handleClick = (items)=> {
+      navigate(`/campaigns/${items.title}`)
+      console.log(items)
+  }
   return (
     <div className=' px-6 pt-4'>
     <div className='flex flex-col space-y-1 px-4 py-1 border'>
@@ -17,7 +23,7 @@ const CampaignComponent = () => {
         </div>
       </div>
       <div className='flex flex-col space-y-2 px-6 py-4'>
-        {campaigns.map(items=> {return (<div className='flex flex-col space-y-2'>
+        {campaigns.map(items=> {return (<div onClick={()=> handleClick(items)} className='flex flex-col space-y-2 p-4 rounded-lg hover:bg-gray-100 transition duration-200'>
         <h1 className='font-railway text-blue' >{items.title}</h1>
         <p className='font-Andika text-black text-xs'>{items.disc}</p>
         <ul className='flex flex-wrap  md:w-[400px]'>

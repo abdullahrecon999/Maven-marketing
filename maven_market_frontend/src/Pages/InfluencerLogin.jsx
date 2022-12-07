@@ -16,7 +16,7 @@ const InfluencerLogin = () => {
         navigate("/verify");
     }
     const handleSubmit=(values)=>{
-        console.log(values)
+        console.log(values.email)
     }
   return (
     <Formik
@@ -32,7 +32,9 @@ const InfluencerLogin = () => {
    validationSchema= {loginSchema}
    >
     {formik => (
+        
         <Form>
+            {console.log(formik)}
             <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
@@ -45,7 +47,7 @@ const InfluencerLogin = () => {
                     <div className='flex flex-col space-y-3 '>
                       
                     <FormTextField2 name= "email" label= "Email"></FormTextField2>
-                        <FormTextField2 name= "password" label= "Password" ></FormTextField2>
+                    <FormTextField2 name= "password" label= "Password" ></FormTextField2>
                         
                         <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
