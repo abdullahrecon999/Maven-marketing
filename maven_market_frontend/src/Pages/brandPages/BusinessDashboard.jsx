@@ -11,16 +11,30 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import HelpOutlineTwoToneIcon from '@mui/icons-material/HelpOutlineTwoTone';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import useViewportState from 'beautiful-react-hooks/useViewportState';
 import campaigns from './campaigndata';
 import CampaignComponent from './CampaignComponent';
+import eng from "../../images/Engagement.png"
+import InfluencerTable from './InfluencerTable';
 
 const BusinessDashboard = ({data}) => {
     const [notifications, setNotification] = useState(true)
+    const [search, setSearch] = useState("")
+    const [show, setShow] = useState(true)
+   
+    const handleChange = (e)=> {
+      
+    }
+
+    const handleSearch = ()=> {
+      setShow(!show)
+        console.log(search)
+      
+    }
   return (
     <div className='flex  flex-col pl-16 py-6 md:pl-0 w-[100%]'>
             
@@ -28,8 +42,10 @@ const BusinessDashboard = ({data}) => {
           <h1 className='font-railway text-grey text-sm'>Dashboard</h1>
             <div className='flex'>
               <div >
-                <input className='border' placeholder='search.....'></input>
-                <Button><SearchIcon className='text-sm'></SearchIcon></Button>
+            <Button onClick={handleSearch} className="text-xs">See Available Influencers</Button> 
+                
+                {/* <TextField size='small' className='border' onChange={e=> handleChange(e)} placeholder='search.....'></TextField>
+                <Button onClick={handleSearch}><SearchIcon className=''></SearchIcon></Button> */}
               </div>
               {notifications === true ? <NotificationsActiveIcon className= "animate-bounce text-gray-600 "/> : <NotificationsIcon/>}
 
@@ -43,13 +59,14 @@ const BusinessDashboard = ({data}) => {
               </div>
               <h1 className='font-Andika text-xl text-green'>100</h1>
             </div>
-            <div className='border flex  flex-col justify-center items-center py-10 px-16 border-spacing-y-5 drop-shadow-sm md:w-[600px] hover:drop-shadow-2xl'>
-              
-              <h1 className='font-Andika text-xl text-green'>Show a graph here</h1>
+            <div className='border flex  flex-col justify-center items-center  border-spacing-y-5 drop-shadow-sm md:w-[600px] hover:drop-shadow-2xl'>
+              <img className='h-[200px] w-[100%]' src= {eng}></img>
+              {/* <h1 className='font-Andika text-xl text-green'>Show a graph here</h1> */}
             </div>
 
           </div>
-          <CampaignComponent ></CampaignComponent>
+          {show && <CampaignComponent ></CampaignComponent>}
+          {!show && <InfluencerTable></InfluencerTable>}
 
 
 
