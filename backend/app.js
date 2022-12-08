@@ -3,10 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const connect = require("./dbConnet")
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+const mongoose = require("mongoose")
 var app = express();
 
 // view engine setup
@@ -26,6 +26,13 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+mongoose.connect("mongodb+srv://hassan:hassan@fwa.0ju3u9f.mongodb.net/?retryWrites=true&w=majority").then(()=>
+        console.log("db connected")
+    ).catch(()=>{
+        console.log("erorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+    })
+
 
 // error handler
 app.use(function(err, req, res, next) {

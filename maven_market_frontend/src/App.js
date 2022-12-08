@@ -20,6 +20,9 @@ import BusinessHome from './Pages/brandPages/BusinessHome';
 import CampaginCreation from './Pages/brandPages/CampaginCreation';
 import InfluencerLogin from './Pages/InfluencerLogin';
 import InfluencerDetails from './Pages/InfluencerDetails';
+import NewCampaignPage from './Pages/brandPages/NewCampaign';
+import Campaign from './Pages/brandPages/Campaign';
+import CampaignDetail from './Pages/brandPages/CampaignDetail';
 
 function App() {
   return (
@@ -32,7 +35,7 @@ function App() {
             <Route path='/admin/home/influencer/:id' element={<InfluencerDetails/>}></Route>
             <Route path='/admin/users' element={<Users/>}></Route>
             <Route path='/admin/bUsers' element={<BrandUsers/>}></Route>
-            <Route path='/p' element={<Profilecompletion/>}></Route> 
+            <Route path='/profiling' element={<Profilecompletion/>}></Route> 
             <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
             <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
@@ -46,6 +49,10 @@ function App() {
             <Route path='/admin/users' element={<Users/>}></Route>
             <Route path='/' element={<Profilecompletion/>}></Route> 
             <Route path='/' element={<CampaginCreation/>} ></Route>
+            <Route path='/createCampaign' element={<NewCampaignPage/>} ></Route>
+            <Route path='/campaigns' element={<Campaign/>} ></Route>
+            <Route path='/campaigns/:title' element={<CampaignDetail/>} ></Route>
+            
           </Routes>
         </div>
     </Router>
