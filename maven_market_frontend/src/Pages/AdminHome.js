@@ -1,10 +1,13 @@
-import React from 'react'
+import React, {useContext, useEffect} from 'react'
 import Dashboard from '../Components/admindasboardcompents/Dashboard'
 import NestedList from '../Components/AdminDashboardList'
 import AdminNavbar from "../Components/AdminNavbar"
-
+import {AuthContext} from "../utils/authProvider";
+import axios from 'axios'
 
 const AdminHome = () => {
+  const {user, setUser} = useContext(AuthContext);
+
   return (
     <div>
       <AdminNavbar authenticated={true}></AdminNavbar>

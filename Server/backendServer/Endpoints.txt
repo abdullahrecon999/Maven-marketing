@@ -1,0 +1,40 @@
+# Server Configs
+
+----- Models -----
+[1] User
+[2] Campaign
+[3] {...}
+
+----- Routers ----- [ /login can have single controller ]
+[1] Admin
+ |------- /login *
+ |------- {1}
+ |------- /logout *
+ |------- /dashboard *
+ |------- {... Admin Features ...}
+[2] Brand
+ |------- /register *
+ |------- /login *
+ |------- /logout *
+ |------- /dashboard *
+ |------- {... Brand Features ...}
+[3] Influencer
+ |------- /register *
+ |------- /login *
+ |------- /logout *
+ |------- /dashboard *
+ |------- {... Influencer Features ...}
+[4] Authentication --- TODO
+ |------- /reset-password
+ |------- /google-sso
+ |------- {... other ...}
+ 
+-------- Controllers --------
+{1} forgot pass *
+{2} verify email *
+
+
+"name":"Abdullah",
+  "email":"abdullah@gmail.com",
+  "password":"Abc123",
+  "password2":"Abc123"

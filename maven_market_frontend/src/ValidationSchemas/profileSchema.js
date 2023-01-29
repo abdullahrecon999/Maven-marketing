@@ -9,7 +9,7 @@ let profileSchema = yup.object().shape({
     language: yup.string().required("please select a language"),
     country: yup.string().required("please select a country"),
     email: yup.string().email("please enter a valid email").required("Email address is required"),
-    password : yup.string().min(8, ({min})=> `password must be atleast ${min} characters`).required("Password is required"),
+    password : yup.string().min(6, ({min})=> `password must be atleast ${min} characters`).required("Password is required"),
     category: yup.string().required("please select a category"),
     contact : yup.string().required("please enter a contact number"),
   });

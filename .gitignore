@@ -1,8 +1,6 @@
 backend/node_modules
 /node_modules
 /Services/env
-<<<<<<< HEAD
 Scripts/.venv
-=======
 /Scripts/.venv
->>>>>>> hassanajmal
+/Server/backendServer/node_modules

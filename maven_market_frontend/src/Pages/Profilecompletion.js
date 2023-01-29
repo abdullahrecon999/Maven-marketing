@@ -1,23 +1,23 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Link } from 'react-router-dom'
-import TextField from '@mui/material/TextField';
+import { TextField } from '@mui/material'
 import { Formik, Form } from 'formik';
-
+import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
-
-
 import FormTextField from '../Components/FormTextField';
 import profileSchema from '../ValidationSchemas/profileSchema';
 import Textarea from '../Components/Textarea';
 import FormSelect from '../Components/FormSelect';
 import ProfileImage from '../Components/ProfileImage';
+import axios from 'axios';
+import { AuthContext } from '../utils/authProvider';
 
 const style = {
     width:{md:600},
     "& .MuiInputBase-root":{
         height: {sm: 35 ,md:40}
     }
-
 }
 const countries = [
     "pakistan",
@@ -30,7 +30,6 @@ const languages = [
     "English",
     "Hindi",
     "Chinese"
-    
 ]
 
 const platforms = [
@@ -38,9 +37,62 @@ const platforms = [
     "instagram"
 ]
 
-
-
 const Profilecompletion = () => {
+    
+    const navigate = useNavigate();
+    const [url, setUrl] = useState("")
+    const [loading, setLoading] = React.useState(false);
+    const [msg, setMsg] = useState("")
+    const [done, setDone] = useState(false)
+
+    const {user, setUser} = React.useContext(AuthContext)
+
+    const verifyProfile = () => {
+        // verify profile by post call on server
+        console.log("verify profile")
+        console.log(url)
+        setLoading(true)
+        axios.post("http://localhost:3000/users/verify", {
+            url: url
+        })
+        .then(res => {
+            if (res.data === "Real") {
+                console.log(res)
+                setLoading(false)
+                setDone(true)
+                setMsg("Profile Verified")
+            } else {
+                console.log(res)
+                setLoading(false)
+                setDone(true)
+                setMsg("Profile is not Verified")
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            setLoading(false)
+            setDone(true)
+            setMsg("Error Occured")
+        })
+    }
+
+    const logout = async () => {
+        // do axios get to backend for logout
+        // then redirect to home page
+        await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
+          console.log(res)
+          setUser(null)
+          localStorage.removeItem('user')
+          navigate("/")
+        }).catch(err => {
+          console.log(err)
+        })
+    }
+
+    const handleChange = (event) => {
+        setUrl(event.target.value);
+    };
+
     const handleSubmit=(values)=>{
         console.log(values)
     }
@@ -49,11 +101,11 @@ const Profilecompletion = () => {
     <>
     <nav className='container relative px-2 py-6 mx-auto'>
         <div className='flex items-center justify-between'>
-            <h1 className='text-black font-railway'>Maven Marketing</h1>
+            <h1 onClick={() => {navigate(-1)}} className='text-black font-railway'>Maven Marketing</h1>
 
-            <Link className='text-blue font-railway  hover:text-grey hover:-translate-y-0.5' to="/">
+            <h1 onClick={() => {logout()}} className='text-blue font-railway  hover:text-grey hover:-translate-y-0.5'>
                 Logout
-            </Link> 
+            </h1> 
         </div>
 
    </nav>
@@ -111,10 +163,7 @@ const Profilecompletion = () => {
                     <h1 className='font-railway text-sm md:text-base '>Discription </h1>
                     {/* <textarea name='discription' id="message" rows="5" class=" resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue focus:border-blue dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter discription about your self......"></textarea> */}
                     <Textarea name="discription"></Textarea>
-                </div>
-
-
-                
+                </div>    
 
             </div>
             <div className='border'></div>
@@ -132,15 +181,19 @@ const Profilecompletion = () => {
                 </TextField> */}
                 <div className='flex flex-col space-y-2' >
                     <h2  className='font-railway text-sm md:text-base '>Social Media Url</h2>
-                    <FormTextField name="url" label="Enter your social media profile link"></FormTextField>
-
+                    {/* <FormTextField name="url" label="Enter your social media profile link"></FormTextField> */}
+                    <div className='flex flex-row space-x-4'>
+                        <TextField onChange={handleChange} name="URL" label="Enter your social media profile link"> </TextField>
+                        
+                        {loading ? (<CircularProgress />) : (<Button onClick={() => verifyProfile()} className='bg-blue text-white' variant="contained">Verify</Button>)}
+                        {done ? (<p>{msg}</p>) : (<p>Status</p>)}
+                    </div>
                 </div>
                 
             </div>
            <div>
             {console.log(formik.dirty)}
-           <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
-
+                <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
            </div>
         </div>
    </section>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Navbar from '../Components/Navbar'
 import TextField from '@mui/material/TextField';
 import FormSelect from '../Components/FormSelect';
@@ -9,18 +9,51 @@ import FormTextField2 from '../Components/FormTextFeild2';
 import FormSelect2 from '../Components/FormSelect2';
 import loginSchema from '../ValidationSchemas/loginSchema';
 import { Button } from '@mui/material';
-const SignUpPageBusiness = () => {
+import Alert from '@mui/material/Alert';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const SignUpPageInfluencer = () => {
+
+    const navigate = useNavigate();
+    const [err, setErr] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
+
     const handleSubmit=(values)=>{
         console.log(values)
+        var val = {name : values.username, email : values.email, password : values.password, role : "influencer"}
+        axios.post("http://localhost:3000/influencer/register", val, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true
+          })
+        .then(res => {
+            console.log(res.data)
+            if(res.data.status === 'success'){
+                //setUser(res.data.user)
+                localStorage.setItem('user', JSON.stringify(res.data.user))
+                setErr(true)
+                setErrMsg(res.data.message)
+            }
+            else{
+                setErr(true)
+                setErrMsg(res.data.message)
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
+
   return (
     <Formik
     initialValues={
      {
-         email: "",
-         password: "",
-         confirmPass: "",
-         
+        username: "",
+        email: "",
+        password: "",
+        confirmPass: "",
      }
     }
     onSubmit = {values=> handleSubmit(values)}
@@ -38,6 +71,7 @@ const SignUpPageBusiness = () => {
                         <p className= "text-sm text-grey">Its quick and easy</p>
                     </div>
                     <div className='flex flex-col space-y-5 '>
+                        <FormTextField2 name= "username" label= "Username"></FormTextField2>
                         <FormTextField2 name= "email" label= "Email"></FormTextField2>
                         <FormTextField2 name= "password" label= "Password" ></FormTextField2>
                         <FormTextField2 name= "confirmPass" label= "Confirm Password" ></FormTextField2>
@@ -46,53 +80,26 @@ const SignUpPageBusiness = () => {
                             <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Sign Up</Button>
                                 
                             </div >
-                            <p className='font-railway text-sm text-grey'>or</p>
-                            <GoogleSignup></GoogleSignup>
                         </div>
                        
                     </div>
-                   
-               
-                    
                 </div>
                 <div className='flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start '>
                     <h1 className='text-3xl text-blue font-semibold font-railway md:text-4xl'>Maven Marketing</h1>
-                    
                     <p className='font-semibold text-xl'>A Platform To Earn Money By Collaborating With Brands And Businesses</p>
-
-                    {/* <div className='flex items-center justify-start space-x-2'>
-                        
-                       <h1><Person3Icon></Person3Icon></h1> 
-                       <h1 className='text-xl font-semibold'>Find and work with the <span className='text-green'>Right Influencer</span> for your brand</h1>
-                        
-                    </div> */}
-
-                    {/* <div className='flex justify-start space-x-2'>
-                        
-                        <h1><CampaignIcon></CampaignIcon></h1> 
-                        <h1 className='text-xl font-semibold'>Create and <span className='text-blue'>Automate</span> your Campaign more <span className='text-green'>Efficiently</span></h1>
-                         
-                     </div>
-                     <div className='flex justify-start space-x-2'>
-                        
-                        <h1><SummarizeIcon></SummarizeIcon></h1> 
-                        <h1 className='text-xl font-semibold'>Get regulat <span className='text-blue'>Reports and Analytics</span> on your campaigns</h1>
-                         
-                     </div>
-
-                     <div className='flex justify-start space-x-2'>
-                        
-                        <h1><MonetizationOnIcon></MonetizationOnIcon></h1> 
-                        <h1 className='text-xl font-semibold'>Turn Influencer marketing into your top <span className='text-green'>Revenue Driving Source</span></h1>
-                         
-                     </div> */}
                 </div>
             </div>
         </section>
+        {err && <Alert severity="error" onClose={() => { setErr(false) }} >
+            {errMsg}
+            {errMsg.includes("verification") && <Button onClick={() => {navigate('/influencerlogin')}} style={{marginLeft:30}} color="inherit" variant='contained' size="small">
+                Login Page
+            </Button>}
+        </Alert>}
     </div>
-         </Form>)}
-         </Formik>
+    </Form>)}
+    </Formik>
   )
 }
 
-export default SignUpPageBusiness
+export default SignUpPageInfluencer

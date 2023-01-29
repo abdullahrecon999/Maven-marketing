@@ -11,51 +11,61 @@ import { DataGrid, useGridApiEventHandler, useGridApiContext, } from '@mui/x-dat
 import { Box } from '@mui/material';
 import {useState} from "react"
 const columns1 = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: '_id', headerName: 'ID', width: 90 },
     {
-      field: 'Name',
+      field: 'name',
       headerName: 'Name',
       width: 150,
-      editable: true,
+      editable: false,
     },
     {
-      field: 'platform',
-      headerName: 'platform',
+      field: 'email',
+      headerName: 'Email',
       width: 150,
-      editable: true,
+      editable: false,
     },
     {
-      field: 'Status',
-      headerName: 'Status',
-      type: 'number',
+      field: 'email_verified',
+      headerName: 'Verified',
+      type: 'boolean',
       width: 110,
-      editable: true,
+      editable: false,
+    },
+    {
+      field: 'platforms',
+      headerName: 'Platform',
+      width: 150,
+      editable: false,
     }
-    
   ];
   
   const columns2 = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: '_id', headerName: 'ID', width: 90 },
     {
-      field: 'Brand Name',
+      field: 'name',
       headerName: 'Name',
       width: 150,
-      editable: true,
+      editable: false,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 150,
+      editable: false,
+    },
+    {
+      field: 'email_verified',
+      headerName: 'Verified',
+      type: 'boolean',
+      width: 110,
+      editable: false,
     },
     {
       field: 'category',
       headerName: 'Category',
       width: 150,
-      editable: true,
-    },
-    {
-      field: 'Status',
-      headerName: 'Status',
-      type: 'number',
-      width: 110,
-      editable: true,
+      editable: false,
     }
-    
   ];
   const rows = [
     { id: 1, Name: 'Snow', platform: 'Jon', Status: "pending"},
@@ -66,30 +76,30 @@ const columns1 = [
     { id: 6, Name: 'Melisandre', platform: null, Status: "pending" },
     { id: 7, Name: 'Clifford', platform: 'Ferrara', Status: "pending"},
     { id: 8, Name: 'Frances', platform: 'Rossini', Status: "pending" },
-    { id: 9, Name: 'Roxie', platform: 'Harvey', Status: "pending"},
+    { id: 9, Name: 'Roxie', platform: ['Harvey','new'], Status: "pending"},
   ];
   
-const UsersTable = ({type}) => {
+const UsersTable = ({type, data}) => {
     const navigate = useNavigate()
     
     console.log(type)
+    console.log("From Tables: ",data)
   
     const handleClick = (params)=> {
-      
-      navigate(`influencer/${params.row.id}`,{id: params.row.id})
-      
+      //navigate(`influencer/${params.row.id}`,{id: params.row.id})
     }
+
   return (
     <div className='flex flex-col bg-white py-7 px-8 mb-12 mx-6'>
       
       <Box sx={{ height: 400, width: '100%' }}>
       <DataGrid
         onRowClick={handleClick}
-        rows={rows}
-        columns={type ==="influencer"? columns1:columns2}
+        rows={data}
+        getRowId ={(row) => row._id}
+        columns={type === "influencer"? columns1 : columns2}
         pageSize={5}
         rowsPerPageOptions={[5]}
-       
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
       />

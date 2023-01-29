@@ -1,20 +1,19 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import GettingStartedButton from '../Components/GettingStartedButton'
 import Navbar from '../Components/Navbar'
 import SignupModal from '../Components/SignupModal';
 import img from "../images/Marketing-cuate.png"
 import { useNavigate } from 'react-router-dom';
+
 const Home = () => {
-  
+
   const [openSignupModal, setOpenSignup] = useState(false);
   const handleClose = ()=> setOpenSignup(false)
   const navigate = useNavigate();
+
   return (
     <>
-    
-    
     <Navbar></Navbar>
-    {/* section 1 */}
     <section className='container mx-auto'>
         <div className='flex flex-col-reverse items-center justify-between px-10 pt-10 mx-auto space-x-2 space-y-0 md:flex-row '>
             <div className='flex flex-col justify-start mb-10 space-y-8 sm:justify-start '>
@@ -35,8 +34,6 @@ const Home = () => {
      
         </div>
     </section>
-
-    
     <SignupModal visible={openSignupModal} onClose= {handleClose}></SignupModal>
     </>
   )
