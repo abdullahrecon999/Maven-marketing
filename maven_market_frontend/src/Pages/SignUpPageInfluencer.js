@@ -7,7 +7,7 @@ import GoogleSignup from '../Components/GoogleSignup';
 import { Formik, Form } from 'formik';
 import FormTextField2 from '../Components/FormTextFeild2';
 import FormSelect2 from '../Components/FormSelect2';
-import loginSchema from '../ValidationSchemas/loginSchema';
+import SignupSchema from '../ValidationSchemas/Signupschema';
 import { Button } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import axios from 'axios';
@@ -57,7 +57,7 @@ const SignUpPageInfluencer = () => {
      }
     }
     onSubmit = {values=> handleSubmit(values)}
-    validationSchema= {loginSchema}
+    validationSchema= {SignupSchema}
     >
      {formik => (
          <Form>

@@ -12,11 +12,11 @@ def call(url):
     data = script(url)
     
     if (data == 0):
-    # url is of the mock server in postman
+  
     
         requests.post("https://fbfb19c3-7109-4063-a0f1-636df130674c.mock.pstmn.io", json={"activateStatus": "1"})
     if (data == 1):
-# url is of the mock server in postman
+
 
         requests.post("https://fbfb19c3-7109-4063-a0f1-636df130674c.mock.pstmn.io", json={"activateStatus": "0"})
 

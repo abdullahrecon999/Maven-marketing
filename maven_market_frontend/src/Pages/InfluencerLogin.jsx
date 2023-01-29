@@ -226,7 +226,9 @@ const InfluencerLogin = () => {
     validationSchema= {loginSchema}
     >
     {formik => (
+        
         <Form>
+            {console.log(formik)}
             <div>
         <Navbar></Navbar>
         <section className='container mx-auto'>
