@@ -4,3 +4,4 @@ backend/node_modules
 Scripts/.venv
 /Scripts/.venv
 /Server/backendServer/node_modules
+/Server/backendServer/.env
