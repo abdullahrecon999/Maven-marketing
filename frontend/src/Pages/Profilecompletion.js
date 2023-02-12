@@ -95,7 +95,7 @@ const Profilecompletion = () => {
     };
 
     const handleSubmit=(values)=>{
-        console.log()
+        console.log(values)
     }
     
   return (
