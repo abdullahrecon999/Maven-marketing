@@ -5,14 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { StyledEngineProvider } from '@mui/material';
 import { AuthProvider } from './utils/authProvider';
+import {QueryClient,  QueryClientProvider} from "@tanstack/react-query"
+
+const client = new QueryClient()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <QueryClientProvider client={client}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </QueryClientProvider>
     </StyledEngineProvider>
   </React.StrictMode>
 );

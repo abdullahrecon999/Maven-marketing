@@ -12,6 +12,7 @@ import FormSelect from '../Components/FormSelect';
 import ProfileImage from '../Components/ProfileImage';
 import axios from 'axios';
 import { AuthContext } from '../utils/authProvider';
+import image from "../images/profile.jpg"
 
 const style = {
     width:{md:600},
@@ -118,7 +119,7 @@ const Profilecompletion = () => {
         discription: "",
         platform: "",
         url: "",
-        file:""
+        uImage:""
     }
    }
    onSubmit = {values=> handleSubmit(values)}
@@ -141,7 +142,12 @@ const Profilecompletion = () => {
                     
                 <div className='flex flex-col space-y-3'>
                     <h1 className='font-railway text-sm md:text-base '>Upload your Profile Pic</h1>
-                    <ProfileImage></ProfileImage>
+                    <ProfileImage name = "uImage" setvalue = {formik.setFieldValue}></ProfileImage>
+                    <div className='space-y-3'>
+        
+                
+                
+            </div>
 
                 </div>
                 <div className='flex flex-col space-y-2' >
@@ -183,16 +189,16 @@ const Profilecompletion = () => {
                     <h2  className='font-railway text-sm md:text-base '>Social Media Url</h2>
                     {/* <FormTextField name="url" label="Enter your social media profile link"></FormTextField> */}
                     <div className='flex flex-row space-x-4'>
-                        <TextField onChange={handleChange} name="URL" label="Enter your social media profile link"> </TextField>
-                        
-                        {loading ? (<CircularProgress />) : (<Button onClick={() => verifyProfile()} className='bg-blue text-white' variant="contained">Verify</Button>)}
-                        {done ? (<p>{msg}</p>) : (<p>Status</p>)}
+                        {/* <TextField onChange={handleChange} name="URL" label="Enter your social media profile link"> </TextField> */}
+                        <FormTextField name="url"></FormTextField>
+                        {/* {loading ? (<CircularProgress />) : (<Button onClick={() => verifyProfile()} className='bg-blue text-white' variant="contained">Verify</Button>)}
+                        {done ? (<p>{msg}</p>) : (<p>Status</p>)} */}
                     </div>
                 </div>
                 
             </div>
            <div>
-            {console.log(formik.dirty)}
+           {console.log(formik)}
                 <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
            </div>
         </div>
