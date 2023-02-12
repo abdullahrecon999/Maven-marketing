@@ -1,0 +1,5 @@
+1676213675172	geckodriver	INFO	Listening on 127.0.0.1:53837
+1676213684932	mozrunner::runner	INFO	Running command: "/snap/bin/firefox" "--marionette" "--headless" "--no-sandbox" "--disable-dev-shm-usage" "--ignore-certifica ... 16" "--remote-debugging-port" "38277" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile3hJxLU"
+*** You are running in headless mode.
+[GFX1-]: glxtest: Unable to open a connection to the X server
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
