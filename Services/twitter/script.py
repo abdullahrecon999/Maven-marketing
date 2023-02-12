@@ -33,7 +33,7 @@ def Find(string):
   
     # findall() has been used 
     # with valid conditions for urls in string
-    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     url = re.findall(regex,string)      
     if len(url) != 0:
       return 1
@@ -48,6 +48,8 @@ def script (url):
   driver = webdriver.Chrome(options=options)
   driver.get(url)
   time.sleep(5)
+  #driver wait
+  driver.implicitly_wait(10)
   isPrivate = 0
   externalUrl = 0
   verfied = driver.find_elements(By.XPATH, './/div[@aria-label="Provides details about verified accounts."]')
@@ -61,18 +63,29 @@ def script (url):
     if ("suspended" in element[0].text):
       return 1
     elif ("protected" in element[0].text):
+      print("protected")
       isPrivate = 1
   Usernames = driver.find_element(By.XPATH, './/div[@data-testid="UserName"]').text.split("\n")
-  discription = driver.find_element(By.XPATH, './/div[@data-testid="UserDescription"]').text
-  externalUrl = Find(discription)
-  if externalUrl != 1:
-    elements = driver.find_elements(By.XPATH, './/a[@data-testid="UserUrl"]')
-    if len(elements) != 0:
-      externalUrl = 1
-    
-  
-    
-  discription = len(discription)
+  discriptionelement = driver.find_elements(By.XPATH, './/div[@data-testid="UserDescription"]')
+  # add from here to here
+  discription = 0
+  if len(discriptionelement) != 0:
+    description = discriptionelement[0].text
+    print (description)
+    discription = len(description)
+    externalUrl = Find(description)
+    if externalUrl != 1:
+      elements = driver.find_elements(By.XPATH, './/a[@data-testid="UserUrl"]')
+      if len(elements) != 0:
+        externalUrl = 1
+      else:
+        externalUrl = 0
+
+  else:
+    description = 0
+# to here i changes this
+
+
   fullNameWords = len(Usernames[0].split(" "))
   numDivName = calculateDigits(Usernames[0])/ len(Usernames[0])
   numDivUserName = calculateDigits(Usernames[1])/ (len(Usernames[1])-1)
@@ -98,7 +111,6 @@ def script (url):
     
   ]
   a =  predict(data)
-  print (predict(data))
-
-
-
+  print("the user is predicted")
+  print(a)
+  return (a)

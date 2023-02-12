@@ -10,9 +10,7 @@ from sklearn.metrics import classification_report
 cwd = os.getcwd()
 path = '{cwd}train.csv'
 
-
-
-CsvData = pd.read_csv(r'E:\\Hassan\semester 7\\fyp\\FypCode\\Services\\twitter\\train.csv')
+CsvData = pd.read_csv(r'C:\Users\Administrator\Downloads\Services\Services\twitter\train.csv')
 
 dataY = CsvData[["fake"]]
 dataX = CsvData.drop("fake", axis=1)
@@ -24,5 +22,9 @@ nbModel = GaussianNB()
 nbModel.fit(Xtrain, Ytrain)
 
 def predict(data):
-    predCustom = nbModel.predict([data])
-    return predCustom[0]
+    try:
+        predCustom = nbModel.predict([data])
+    except:
+        return 0
+    #return predCustom[0]
+    return 1
