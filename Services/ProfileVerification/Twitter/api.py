@@ -3,30 +3,16 @@ import requests
 import threading
 from textAnalysis import Extractor
 
-from script import script
+from scrapeProfile import script
 app = Flask(__name__)
-string = "asd"
-
-def call(url):    
-    
-    data = script(url)
-    
-    if (data == 0):
-        print(data)
-        return data
-        #requests.post("https://fbfb19c3-7109-4063-a0f1-636df130674c.mock.pstmn.io", json={"activateStatus": "1"})
-
-    if (data == 1):
-        print(data)
-        return data
-        #requests.post("https://fbfb19c3-7109-4063-a0f1-636df130674c.mock.pstmn.io", json={"activateStatus": "0"})
 
 @app.route('/', methods = ["POST"])
-def method_name():
+def profileVerify():
     data = request.json
     #thread = threading.Thread(target=call, args=(data["url"],))
     #thread.start()
-    returnData = script(data["url"])
+    inputData = data["username"]
+    returnData = script(inputData)
     if(returnData == 0):
         print("Real")
         return "Real"
