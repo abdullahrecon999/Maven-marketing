@@ -58,6 +58,14 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please enter a password'],
     minlength: 6,
   },
+  profileComplete: {
+    type: Number,
+    default: 0
+  },
+  profileActive: {
+    type: Number,
+    default: 0
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

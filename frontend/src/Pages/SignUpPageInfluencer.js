@@ -32,6 +32,7 @@ const SignUpPageInfluencer = () => {
             console.log(res.data)
             if(res.data.status === 'success'){
                 //setUser(res.data.user)
+                console.log("sucess registerd")
                 localStorage.setItem('user', JSON.stringify(res.data.user))
                 setErr(true)
                 setErrMsg(res.data.message)
