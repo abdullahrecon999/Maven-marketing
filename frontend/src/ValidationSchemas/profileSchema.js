@@ -5,9 +5,9 @@ let profileSchema = yup.object().shape({
     name: yup.string().required("Full name is required"),
     url: yup.string().required("Profile link is required"),
     discription: yup.string().required("Discription is required"),
-    platform: yup.string().required("please select a platform"),
-    language: yup.string().required("please select a language"),
-    country: yup.string().required("please select a country"),
+    platform: yup.array().required("please select a platform"),
+    language: yup.array().required("please select a language"),
+    country: yup.array().required("please select a country"),
     });
 
 export default profileSchema
