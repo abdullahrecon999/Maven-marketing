@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     default: 'admin'
   },
   country: {
-    type: String,
+    type: [String],
   },
   category: {
     type: [String],
@@ -48,6 +48,9 @@ const userSchema = new mongoose.Schema({
             handle: String,
         }
     ],
+  },
+  language:{
+    type: [String]
   },
   email_verified: {
     type: Boolean,

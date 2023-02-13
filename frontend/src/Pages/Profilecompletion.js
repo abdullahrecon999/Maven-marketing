@@ -96,16 +96,18 @@ const Profilecompletion = () => {
         setUrl(event.target.value);
     };
 
+    
+
     const addData= async (values) =>{
         const user = JSON.parse(localStorage.getItem("user"))
-        console.log("abs")
+        console.log(values.language)
         const val = {
             
             
             country: values.country,
             language: values.language,
             description: values.discription,
-            platform: values.platform,
+            platforms: values.platform,
             url: values.url,
             photo: values.uImage,
             profileComplete: 1
@@ -145,10 +147,15 @@ const Profilecompletion = () => {
     // }
 
     if(isLoading)
-        return (<>
-                    <div> isloadingggggggggggggggggggg</div>
-                </>
+        return (
+                    <div className='flex justify-center items-center w-[100%] h-[100%] flex-col'>
+                        <h1 className='font-railway text-3xl text-blue'>Please wait</h1>
+                        <p className='fonet-railway text-base text-grey'>We are we submitting your profile for verification this may take a while</p>
+                    </div>
+                
         )
+    // add the error handling here
+    if(isError){}
 
    
     
@@ -213,8 +220,8 @@ const Profilecompletion = () => {
                 <h1  className='font-railway text-sm md:text-base '>Select Country and languages</h1>
                 <div className='flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3'>
                    
-                <FormSelect data = {countries} name ="country" label="Country" placeholder= 'Country'></FormSelect>
-                    <FormSelect data={languages} name="language" label="Language"></FormSelect>
+                <FormSelect data = {countries} setvalue = {formik.setFieldValue} name ="country" label="Country" placeholder= 'Country'></FormSelect>
+                    <FormSelect data={languages} setvalue = {formik.setFieldValue} name="language" label="Language"></FormSelect>
                     
 
                 </div>
@@ -233,20 +240,15 @@ const Profilecompletion = () => {
                    
                 </div>
                {/* need to add functionality for multiple feilds */}
-               <FormSelect data={platforms} name="platform" label="platform"></FormSelect>
-               {/* <TextField required sx={{width : {md:300}}} id="select" label="Plateform" value="0" select>
-                        <MenuItem value = "0">Select Plateform</MenuItem>
-                        <MenuItem value="10">Twitter</MenuItem>
-                        <MenuItem value="20">Instagram</MenuItem>
-                </TextField> */}
+               <FormSelect data={platforms} setvalue = {formik.setFieldValue} name="platform" label="platform" ></FormSelect>
+              
                 <div className='flex flex-col space-y-2' >
                     <h2  className='font-railway text-sm md:text-base '>Social Media Url</h2>
                     {/* <FormTextField name="url" label="Enter your social media profile link"></FormTextField> */}
                     <div className='flex flex-row space-x-4'>
-                        {/* <TextField onChange={handleChange} name="URL" label="Enter your social media profile link"> </TextField> */}
+                       
                         <FormTextField name="url"></FormTextField>
-                        {/* {loading ? (<CircularProgress />) : (<Button onClick={() => verifyProfile()} className='bg-blue text-white' variant="contained">Verify</Button>)}
-                        {done ? (<p>{msg}</p>) : (<p>Status</p>)} */}
+                        
                     </div>
                 </div>
                 
@@ -254,7 +256,13 @@ const Profilecompletion = () => {
            <div>
          
                 <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
-                
+                {/* {console.log(formik)} */}
+                {/* needs to be fixed */}
+                <div className= {isSuccess && !isError? "flex ":"hidden"}>
+                    <h1> your profile was submitted successfully</h1>
+                    <p>Pleas wait while our system verfies your profile</p>
+
+                </div>
            </div>
         </div>
    </section>
