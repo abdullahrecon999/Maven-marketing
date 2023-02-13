@@ -186,7 +186,7 @@ const InfluencerLogin = () => {
 
     const handleSubmit=(values)=>{
         // call API for login for influencer
-        console.log(values)
+        
         var state = {}
         state = values
         state.role = "influencer"
@@ -197,10 +197,16 @@ const InfluencerLogin = () => {
             withCredentials: true
           })
         .then(res => {
-            console.log(res.data.success)
+            console.log(res.data.user)
             if(res.data.success === true){
                 localStorage.setItem('user', JSON.stringify(res.data.user))
+                
+                if(res.data.user.profileComplete === 0){
+                    navigate("/profileCompletion")    
+                
+                }else{
                 navigate("/influencerhome")
+                }
             }
             else{
                 console.log("error: ",res.data)
