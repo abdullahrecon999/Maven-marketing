@@ -1,12 +1,20 @@
-import React,{useContext} from 'react'
+import React,{useContext, useEffect} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import {AuthContext} from "../utils/authProvider";
+import { Verified } from '@mui/icons-material';
+import UnderReviewPage from './UnderReviewPage';
 
 const InfluencerHome = () => {
   const {setUser} = useContext(AuthContext);
+  const verified = 0;
   const navigate = useNavigate();
 
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"))
+    
+
+  })
   const logout = async () => {
     // do axios get to backend for logout
     // then redirect to home page
@@ -19,6 +27,8 @@ const InfluencerHome = () => {
       console.log(err)
     })
   }
+ 
+
 
   return (
     <>

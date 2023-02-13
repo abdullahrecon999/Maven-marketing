@@ -27,7 +27,8 @@ const corsOptions = {
     credentials: true,
 }
 app.use(cors(corsOptions))
-
+app.use(express.json({limit: '100mb'}));
+app.use(express.urlencoded({limit: '100mb'}));
 app.enable('trust proxy');
 //app.options('*', cors()); 
 app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!

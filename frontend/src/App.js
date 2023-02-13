@@ -72,7 +72,8 @@ function App() {
 
             {/* Influencer Protected Routes */}
             <Route element={<RequireAuth allowedRoles={['influencer']} />} >
-              <Route path='/influencerhome' element={<Profilecompletion />} ></Route>
+              <Route path='/profileCompletion' element={<Profilecompletion />} ></Route>
+              <Route path='/influencerHome' element={<InfluencerHome />} ></Route>
             </Route>
             
             {/* Protected complementary Routes */}
