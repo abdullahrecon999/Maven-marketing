@@ -51,7 +51,7 @@ function App() {
             <Route path='/aboutus' element={<Aboutus/>} ></Route>
             <Route path='/services' element={<Services/>} ></Route>
             <Route path='/whyus' element={<Whyus/>} ></Route>
-
+            
             {/* Admin Protected Routes */}
             <Route element={<RequireAuth allowedRoles={['admin']} />} >
               <Route path='/admin/home' element={<AdminHome/>}></Route>

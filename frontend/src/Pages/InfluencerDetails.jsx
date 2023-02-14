@@ -5,16 +5,43 @@ import AdminNavbar from '../Components/AdminNavbar'
 import ProfileImage from '../Components/ProfileImage'
 import { Button } from '@mui/material'
 import uImage from "../images/profile.jpg"
-const Profile = ()=> {
+import axios from 'axios'
+import {useQuery} from "@tanstack/react-query"
+
+const Profile = ({id})=> {
+
     const [state, setState] = useState(true)
-    const handleClickActivate = ()=> {
+    const handleClickActivate = async ()=> {
         // send a requests to activate
+         axios.post("http://localhost:3000/admin/activateProfile/"+id,
+        {headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true,
+        }
+        
+        )
         setState(false)
     }
     const handleClickdeactivate = ()=> {
         // send a requests to deactivate
         setState(true)
     }
+    const url= "http://localhost:3000/admin/influencer/"+id
+    const {isLoading, data, isError, isSuccess} = useQuery(["getting the data"],
+    ()=>{
+       
+      return axios.get(url,
+      {headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true,
+    })
+    }
+   
+  )
+
+  console.log(data)
     return(
         <div className='w-[900px] px-12 py-8'>
         <div className='flex flex-col space-y-3'>
@@ -23,7 +50,7 @@ const Profile = ()=> {
                 <img 
                 
                 className=' border rounded-full max-h-[80px] max-w-[80px] md:max-h-[130px] md:max-w-[130px]' 
-                src={uImage} 
+                src={isSuccess? data.data.photo: uImage} 
                 alt={uImage}/>
             </div>
             <h1 className='text-black font font-railway text-base'> Name</h1>
@@ -79,9 +106,7 @@ const Profile = ()=> {
 const InfluencerDetails = () => {
     let {id} = useParams()
     console.log(id)
-    useEffect(()=>{
-       
-    }, [])
+    
    
   return (
     <div>
