@@ -13,7 +13,9 @@ import ProfileImage from '../Components/ProfileImage';
 import axios from 'axios';
 import { AuthContext } from '../utils/authProvider';
 import image from "../images/profile.jpg"
+import {useMutation} from "@tanstack/react-query"
 
+// need to add multiple array in coutries language and categories
 const style = {
     width:{md:600},
     "& .MuiInputBase-root":{
@@ -47,7 +49,7 @@ const Profilecompletion = () => {
     const [done, setDone] = useState(false)
 
     const {user, setUser} = React.useContext(AuthContext)
-
+   
     const verifyProfile = () => {
         // verify profile by post call on server
         console.log("verify profile")
@@ -94,9 +96,61 @@ const Profilecompletion = () => {
         setUrl(event.target.value);
     };
 
-    const handleSubmit=(values)=>{
-        console.log(values)
+    const addData= async (values) =>{
+        const user = JSON.parse(localStorage.getItem("user"))
+        console.log("abs")
+        const val = {
+            
+            
+            country: values.country,
+            language: values.language,
+            description: values.discription,
+            platform: values.platform,
+            url: values.url,
+            photo: values.uImage,
+            profileComplete: 1
+        }
+       
+        return await axios.post(`http://localhost:3000/influencer/completeProfile/${user["_id"]}`, val, {headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true,
+        })
     }
+    const{mutate, isLoading, isSuccess, isError} = useMutation(addData)
+    
+    // const handleSubmit= async(values)=>{
+    //    const user = JSON.parse(localStorage.getItem("user"))
+    //     const val = {
+            
+            
+    //         country: values.country,
+    //         language: values.language,
+    //         description: values.discription,
+    //         platform: values.platform,
+    //         url: values.url,
+    //         photo: values.uImage,
+    //         profileComplete: 1
+    //     }
+        
+    //     const id = user["_id"]
+    //     console.log(id);
+    //     await axios.post(`http://localhost:3000/influencer/completeProfile/${user["_id"]}`, val, {headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       withCredentials: true,
+    //     })
+      
+        
+    // }
+
+    if(isLoading)
+        return (<>
+                    <div> isloadingggggggggggggggggggg</div>
+                </>
+        )
+
+   
     
   return (
     <>
@@ -122,7 +176,7 @@ const Profilecompletion = () => {
         uImage:""
     }
    }
-   onSubmit = {values=> handleSubmit(values)}
+   onSubmit = {values=> mutate(values)}
    validationSchema= {profileSchema}
    >
     {formik => (
@@ -198,8 +252,9 @@ const Profilecompletion = () => {
                 
             </div>
            <div>
-           {console.log(formik)}
+         
                 <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
+                
            </div>
         </div>
    </section>

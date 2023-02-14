@@ -14,7 +14,25 @@ const sendEmail = require('../utils/sendEmail');
 router.get('/', function(req, res, next) {
   res.send('Influencer Router called');
 });
+// geting a particular user
+router.get("/:id", async (req, res, next) => {
+    const id = req.params.id
+    try{
+      const user = User.find({_id: id})
+      res.status(200).json({
+        status : "success",
+        data: {
+          user
+        }
+      })
+    }catch(e){
+      res.status(500).json({
+        status: "error"
+      })
 
+    }
+
+})
 // Register
 router.post('/register', (req, res) => {
   const { name, email, password } = req.body;
@@ -155,5 +173,64 @@ router.post('/password-reset', authController.PasswordReset);
 
 // reset password
 router.post('/resetPassword/:token', authController.PasswordResetVerify);
+
+//profile completion
+router.post('/completeProfile/:id',async (req, res, next) => {
+  const id = req.params.id
+  
+  const user = await User.find({_id: id})
+  try{
+  await User.updateOne({_id: id}, req.body)
+
+  res.status(200).json({
+    status: "success"
+  });
+  }
+  catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+  if (req.body.platform === "twitter"){
+    data = {
+      id: req.body.id,
+      url: req.body.url
+    }
+    // send request to the verify the email
+  }
+})
+
+
+router.post("/activateProfile/:id", async(req, res, next)=> { 
+    const id = req.params.id
+    try{
+      await User.updateOne({_id: id}, req.body)
+    
+      res.status(200).json({
+        status: "success"
+      });
+      }
+      catch(e){
+        res.status(500).json({
+          status: "error"
+        })
+      }
+})
+
+router.post("/deactivateProfile/:id", async(req, res, next)=> { 
+  const id = req.params.id
+  try{
+    await User.updateOne({_id: id}, req.body)
+  
+    res.status(200).json({
+      status: "success"
+    });
+    }
+    catch(e){
+      res.status(500).json({
+        status: "error"
+      })
+    }
+})
 
 module.exports = router;

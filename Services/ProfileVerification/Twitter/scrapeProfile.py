@@ -1,8 +1,7 @@
 from Twitter_profile import get_profile_details
-from NaiveBayes import predict
 import json
 
-def script(username):
+def scrap_profile(username):
     twitter_username = username
     filename = "twitter_api_data2"
     data = get_profile_details(twitter_username=twitter_username, filename=filename)
@@ -25,9 +24,7 @@ def script(username):
     ]
 
     print(predData)
-    prediction = predict(predData)
-    print("Predict: ", prediction)
     
-    return prediction
+    return predData
     # print(predict([1,0,4,0,0,120,1,0,4163,61900000,536]))
     # print(predict([0, 0.1, 1, 0, 0, 0, 1, 0, 100, 80, 330]))
