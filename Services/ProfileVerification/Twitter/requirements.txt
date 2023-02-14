@@ -1,0 +1,11 @@
+python-dotenv
+yake
+nltk
+flask
+requests
+fake_headers
+scikit-learn
+pandas
+numpy
+
+
