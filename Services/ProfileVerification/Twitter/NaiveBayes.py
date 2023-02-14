@@ -7,6 +7,8 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.metrics import classification_report
+import pickle
+
 cwd = os.getcwd()
 path = cwd+"/train.csv"
 print(cwd)
@@ -23,6 +25,9 @@ Xtrain,Xtest, Ytrain, Ytest = train_test_split(dataX, dataY, test_size = 0.3, ra
 
 nbModel = GaussianNB()
 nbModel.fit(dataX.values, dataY.values.ravel())
+
+# Save model to disk
+pickle.dump(nbModel, open("Mlmodel.pkl","wb"))
 
 def predict(data):
     try:
