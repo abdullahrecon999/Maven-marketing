@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const campaignSchema = new mongoose.Schema({
+  brand:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+    required: true
+  },
   title: {
     type: String,
   },
