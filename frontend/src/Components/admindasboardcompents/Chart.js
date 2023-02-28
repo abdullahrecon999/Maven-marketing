@@ -30,10 +30,6 @@ const columns = [
     type: 'number',
     width: 110,
     
-  },{
-    feild: "country",
-    hearderName: "Country",
-    width: 150,
   }
   
 ];
@@ -47,13 +43,13 @@ export default function Users({data}) {
   
   const navigate = useNavigate()
   const convertData = (data)=>{
-    return data.map(data=> {
+    return data?.map(data=> {
       return {
         id : data?._id,
         name: data?.name,
         platform: data?.platforms.toString(),
         profileActive: data?.profileActive,
-        country: data?.country.toString()
+        //country: data?.country.toString()
 
 
     }})

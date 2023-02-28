@@ -7,7 +7,7 @@ import { Button } from '@mui/material'
 import uImage from "../images/profile.jpg"
 import axios from 'axios'
 import {useQuery} from "@tanstack/react-query"
-
+import DetailBox from '../Components/DetailBox'
 const Profile = ({id})=> {
 
     const [state, setState] = useState(true)
@@ -41,37 +41,45 @@ const Profile = ({id})=> {
    
   )
 
-  console.log(data)
+  console.log(data.data.data)
     return(
         <div className='w-[900px] px-12 py-8'>
         <div className='flex flex-col space-y-3'>
+            <h1 className="text-blue font-andika text-4xl">Influencer details page</h1>
             <h1 className='text-green font-railway text-xl'>Personal Details</h1>
             <div>
                 <img 
                 
                 className=' border rounded-full max-h-[80px] max-w-[80px] md:max-h-[130px] md:max-w-[130px]' 
-                src={isSuccess? data.data.photo: uImage} 
-                alt={uImage}/>
+                src={data.data.data?.photo} 
+            
+                alt="hot potato"/>
             </div>
-            <h1 className='text-black font font-railway text-base'> Name</h1>
-            <div className='flex space-x-10'>
-                <div className='flex flex-col'>
+            <h1 className='text-black font font-railway text-base'> Name: <span className='font-bold text-grey'>{data.data.data?.name}</span></h1>
+            <div className='flex  flex-col '>
+                <div className='flex flex-col space-y-3'>
                         <h1 className='font-railway text-lg'>
                             Country
                         </h1>
-                        <h1 className='font-railway text-base text-grey'>country</h1>
+                        <DetailBox data={data.data.data.country[0]}/>
 
                 </div>
                 <div className='flex flex-col'>
                         <h1 className='font-railway text-lg'>
                             Languages
                         </h1>
-                        <h1 className='font-railway text-base text-grey'>languages</h1> 
+                        <div className='flex flex-wrap w-[500px]'>
+                            {data?.data?.data?.language.map(items =>{
+                                return <DetailBox data={items}/>
+                            })}
+
+                        </div>
+                        
                 </div>
             </div>
             <div className='space-y-2'>
                 <h1 className='font-railway text-lg'>Description</h1>
-                <p className='font-Andika text-sm text-grey'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p className='font-Andika text-sm text-grey'>{data.data.data.description}</p>
 
             </div>
             <div>

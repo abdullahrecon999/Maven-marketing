@@ -12,11 +12,13 @@ const passport = require('passport');
 const session = require('express-session');
 require('./config/passport')(passport);
 
+// importing the router
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin');
 var brandRouter = require('./routes/brand');
 var influencerRouter = require('./routes/influencer');
+var MessageRouter = require("./routes/chat");
 
 var app = express();
 
@@ -62,12 +64,13 @@ session({
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
+//calling the routers
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/brand', brandRouter);
 app.use('/users', usersRouter);
 app.use('/influencer', influencerRouter);
+app.use("/chats", MessageRouter)
 
 app.all('*', (req, res, next) => {
       res.status(404).json({'Error':`Cant Find ${req.originalUrl}`}); // 404 Not Found

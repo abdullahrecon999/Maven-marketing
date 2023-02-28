@@ -11,6 +11,7 @@ import { AuthContext } from '../utils/authProvider';
 const AdminLogin = () => {
     const {user, setUser} = useContext(AuthContext)
     const {loading} = useContext(AuthContext)
+    
 
     const navigate = useNavigate()
     const [state, setState] = useState({
@@ -49,7 +50,7 @@ const AdminLogin = () => {
             }
         })
         .catch(err => {
-            console.log(err)
+            setErr(true)
         })
     }
 
@@ -69,8 +70,9 @@ const AdminLogin = () => {
                 <div className='flex flex-col space-y-4 items-center border border-grey py-7 px-3 rounded-lg drop-shadow-sm'>
                     <h1>Admin Login</h1>
                     <div className='flex flex-col space-y-4'>
-                        <TextField onChange={handleChange} name='email' size='small' id="outlined-basic" label="Email" variant="outlined" />
-                        <TextField onChange={handleChange} name="password" size='small' id="outlined-basic" label="Password" variant="outlined" />
+                        {err && <p className= "text-xs text-red-700">Invalid credentails</p>}
+                        <TextField onChange={handleChange}  name='email' size='small' id="outlined-basic" label="Email" variant="outlined" />
+                        <TextField onChange={handleChange} type="password" name="password" size='small' id="outlined-basic" label="Password" variant="outlined" />
                     </div>
                     <div>
                         <Button className='bg-blue' onClick={login} variant="contained">Log in</Button>
