@@ -20,12 +20,12 @@ const PlatformSchema = new mongoose.Schema({
     },
     verified:{
         type: Boolean,
-        required: true,
+        
         default: false
     }
 
     
 })
 
-const plateforms = mongoose.model("plateforms", PlateformSchema)
+const plateforms = mongoose.model("plateforms", PlatformSchema)
 module.exports = plateforms

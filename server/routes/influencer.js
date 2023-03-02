@@ -6,9 +6,16 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 var utils = require('../config/authUtils');
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
+// importing the models
 const User = require('../models/User');
+const plateforms = require('../models/profiles');
+const Campaings = require("../models/Campaign");
+const bids = require("../models/Proposals")
+const contracts = require("../models/Contracts")
+
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
+
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -234,4 +241,209 @@ router.post("/deactivateProfile/:id", async(req, res, next)=> {
     }
 })
 
-module.exports = router;
+router.post("/:id/addplatform",  async (req, res, next) =>{
+  const id = req.params.id
+  try{
+    await plateforms.create(req.body)
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+
+router.put("/updateProfile/:id", async(req, res, next)=>{
+  const id = req.params.id
+  console.log(id)
+
+  try{
+    await User.updateOne({_id: id}, req.body)
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+// campaign routes need to be test needs some refinement
+router.get("/getAllCampaigns", async(req, res, next)=>{
+  
+
+  try{
+    const data = await Campaings.find({}).populate("brand")
+    console.log(data)
+    res.status(200).json({
+      status: "success",
+      data
+      
+    })
+  }catch(e){
+    console.log(e)
+    res.status(502).json({
+      status: "erro"
+    })
+  }
+})
+
+
+
+router.get("/searchCampaign/:query", async(req, res, next)=>{
+  
+  const query = req.params.query
+
+  try{
+    const data = await Campaings.search(query)
+    if(data?.length){
+      res.status(200).json({
+        status: "success",
+        data
+        
+      })
+    }
+    else{
+      res.status(404).json({
+        status: "success",
+        
+        
+      })
+    }
+    
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+// also need to be fixed
+router.post("/myBids", async(req, res)=>{
+  res.send("hit")
+})
+
+router.get("/bidDetails/:id", async(req, res, next)=>{
+  const id = req.params.id
+  try{
+    const data = await bids.find({_id:id})
+    .populate("to")
+    .populate("campaignId")
+
+    if(data?.length){
+      res.status(200).json({
+        status: "success",
+        data
+        
+      })
+    }else{
+      res.status(404).json({
+        status: "error",
+        msg: "no bids found"
+        
+      })
+
+    }
+    
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+    })
+    
+  }
+})
+
+router.post("/bidCampaign/:id", async (req, res, next) => {
+  const id = req.params.id
+  
+  try{
+    bids.create(req.body)
+    res.status(200).json({
+      status: "success",
+    })
+    
+  }catch(e){
+    console.log(e)
+    res.status(200).json({
+      status: "error",
+    })
+  }
+
+})
+
+// these routes need to be fixed also
+
+router.get("/allContracts", async(req, res, next)=>{
+  try{
+    const data = contracts.find({})
+    .populate("CampaignId")
+    .populate("sender")
+
+    if(data?.length){
+      res.status(200).json({
+        status: "success",
+        data
+        
+      })
+    }else{
+      res.status(404).json({
+        status: "success",
+        
+        
+      })
+    }
+  }catch(e){
+    res.status(404).json({
+      status: "error", 
+    })
+  }
+})
+
+router.get("/contractDetails/:id", async (req, res)=>{
+  try{
+    const id = req.params.id
+    const data = contracts.findOne({_id: id})
+    .populate("CampaignId")
+    .populate("sender")
+
+    if(Object.keys(data)?.length){
+
+      res.status(200).json({
+        status: "success",
+        data
+        
+      })
+    }else{
+      res.status(404).json({
+        status: "success",
+        
+        
+      })
+    }
+
+
+  }catch(e){
+    res.status(404).json({
+      status: "error", 
+    })
+  }
+})
+
+
+router.post("/acceptcontract", ()=>{
+
+})
+
+router.post("/rejectContract", ()=>{})
+
+
+
+
+
+
+module.exports = router

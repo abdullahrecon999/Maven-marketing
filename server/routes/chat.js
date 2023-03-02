@@ -7,7 +7,7 @@ router.get("/getMessages", (req, res, next)=>{
     console.log("chat router Called..... getting the messages")
 })
 
-router.post("/addMessage", (req, res, next)=>{
+router.post("/addMessage", async(req, res, next)=>{
     try{
         const {to,from, text} = req.body;
         const data = await messages.create(
