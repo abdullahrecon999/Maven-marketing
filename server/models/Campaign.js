@@ -13,13 +13,22 @@ const campaignSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  langauge: Array,
-  country: Array,
+  langauge: {
+    type: Array,
+    default: ["Any"]
+  },
+  country: {
+    type: Array,
+    default: ["Any"]
+  },
   
   description: {
     type: String,
   },
-  platform: Array
+  platform:{
+    type: Array,
+    default: ["Any"]
+  }
 }, { timestamps: true });
 
 const Campaign = mongoose.model('Campaign', campaignSchema);

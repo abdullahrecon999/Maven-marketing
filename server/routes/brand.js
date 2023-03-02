@@ -158,18 +158,33 @@ router.post('/password-reset', authController.PasswordReset);
 router.post('/resetPassword/:token', authController.PasswordResetVerify);
 
 //create campaign
-router.post('/create-campaign', (req, res) => {
+router.post('/create-campaign', async (req, res) => {
   const { title, email, description, country, language, platform } = req.body;
   console.log(req.body)
-  const newCampaign = new Campaign({
-    title, email, description, country, language, platform
-  });
 
-  newCampaign.save().then(campaign => {
-    res.send(campaign);
-  }).catch(err => {
-    res.send(err);
-  });
+  try{
+    Campaign.create(req.body)
+
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+
+  // const newCampaign = new Campaign({
+  //   title, email, description, country, language, platform
+  // });
+
+  
+
+  // newCampaign.save().then(campaign => {
+  //   res.send(campaign);
+  // }).catch(err => {
+  //   res.send(err);
+  // });
 
 });
 
