@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { StyledEngineProvider } from '@mui/material';
 import { AuthProvider } from './utils/authProvider';
 import {QueryClient,  QueryClientProvider} from "@tanstack/react-query"
-
+import {ChatInit, CreateNewChatUser, ChatLogin} from "./ChatUtils"
 const client = new QueryClient()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -21,6 +21,9 @@ root.render(
     </StyledEngineProvider>
   </React.StrictMode>
 );
+
+// ChatInit()
+
  
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

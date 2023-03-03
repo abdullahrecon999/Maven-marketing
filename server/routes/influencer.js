@@ -323,7 +323,8 @@ router.get("/searchCampaign/:query", async(req, res, next)=>{
   }
 })
 // also need to be fixed
-router.post("/myBids", async(req, res)=>{
+router.get("/myBids", async(req, res)=>{
+  console.log(req)
   res.send("hit")
 })
 
