@@ -2,9 +2,8 @@ import React,{useContext, useEffect} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import {AuthContext} from "../utils/authProvider";
-import { Verified } from '@mui/icons-material';
-import UnderReviewPage from './UnderReviewPage';
-
+import LineHeader from '../Components/InfluencerComponents/LineHeader';
+import InfluencerTabs from "../Components/InfluencerComponents/InfluencerTabs"
 const InfluencerHome = () => {
   const {setUser} = useContext(AuthContext);
   const verified = 0;
@@ -31,10 +30,13 @@ const InfluencerHome = () => {
 
 
   return (
-    <>
-      <div>InfluencerHome</div>
-      <button onClick={() => {logout()}} className='p-3 text-grey baseline font-railway text-sm hover:text-blue'>Logout</button>
-    </>
+    <div className="flex flex-col space-y-6">
+      <LineHeader></LineHeader>
+      <div className="flex flex-col flex-1 container mx-12 space-y-7 ">
+        <h1 className="text-xl font-railway font text-black"> My Work</h1>
+        <InfluencerTabs></InfluencerTabs>
+      </div>
+    </div>
   )
 }
 

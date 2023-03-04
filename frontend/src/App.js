@@ -10,47 +10,47 @@ import SignUpPageBusiness from './Pages/SignUpPageBusiness';
 import SignUpPageInfluencer from './Pages/SignUpPageInfluencer';
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom"
 
-// import Aboutus from './Pages/Aboutus';
-// import Whyus from './Pages/Whyus';
+import Aboutus from './Pages/Aboutus';
+import Whyus from './Pages/Whyus';
 import Error from './Pages/errorPages/notFound';
-// import ErrorUnauthorized from './Pages/errorPages/unauthorized';
+import ErrorUnauthorized from './Pages/errorPages/unauthorized';
 import RequireAuth from './Components/RequireAuth';
 
 import AdminLogin from './Pages/AdminLogin';
-// import AdminHome from './Pages/AdminHome';
-// import AccountVerification from './Pages/AccountVerification';
-// import Profilecompletion from './Pages/Profilecompletion';
-// import Users from './Pages/adminPages/Users';
-// import BrandUsers from './Pages/adminPages/BrandUsers';
-// import BusinessHome from './Pages/brandPages/BusinessHome';
+import AdminHome from './Pages/AdminHome';
+import AccountVerification from './Pages/AccountVerification';
+import Profilecompletion from './Pages/Profilecompletion';
+import Users from './Pages/adminPages/Users';
+import BrandUsers from './Pages/adminPages/BrandUsers';
+import BusinessHome from './Pages/brandPages/BusinessHome';
 import BusinessLogin from './Pages/BusinessLogin';
-// import CampaginCreation from './Pages/brandPages/CampaginCreation';
+import CampaginCreation from './Pages/brandPages/CampaginCreation';
 import InfluencerLogin from './Pages/InfluencerLogin';
-// import InfluencerDetails from './Pages/InfluencerDetails';
-// import InfluencerHome from './Pages/InfluencerHome';
+import InfluencerDetails from './Pages/InfluencerDetails';
+import InfluencerHome from './Pages/InfluencerHome';
 import PasswordReset from './Pages/passwordReset';
-// import NewCampaignPage from './Pages/brandPages/NewCampaign';
-// import Campaign from './Pages/brandPages/Campaign';
-// import CampaignDetail from './Pages/brandPages/CampaignDetail';
+import NewCampaignPage from './Pages/brandPages/NewCampaign';
+import Campaign from './Pages/brandPages/Campaign';
+import CampaignDetail from './Pages/brandPages/CampaignDetail';
 import { AuthContext } from './utils/authProvider';
 
 
 const Services = lazy(import("./Pages/Services"))
-const Aboutus = lazy(import("./Pages/Aboutus"))
-const Whyus = lazy(import('./Pages/Whyus'))
-const AdminHome = lazy(import("./Pages/AdminHome"))
-const AccountVerification = lazy(import("./Pages/AccountVerification"))
-const Profilecompletion = lazy(import("./Pages/Profilecompletion"))
-const Users = lazy(import('./Pages/adminPages/Users'))
-const BrandUsers = lazy(import('./Pages/adminPages/BrandUsers'))
-const BusinessHome = lazy(import("./Pages/brandPages/BusinessHome"))
-const CampaginCreation = lazy(import('./Pages/brandPages/CampaginCreation'))
-const InfluencerDetails = lazy(import('./Pages/InfluencerDetails'))
-const InfluencerHome = lazy(import('./Pages/InfluencerHome'))
-const NewCampaignPage = lazy(import('./Pages/brandPages/NewCampaign'))
-const Campaign = lazy(import('./Pages/brandPages/Campaign'))
-const CampaignDetail = lazy(import('./Pages/brandPages/CampaignDetail'))
-const ErrorUnauthorized = lazy(import('./Pages/errorPages/unauthorized'))
+// const Aboutus = lazy(import("./Pages/Aboutus"))
+// const Whyus = lazy(import('./Pages/Whyus'))
+// const AdminHome = lazy(import("./Pages/AdminHome"))
+// const AccountVerification = lazy(import("./Pages/AccountVerification"))
+// const Profilecompletion = lazy(import("./Pages/Profilecompletion"))
+// const Users = lazy(import('./Pages/adminPages/Users'))
+// const BrandUsers = lazy(import('./Pages/adminPages/BrandUsers'))
+// const BusinessHome = lazy(import("./Pages/brandPages/BusinessHome"))
+// const CampaginCreation = lazy(import('./Pages/brandPages/CampaginCreation'))
+// const InfluencerDetails = lazy(import('./Pages/InfluencerDetails'))
+// const InfluencerHome = lazy(import('./Pages/InfluencerHome'))
+// const NewCampaignPage = lazy(import('./Pages/brandPages/NewCampaign'))
+// const Campaign = lazy(import('./Pages/brandPages/Campaign'))
+// const CampaignDetail = lazy(import('./Pages/brandPages/CampaignDetail'))
+// const ErrorUnauthorized = lazy(import('./Pages/errorPages/unauthorized'))
 
 function App() {
 
