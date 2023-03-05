@@ -170,7 +170,6 @@ const InfluencerDashboared = ({onCampaignViewClick}) => {
             <InfluencerDashboaredCampaign onViewClick={onCampaignViewClick}></InfluencerDashboaredCampaign>
 
         </Box>
-
         <Box 
           sx={{
             
