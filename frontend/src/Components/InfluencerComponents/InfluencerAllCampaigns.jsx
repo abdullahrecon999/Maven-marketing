@@ -4,8 +4,8 @@ import SortIcon from '@mui/icons-material/Sort';
 import CampaignCard from "./CampaignCard"
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import CloseIcon from '@mui/icons-material/Close';
-
-
+import { useNavigate } from 'react-router-dom';
+import {useQuery} from "@tanstack/react-query"
 const SortModel = ({onClose})=>{
   return(
     <div className='z-10  absolute top-8 left-40  border  rounded-lg p-1  w-40 md:top-9 md:left-44'>
@@ -26,6 +26,7 @@ const SortModel = ({onClose})=>{
 }
 const InfluencerAllCampaigns = () => {
   const [openSort, setOpenSort] = useState(false)
+  const navigate = useNavigate()
   const handleOpenSort = ()=> {
     setOpenSort(true)
     console.log("clicked")
@@ -34,6 +35,10 @@ const InfluencerAllCampaigns = () => {
 
   const handleCloseSort =()=>{
     setOpenSort(false)
+  }
+
+  const openCampaign = ()=>{
+
   }
 
   return (
@@ -55,22 +60,9 @@ const InfluencerAllCampaigns = () => {
         </div>
         <div className="flex flex-col  space-y-4 mt-4 px-1 md:mt-6 md:px-2">
             <h1 className="text-black font-railway text-lg md:text-xl">All Campaigns</h1>
-            <div className='flex flex-wrap mt-2 justify-center'>
+            <div className='flex flex-wrap mt-2 justify-start'>
               <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
-              <CampaignCard></CampaignCard>
+              
             </div>
             <hr></hr>
             <div className=" flex justify-center mt-8 pt-4 space-x-3">

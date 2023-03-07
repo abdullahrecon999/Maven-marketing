@@ -15,7 +15,7 @@ import Whyus from './Pages/Whyus';
 import Error from './Pages/errorPages/notFound';
 import ErrorUnauthorized from './Pages/errorPages/unauthorized';
 import RequireAuth from './Components/RequireAuth';
-
+import CampaignDetailInfluencer from './Components/InfluencerComponents/CampaignDetail';
 import AdminLogin from './Pages/AdminLogin';
 import AdminHome from './Pages/AdminHome';
 import AccountVerification from './Pages/AccountVerification';
@@ -95,6 +95,7 @@ function App() {
             <Route element={<RequireAuth allowedRoles={['influencer']} />} >
               <Route path='/profileCompletion' element={<Profilecompletion />} ></Route>
               <Route path='/influencerHome' element={<InfluencerHome />} ></Route>
+              <Route path="/campaigndetails" element={<CampaignDetailInfluencer/>}></Route>
             </Route>
             
             {/* Protected complementary Routes */}
