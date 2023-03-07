@@ -1,13 +1,15 @@
 import React ,{useState} from 'react'
-import image from "../images/profile.jpg"
+import image from "../../images/profile.jpg"
 import { useField, ErrorMessage } from 'formik'
-import convertToBase64 from '../utils/FileConverter'
-const ProfileImage = ({...props}) => {
+import EditIcon from '@mui/icons-material/Edit';
+import convertToBase64 from '../../utils/FileConverter'
+const ProfileImage = ({image,...props}) => {
     const [feild, meta, setFe] = useField(props)
     const [uImage, setImage] = useState(image)
+    
     const imageHandler = async (e)=> {
         
-        console.log(feild.value)
+        // console.log(feild.value)
         
         
         const reader = new FileReader();
@@ -19,20 +21,22 @@ const ProfileImage = ({...props}) => {
         reader.readAsDataURL(e.target.files[0])
         const image = await convertToBase64(e.target.files[0])
         props.setvalue("uImage",image)
-        console.log(image)
+        
     }
   return (
-    <div className='space-y-3'>
+    <div className='space-y-3 relative flex flex-col items-center justify-center'>
         
         <div>
             <img 
             
-            className=' border rounded-full h-[100px] max-w-[100%] md:max-h-[100%] md:max-w-[100%] object-cover' 
+            className=' border rounded-full h-[150px] w-[150px]  object-cover' 
             src={uImage} 
             alt={uImage}/>
         </div>
-    
-        <input 
+        <label className='absolute -top-2 -right-10 p-1 text-xs text-grey border rounded-full hover:shadow-md' for="uImage"> <EditIcon></EditIcon></label>
+        
+        <input
+        className='hidden' 
         {...feild}
         {...props}
         onChange = {(e)=> imageHandler(e)}

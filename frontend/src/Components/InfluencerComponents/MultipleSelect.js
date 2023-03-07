@@ -5,6 +5,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useField, ErrorMessage } from 'formik'
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -39,9 +40,16 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelect() {
+export default function MultipleSelect({setvalue,defaultValue,...props}) {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
+  const [feild, meta] = useField(props)
+
+  React.useEffect(()=>{
+    setvalue(feild.name, personName)
+
+
+  }, [personName])
 
   const handleChange = (event) => {
     const {
@@ -55,9 +63,13 @@ export default function MultipleSelect() {
 
   return (
     <div>
+      
       <FormControl sx={{ m: 1, width: 300 }}>
+        
         <InputLabel id="demo-multiple-name-label">Name</InputLabel>
         <Select
+          {...feild}
+          {...props}
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
           multiple
@@ -65,6 +77,7 @@ export default function MultipleSelect() {
           onChange={handleChange}
           input={<OutlinedInput label="Name" />}
           MenuProps={MenuProps}
+          
         >
           {names.map((name) => (
             <MenuItem

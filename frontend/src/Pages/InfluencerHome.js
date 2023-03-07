@@ -5,12 +5,14 @@ import {AuthContext} from "../utils/authProvider";
 import LineHeader from '../Components/InfluencerComponents/LineHeader';
 import InfluencerTabs from "../Components/InfluencerComponents/InfluencerTabs"
 const InfluencerHome = () => {
-  const {setUser} = useContext(AuthContext);
+  const {user,setUser} = useContext(AuthContext);
   const verified = 0;
   const navigate = useNavigate();
 
   useEffect(()=>{
-    const user = JSON.parse(localStorage.getItem("user"))
+    
+    // const user = JSON.parse(localStorage.getItem("user"))
+    console.log(user)
     
 
   })

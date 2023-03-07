@@ -260,6 +260,7 @@ router.post("/:id/addplatform",  async (req, res, next) =>{
 router.put("/updateProfile/:id", async(req, res, next)=>{
   const id = req.params.id
   console.log(id)
+  console.log(req.body)
 
   try{
     await User.updateOne({_id: id}, req.body)
