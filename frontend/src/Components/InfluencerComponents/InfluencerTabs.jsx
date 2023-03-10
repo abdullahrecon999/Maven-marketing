@@ -8,6 +8,8 @@ import Box from '@mui/material/Box';
 import InfluencerDashboared from "../InfluencerComponents/InfluencerDashboared"
 import InfluencerAllCampaigns from './InfluencerAllCampaigns';
 import SocialProfile from './SocialProfile';
+import InfluencerBids from "./InfluencerBids"
+import WorkTabs from './WorkTabs';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -62,7 +64,7 @@ export default function BasicTabs() {
            >
           <Tab label="Dashboared" {...a11yProps(0)} />
           <Tab label="All Campaigns" {...a11yProps(1)} />
-          <Tab label="Bids" {...a11yProps(2)} />
+          <Tab label="My Work" {...a11yProps(2)} />
           <Tab label="Transactions" {...a11yProps(3)} />
           <Tab label="Social" {...a11yProps(4)} />
           
@@ -78,7 +80,8 @@ export default function BasicTabs() {
           <InfluencerAllCampaigns></InfluencerAllCampaigns>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Item Three
+          <WorkTabs></WorkTabs>
+          {/* <InfluencerBids/> */}
         </TabPanel>
         <TabPanel value={value} index={3}>
           Item Three

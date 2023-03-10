@@ -3,17 +3,17 @@ const mongoose = require("mongoose")
 const invitesSchema = new mongoose.Schema({
     campaignId :{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Campaigns",
+        ref: "Campaign",
         required: true
     },
     to: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
+        ref: "User",
         required: true
     },
     sender: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
+        ref: "User",
         required: true 
     },
     accepted:{

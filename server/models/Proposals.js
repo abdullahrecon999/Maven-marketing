@@ -30,6 +30,14 @@ const invitesSchema = new mongoose.Schema({
         default: null,
         required: true
     },
+    answers:{
+        type: Array,
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    }
     
 
 },{

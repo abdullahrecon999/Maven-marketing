@@ -6,6 +6,7 @@ import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import {useQuery} from "@tanstack/react-query"
+import axios from "axios"
 const SortModel = ({onClose})=>{
   return(
     <div className='z-10  absolute top-8 left-40  border  rounded-lg p-1  w-40 md:top-9 md:left-44'>
@@ -33,12 +34,38 @@ const InfluencerAllCampaigns = () => {
     console.log(openSort)
   }
 
+  const {isLoading, data, isError, isSuccess} = useQuery(["getAllCampaigns"],
+    ()=>{
+      return axios.get("http://localhost:3000/campaign/campaigns",
+      {headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true,
+    })
+    }
+  )
+
+    
+
   const handleCloseSort =()=>{
     setOpenSort(false)
   }
 
-  const openCampaign = ()=>{
+  const openCampaign = (id)=>{
 
+
+  }
+
+  if(isLoading){
+    return (<div>
+      loading
+    </div>)
+  }
+
+  if(isError){
+    return(<div>
+      there was something wrong in fetching the cmapaign
+    </div>)
   }
 
   return (
@@ -61,7 +88,17 @@ const InfluencerAllCampaigns = () => {
         <div className="flex flex-col  space-y-4 mt-4 px-1 md:mt-6 md:px-2">
             <h1 className="text-black font-railway text-lg md:text-xl">All Campaigns</h1>
             <div className='flex flex-wrap mt-2 justify-start'>
-              <CampaignCard></CampaignCard>
+              {/* <CampaignCard></CampaignCard> */}
+              {data.data.data.map((campaign) =>{
+                console.log(campaign.due_date.toString())
+                return <CampaignCard name={campaign?.title} 
+                brand= {campaign?.brand?.name}
+                compensation = {campaign?.compensation}
+                banner={campaign?.banner} 
+                id = {campaign["_id"]}
+                  ></CampaignCard>
+              })}
+              {console.log(data.data.data)}
               
             </div>
             <hr></hr>

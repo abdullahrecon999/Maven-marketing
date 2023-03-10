@@ -87,9 +87,9 @@ function App() {
               <Route path='/createCampaign' element={<NewCampaignPage/>} ></Route>
             </Route>
 
-            <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>
+            {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>
             <Route path='/campaigns' element={<Campaign/>} ></Route>
-            <Route path='/campaigns/:title' element={<CampaignDetail/>} ></Route>
+            <Route path='/campaigns/:title' element={<CampaignDetail/>} ></Route> */}
 
             {/* Influencer Protected Routes */}
             <Route element={<RequireAuth allowedRoles={['influencer']} />} >

@@ -86,7 +86,7 @@ const UsersTable = ({type, data}) => {
     console.log("From Tables: ",data)
   
     const handleClick = (params)=> {
-      //navigate(`influencer/${params.row.id}`,{id: params.row.id})
+      navigate(`influencer/${params.row.id}`,{id: params.row.id})
     }
 
   return (

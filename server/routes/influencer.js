@@ -12,6 +12,7 @@ const plateforms = require('../models/profiles');
 const Campaings = require("../models/Campaign");
 const bids = require("../models/Proposals")
 const contracts = require("../models/Contracts")
+const invites = require("../models/Invites")
 
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
@@ -274,7 +275,7 @@ router.put("/updateProfile/:id", async(req, res, next)=>{
   }
 })
 // campaign routes need to be test needs some refinement
-router.get("/getAllCampaigns", async(req, res, next)=>{
+router.get("/campaigns", async(req, res, next)=>{
   
 
   try{
@@ -323,22 +324,45 @@ router.get("/searchCampaign/:query", async(req, res, next)=>{
     })
   }
 })
-// also need to be fixed
-router.get("/myBids", async(req, res)=>{
-  console.log(req)
-  res.send("hit")
+
+router.get("/myBids/:id", async(req, res)=>{
+  const id= req.params.id
+  try{
+    const data = await bids.find({sender:id, accepted: false})
+    .populate("to","name").populate("campaignId","title")
+    if(data?.length){
+      res.status(200).json({
+        status: "success",
+        data
+      })
+    }
+    else{
+      res.status(404).json({
+        status: "error",
+        msg: "no bids found"
+        
+      })
+    }
+
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+    })
+  }
+  
 })
 
 router.get("/bidDetails/:id", async(req, res, next)=>{
   const id = req.params.id
   try{
-    const data = await bids.find({_id:id})
-    .populate("to")
-    .populate("campaignId")
+    const data = await bids.findOne({_id:id})
+    .populate("to", "name")
+    .populate("campaignId", "title")
 
-    if(data?.length){
+    if(Object.keys(data).length !== 0){
       res.status(200).json({
-        status: "success",
+        status: "successssssssss",
         data
         
       })
@@ -435,6 +459,86 @@ router.get("/contractDetails/:id", async (req, res)=>{
     })
   }
 })
+
+
+
+router.get("/getInvites/:id", async (req, res, next)=>{
+   const id = req.params.id;
+   try{
+    const data = await invites.find({to: id})
+    .populate("campaign")
+    .populate("sender", "name")
+
+    res.status(200).json(
+      {status: "success",
+      data
+    }
+    )
+
+   }catch(e){
+
+   }
+})
+
+router.post("/invite/accept/:id", async(req, res, next)=>{
+  const id = req.params.id
+  try{
+    const data = await invites.findOne({to: id})
+
+    if(Object.keys(data).length !==0){
+      await invites.updateOne({_id: id}, req.body)
+      res.status(200).json({
+        status: "success",
+        msg: "an accepted"
+  
+      })
+    }
+    else{
+      res.status(404).json({
+        status: "not found"
+
+      })
+    }
+  }
+  catch(e){
+    res.status(500).json({
+      status: "error",
+      msg: "an error occured"
+
+    })
+  }
+})
+
+router.post("/invite/reject/:id", async(req, res, next)=>{
+  const id = req.params.id
+  try{
+    const data = await invites.findOne({to: id})
+
+    if(Object.keys(data).length !==0){
+      await invites.updateOne({_id: id}, req.body)
+      res.status(200).json({
+        status: "success",
+        msg: "an accepted"
+  
+      })
+    }
+    else{
+      res.status(404).json({
+        status: "not found"
+        
+      })
+    }
+  }
+  catch(e){
+    res.status(500).json({
+      status: "error",
+      msg: "an error occured"
+
+    })
+  }
+})
+
+
 
 
 router.post("/acceptcontract", ()=>{

@@ -9,7 +9,7 @@ const RequireAuth = ({ allowedRoles }) => {
   const location = useLocation();
 
   const user = JSON.parse(localStorage.getItem('user') || null);
-  console.log("user1 ", user)
+  
   //console.log("user2 ", localStorage.getItem('user'))
 
   return(

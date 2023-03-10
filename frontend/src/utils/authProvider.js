@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
             try {
               setLoading(true)
               const res = await axios.get("http://localhost:3000/users/user", { withCredentials: true })
-              console.log("res", res.data)
+              
               localStorage.setItem('user', JSON.stringify(res.data))
               if (!res.statusText === 'ok') return setLoading(false)
       

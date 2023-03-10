@@ -19,6 +19,7 @@ var adminRouter = require('./routes/admin');
 var brandRouter = require('./routes/brand');
 var influencerRouter = require('./routes/influencer');
 var MessageRouter = require("./routes/chat");
+var campaign = require("./routes/campaign")
 
 var app = express();
 
@@ -71,6 +72,7 @@ app.use('/brand', brandRouter);
 app.use('/users', usersRouter);
 app.use('/influencer', influencerRouter);
 app.use("/chats", MessageRouter)
+app.use("/campaign", campaign)
 
 app.all('*', (req, res, next) => {
       res.status(404).json({'Error':`Cant Find ${req.originalUrl}`}); // 404 Not Found
