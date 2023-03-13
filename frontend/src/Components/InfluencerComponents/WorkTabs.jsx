@@ -6,10 +6,10 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import InfluencerBids from './InfluencerBids';
 import InfluencerInvites from './InfluencerInvites';
-
+import { AuthContext } from '../../utils/authProvider';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
+  
   return (
     <div
       role="tabpanel"

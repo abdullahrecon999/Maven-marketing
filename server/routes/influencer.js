@@ -476,6 +476,10 @@ router.get("/getInvites/:id", async (req, res, next)=>{
     )
 
    }catch(e){
+    console.log(e)
+    res.status(500).json(
+      {status:"error"}
+    )
 
    }
 })
@@ -483,7 +487,7 @@ router.get("/getInvites/:id", async (req, res, next)=>{
 router.post("/invite/accept/:id", async(req, res, next)=>{
   const id = req.params.id
   try{
-    const data = await invites.findOne({to: id})
+    const data = await invites.findOne({_id: id})
 
     if(Object.keys(data).length !==0){
       await invites.updateOne({_id: id}, req.body)
@@ -501,9 +505,27 @@ router.post("/invite/accept/:id", async(req, res, next)=>{
     }
   }
   catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error",
       msg: "an error occured"
+
+    })
+  }
+})
+
+router.get("/invites/detail/:id", async(req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await invites.findOne({_id: id}).populate("campaignId").populate("sender")
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
 
     })
   }

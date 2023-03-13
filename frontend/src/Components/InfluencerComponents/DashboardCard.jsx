@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
-
+import bidImage from "../../images/biding.jpg"
 export default function DashboardCard (){
   const theme = useTheme();
 
@@ -36,12 +36,7 @@ export default function DashboardCard (){
           </IconButton>
         </Box>
       </Box>
-      <CardMedia
-        component="img"
-        sx={{ width: 151 }}
-        image="/static/images/cards/live-from-space.jpg"
-        alt="Live from space album cover"
-      />
+      <img src={bidImage} alt="" height="100" width="100"></img>
     </Card>
   );
 }

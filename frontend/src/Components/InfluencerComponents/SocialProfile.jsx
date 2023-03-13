@@ -85,7 +85,7 @@ const Profile = ({onEdit})=>{
 
 
 const EditProfile = ({onSave})=>{
-    const {user, setUser} = useContext(AuthContext)
+    const {user} = useContext(AuthContext)
     console.log(user)
    
     const handleSubmit = async (values)=>{

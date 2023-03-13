@@ -4,6 +4,10 @@ import {useQuery} from "@tanstack/react-query"
 import axios from "axios"
 import HelpIcon from '@mui/icons-material/Help';
 import BidModal from './BidModal';
+import Loader from './Loader';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
+
 
 const Detail = ({text})=>{
   return (<h1 className='px-2 text-center py-1 rounded-full  text-grey border border-grey'>
@@ -41,7 +45,9 @@ const CampaignDetailInfluencer = () => {
 
   
   if(isLoading){
-    return <div> loading</div>
+    return(<div className='h-screen flex justify-center items-center'>
+      <Loader title="Please wait" subtitle="Campaign details are being loaded"/>
+    </div>)
   }
 
   if (isError){
@@ -133,7 +139,21 @@ const CampaignDetailInfluencer = () => {
           
           <div>
             <h1>Similar Campaigns</h1>
-            <p>need to add here</p>
+            <Carousel>
+                <div>
+                    <img src="assets/1.jpeg" />
+                    <p className="legend">Legend 1</p>
+                </div>
+                <div>
+                    <img src="assets/2.jpeg" />
+                    <p className="legend">Legend 2</p>
+                </div>
+                <div>
+                    <img src="assets/3.jpeg" />
+                    <p className="legend">Legend 3</p>
+                </div>
+            </Carousel>
+
           </div>
 
         </div>

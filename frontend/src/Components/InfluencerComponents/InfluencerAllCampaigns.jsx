@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import {useQuery} from "@tanstack/react-query"
 import axios from "axios"
+import { LineWave } from 'react-loader-spinner';
 const SortModel = ({onClose})=>{
   return(
     <div className='z-10  absolute top-8 left-40  border  rounded-lg p-1  w-40 md:top-9 md:left-44'>
@@ -57,14 +58,31 @@ const InfluencerAllCampaigns = () => {
   }
 
   if(isLoading){
-    return (<div>
-      loading
+    return (<div className='flex flex-col justify-center items-center'>
+      <h1 className='text-xxl font-railway text-black md:text-3xl'>Loading the campaigns</h1>
+      <p className='text-base text-grey md:text-xl'>Bid on the campaigns to make your protfolio and earn money</p>
+      <div className='flex justify-center'>
+      <LineWave
+      height="250"
+      width="250"
+      color="hsl(214,100%,55%)"
+      ariaLabel="line-wave"
+      wrapperStyle={{}}
+      wrapperClass=""
+      visible={true}
+      firstLineColor=""
+      middleLineColor=""
+      lastLineColor=""
+    />
+      </div>
+      
     </div>)
   }
 
   if(isError){
-    return(<div>
-      there was something wrong in fetching the cmapaign
+    return(<div className='text-2xl font-railway flex flex-col justify-center items-center'>
+      <h1 className='text-xxl font-railway text-black md:text-3xl'>Oppss! Something went Wrong</h1>
+      <p className='text-base text-grey md:text-xl'>Please check your internet connect or try again later</p>
     </div>)
   }
 

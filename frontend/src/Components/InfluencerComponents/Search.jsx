@@ -3,6 +3,7 @@ import { TextField } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
 const Search = ({handleSetSearch,handleSearchSubmit}) => {
     const handleChange = (e)=>{
+        
         handleSetSearch(e)
     }
 
@@ -14,7 +15,7 @@ const Search = ({handleSetSearch,handleSearchSubmit}) => {
     <div className='flex space-x-2 items-center'>
         <TextField
         onChange={(e)=>{
-            handleChange(e)
+            handleChange(e.target.value)
         }}
          size='small' inputProps={{
             style:{

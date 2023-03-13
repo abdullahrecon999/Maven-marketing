@@ -35,3 +35,8 @@ const invitesSchema = new mongoose.Schema({
 },{
     timestamps: true
 })
+
+
+const invites = mongoose.model('invites',invitesSchema);
+
+module.exports = invites;

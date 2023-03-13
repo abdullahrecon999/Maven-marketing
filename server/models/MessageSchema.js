@@ -8,8 +8,14 @@ const messageSchema = new mongoose.Schema({
     users: Array,
     sender: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
+        ref: "User",
         required: true
+    },
+    msgType: {
+        type: String,
+        
+        default: "text"
+
     },
     deleted:{
         type: Boolean,

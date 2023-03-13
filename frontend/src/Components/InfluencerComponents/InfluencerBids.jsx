@@ -1,12 +1,13 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import BidsTable from './table'
 import Search from "./Search"
 import {useQuery} from "@tanstack/react-query"
 import axios from "axios"
-import { AuthProvider} from "../../utils/authProvider"
+import { AuthContext} from "../../utils/authProvider"
 import InfluencerGenaricModal from './InfluencerGenaricModal'
 import CloseIcon from '@mui/icons-material/Close';
 import DetailBox from './DetailBox'
+import Loader from './Loader'
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -17,27 +18,26 @@ const columns = [
     
   },
   {
-    field: 'Brand Name',
-    headerName: 'brandName',
+    field: 'brandName',
+    headerName: 'Brand Name',
     width: 150,
     
   },
   {
     field: 'submittedAt',
     headerName: 'Submitted At',
-    type: 'number',
+    
     width: 110,
     
   },
   {
-    field: 'Status',
+    field: 'status',
     headerName: 'Status',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 110,
   }
 ];
-
 
 const Initialbids = ()=>{
     return (<div className=' px-[20%]'>
@@ -65,11 +65,7 @@ const Modal = ({onClose, id})=>{
   const handleClose= ()=>{
     onClose()
   }
-  if (isLoading){
-    return (<div>
-      isloading
-    </div>)
-  }
+  
 
   if (isError){
     return (<div>
@@ -82,34 +78,43 @@ const Modal = ({onClose, id})=>{
         <CloseIcon onClick={()=>{
           handleClose()
         }} className="self-end hover:bg-slate-100"></CloseIcon>
-        <h1 className='text-xl md:2xl text-black font-railway'>Bid Details</h1>
-        <div>
-          {console.log(bidDetails.data.data)}
-          <h1 className='text-base text-black font-railway '>Brand Name</h1>
-          
-          <p className="text-xl text-black ">{bidDetails?.data?.data?.to?.name}</p>
-        </div>
-        <div>
-          <h1>title</h1>
-          <p>{bidDetails.data.data.campaignId.title}</p>
-        </div>
-        <p>{bidDetails.data.data.discription}</p>
-        <div>
-          <h1> submitted at</h1>
-          <DetailBox text={bidDetails.data.data.createdAt}></DetailBox>
-        </div>
+
+        {isLoading?<Loader title="Please Wait" subtitle="bid details are being loaded"/>:
+          <>
+          <h1 className='text-xl md:2xl text-blue font-railway'>Bid Details</h1>
+          <div>
+            {console.log(bidDetails.data.data)}
+            <h1 className='text-base text-black font-railway '>Brand Name</h1>
+            
+            <p className="text-xl text-black ">{bidDetails?.data?.data?.to?.name}</p>
+          </div>
+          <div>
+            <h1 className='text-xl text-black font-railway'>Title</h1>
+            <p className='text-grey'>{bidDetails.data.data.campaignId.title}</p>
+          </div>
+          <p className='text-xl font-light'>{bidDetails.data.data.discription}</p>
+          <div className='w-[50%]'>
+            <h1 className='text-green font-railway'> Submitted at</h1>
+            <DetailBox  text={bidDetails.data.data.createdAt}></DetailBox>
+          </div>
+          </>
+        }
         
       </InfluencerGenaricModal>
   )
 }
 const Bids =()=>{
     const {query, setQuery} = useState("")
-    
+    const [data, setData] = useState({})
     const [close, setClose] = useState(false)
     const [id, setId] = useState("");
-    const {isLoading, data:bids, isError, isSuccess} = useQuery(["getbids"],
+    const {user, setUser} = useContext(AuthContext)
+
+    
+    const {isLoading, data:bids, isError, isSuccess, status} = useQuery(["getbids"],
     ()=>{
-      return axios.get(`http://localhost:3000/influencer/myBids/63ea542b0938801f883fa8ab`,
+      console.log(user["_id"])
+      return axios.get(`http://localhost:3000/influencer/myBids/${user["_id"]}`,
       {headers: {
         'Content-Type': 'application/json'
       },
@@ -118,21 +123,33 @@ const Bids =()=>{
     }
   )
 
-  const data= bids?.data.data.map((item,i)=>{
-    return {
-      id: item["_id"],
-      title: item?.campaignId?.title,
-      brandName: item?.to.name,
-      
-      submittedAt: item?.submitted,
-      status: "Pending"
+ 
 
+  useEffect(()=>{
+    console.log(user)
+    if(isSuccess){
+      const data= bids?.data.data.map((item,i)=>{
+  
+        return {
+          id: item["_id"],
+          title: item?.campaignId?.title,
+          brandName: item?.to.name,
+          
+          submittedAt: item?.updatedAt,
+          status: "Pending"
+    
+        }
+      })
+      
+      setData(data)
     }
-  })
+  },[bids?.data?.data, isSuccess])
+  
 
 
     const handleSetSearch = (value)=>{
     setQuery(value)
+    console.log(query)
     } 
 
     const handleOpen =(id)=>{
@@ -148,9 +165,7 @@ const Bids =()=>{
     const handleClose=()=>{
         setClose(!close)
     }
-    if(isLoading){
-      return (<div> loading</div>)
-    }
+    
 
     if(isError){
       return (<div>error</div>)
@@ -171,8 +186,15 @@ const Bids =()=>{
             </div>
 
         </div>
+          
+        <></>
+        {isLoading&& !isSuccess?<Loader
+          title="Loading your Bids"
+        />: <>
+        {data === "undefined"?null:<BidsTable rows={data} onOpen={handleOpen} columns={columns}></BidsTable>}
+        </>}
         
-        <BidsTable rows={data} onOpen={handleOpen}></BidsTable>
+        
         
         
     </div>

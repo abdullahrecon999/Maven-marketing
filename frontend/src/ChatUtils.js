@@ -11,7 +11,7 @@ function ChatInit(){
     CometChat.init(appID, appSetting).then(
         () => {
             console.log("Initialization completed successfully");
-            // You can now call login function.
+            ChatLogin("superhero2")
         },
         error => {
             console.log("Initialization failed with error:", error);

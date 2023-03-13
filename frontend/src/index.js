@@ -9,6 +9,8 @@ import {QueryClient,  QueryClientProvider} from "@tanstack/react-query"
 import {ChatInit, CreateNewChatUser, ChatLogin} from "./ChatUtils"
 const client = new QueryClient()
 
+// ChatInit()
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -22,7 +24,7 @@ root.render(
   </React.StrictMode>
 );
 
-// ChatInit()
+ 
 
  
 // If you want to start measuring performance in your app, pass a function
