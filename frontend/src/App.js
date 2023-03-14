@@ -9,7 +9,7 @@ import Home from './Pages/Home';
 import SignUpPageBusiness from './Pages/SignUpPageBusiness';
 import SignUpPageInfluencer from './Pages/SignUpPageInfluencer';
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom"
-
+import Chat from "./Components/Chatcomponents/Chat"
 import Aboutus from './Pages/Aboutus';
 import Whyus from './Pages/Whyus';
 import Error from './Pages/errorPages/notFound';
@@ -102,6 +102,7 @@ function App() {
             <Route path='/p' element={<Profilecompletion/>}></Route>
             <Route path='/verify' element={<AccountVerification/>}></Route>
             <Route path='/' element={<Profilecompletion/>}></Route> 
+            <Route path='/chat' element={<Chat/>}></Route> 
             {/* <Route path='/' element={<CampaginCreation/>} ></Route> */}
             <Route path="/unauthorized" element={<ErrorUnauthorized />} />
 

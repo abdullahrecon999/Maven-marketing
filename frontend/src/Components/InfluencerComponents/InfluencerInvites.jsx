@@ -94,6 +94,8 @@ const Modal = ({onClose, id})=>{
     withCredentials: true,
   })
 }
+
+const {mutate, isLoading:isAccepting} = useMutation(handleInviteAccept)
  if(isLoading){
   return (<div>
     loading
@@ -140,7 +142,9 @@ const Modal = ({onClose, id})=>{
 
         <hr></hr>
         <div className='flex space-x-3 px-4'>
-            <button className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Accept</button>
+            <button onClick={()=>{
+
+            }} className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Accept</button>
             <button className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Decline</button>
         </div>
         

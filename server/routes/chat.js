@@ -1,15 +1,85 @@
 var express = require("express");
 var router = express.Router()
 var messages = require("../models/MessageSchema");
+var contact = require("../models/MessageContacts")
 
 
-router.get("/getMessages", (req, res, next)=>{
-    console.log("chat router Called..... getting the messages")
+router.post("/addContact/",async (req,res)=>{
+    const {id, contacts} = req.body
+    const doc1 = {
+        user: id,
+        contacts: contacts
+    }
+    
+    try{
+        await contact.create(doc1)
+        res.status(200).json({
+            status: "success"
+        })
+
+    }catch(e){
+        console.log(e)
+        res.status(500).json({
+            status: "error"
+        })
+    }
+
+    
+})
+
+router.get("/getContacts/:id", async (req, res)=>{
+    const id= req.params.id
+    try{
+        const data = await contact.find({user: id}).
+        populate("contacts.contact","name")
+
+        res.status(200).json({
+            status: "success",
+            data
+        })
+
+    }catch(e){
+        res.status(500).json({
+            status: "error"
+        })
+
+    }
+})
+
+
+router.post("/getMessages", async (req, res, next)=>{
+    const {to, from} = req.body
+    
+    try{
+        const data = await messages.find({users:{
+            $all: [to, from]
+        }}).sort({updatedAt: 1})
+
+        const projectMessages = data.map(message=>{
+            console.log(message)
+            return({
+                fromSelf : message.sender.toString() === from,
+                message : message.text
+            })
+        })
+        console.log(projectMessages)
+
+        res.status(200).json({
+            status: "success",
+            projectMessages
+        })
+
+    }catch(e){
+        res.status(500).json({
+            status: "error"
+        })
+
+    }
 })
 
 router.post("/addMessage", async(req, res, next)=>{
     try{
-        const {to,from, text} = req.body;
+        
         const data = await messages.create(
             req.body
         )
