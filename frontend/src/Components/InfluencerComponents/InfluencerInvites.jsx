@@ -11,6 +11,7 @@ import {Link} from "react-router-dom"
 import PageviewIcon from '@mui/icons-material/Pageview';
 import { LineWave } from 'react-loader-spinner'
 import Loader from './Loader'
+import { useNavigation } from 'react-router-dom'
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -54,7 +55,7 @@ const Initialbids = ()=>{
 const Modal = ({onClose, id})=>{
 
    
-    
+    const navigate = useNavigation()
     const {isLoading, data:bidDetails, isError, isSuccess, status} = useQuery(["getInvites"],
     ()=>{
       return axios.get(`http://localhost:3000/influencer/invites/detail/${id}`,
@@ -71,10 +72,9 @@ const Modal = ({onClose, id})=>{
     onClose()
   }
 
-  const handleInviteAccept = (id)=>{
+  const handleInviteAccept = ()=>{
       return  axios.post(`http://localhost:3000/influencer/invite/accept/${id}`, {
-        accepted: true,
-        rejected: false
+        id: id
       },
       {headers: {
         'Content-Type': 'application/json'
@@ -95,7 +95,12 @@ const Modal = ({onClose, id})=>{
   })
 }
 
-const {mutate, isLoading:isAccepting} = useMutation(handleInviteAccept)
+  
+
+const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutation(handleInviteAccept)
+
+
+
  if(isLoading){
   return (<div>
     loading
@@ -143,7 +148,7 @@ const {mutate, isLoading:isAccepting} = useMutation(handleInviteAccept)
         <hr></hr>
         <div className='flex space-x-3 px-4'>
             <button onClick={()=>{
-
+              handleInviteAccept()
             }} className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Accept</button>
             <button className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Decline</button>
         </div>

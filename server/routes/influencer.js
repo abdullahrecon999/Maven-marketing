@@ -13,7 +13,7 @@ const Campaings = require("../models/Campaign");
 const bids = require("../models/Proposals")
 const contracts = require("../models/Contracts")
 const invites = require("../models/Invites")
-
+const contacts = require("../models/MessageContacts")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 
@@ -486,14 +486,20 @@ router.get("/getInvites/:id", async (req, res, next)=>{
 
 router.post("/invite/accept/:id", async(req, res, next)=>{
   const id = req.params.id
+  console.log("data    ",id)
   try{
     const data = await invites.findOne({_id: id})
-
+    const val = {
+      accepted: true
+    }
     if(Object.keys(data).length !==0){
-      await invites.updateOne({_id: id}, req.body)
+      await invites.updateOne({_id: id}, val)
+      await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
+      await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
+
       res.status(200).json({
         status: "success",
-        msg: "an accepted"
+        msg: "accepted"
   
       })
     }
