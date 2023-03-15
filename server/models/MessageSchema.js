@@ -17,6 +17,10 @@ const messageSchema = new mongoose.Schema({
         default: "text"
 
     },
+    contract:{
+        type: String
+
+    },
     deleted:{
         type: Boolean,
         default: false

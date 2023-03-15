@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import axios from "axios"
 import { AuthContext } from '../../utils/authProvider'
 import { ChatContext } from './ChatProvider'
+import Loader  from "../InfluencerComponents/Loader.js"
 const ChatSideBar = ({setCurrent}) => {
     const {user} = useContext(AuthContext)
     const {currentUser,setCurrentUser} = useContext(ChatContext)
@@ -18,7 +19,12 @@ const ChatSideBar = ({setCurrent}) => {
 
     
     if(isLoading){
-        return (<div> loading</div>)
+        return (<div className='flex flex-col w-[25%] border-r-2 shadow-md '>
+          <h1 className='font-railway text-2xl mx-3 mt-3 mb-4'> Messages</h1>
+          <div>
+            <Loader title="Loading contacts"></Loader>
+          </div>
+        </div>)
     }
   return (
     <div className='flex flex-col w-[25%] border-r-2 shadow-md '>

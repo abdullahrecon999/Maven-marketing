@@ -11,6 +11,7 @@ import {ref, uploadBytes, getDownloadURL} from "firebase/storage"
 import {v4} from "uuid"
 import {TailSpin} from "react-loader-spinner"
 import messageImage from "../../images/Messaging-rafiki.png"
+import DetailBox from "../InfluencerComponents/DetailBox"
 const FallBack=()=>{
     return(<div className="h-screen flex flex-col flex-1 justify-center items-center px-4 py-4 bg-slate-50">
         <div className='flex flex-col border border-blue px-12 py-10 rounded-lg shadow-2xl w-[70%] h-[70vh] justify-center items-center'>
@@ -20,6 +21,25 @@ const FallBack=()=>{
         </div>
         
 
+    </div>)
+}
+
+const Contract = ({text, id})=>{
+    return (<div className='flex  p-4 border bg-white rounded-md shadow-xl'>
+            <div className="flex flex-col justify-center  w-[100%] ">
+                <h1 className='text-base text-black font-railway self px-2 mb-3'>Contract</h1>
+                <div className="space-y-3 border-2 px-4 py-3 w-[100%] bg-slate-50 rounded-md">
+                    <h1 className='text-xl font-railway'>Campaign Name</h1>
+                    <h3 className='text-xl font-railway'>Brand Name</h3>
+                    <DetailBox text="due date"></DetailBox>
+                    <button className='bg-green text-center text-white font-railway rounded-full px-3 py-2 hover:bg-grey'>View</button>
+
+                </div>
+
+                <p className='font-railway text-black italic mt-2 px-3'>{text}</p>
+
+                
+            </div>
     </div>)
 }
 
@@ -131,8 +151,13 @@ const ChatContainer = () => {
         
         {data?.data?.projectMessages.map(msg=>{
             
+            
             return (<div className={msg?.fromSelf===true?"flex justify-end my-1":"justify-start my-1"}>
+
+                
+               {msg.msgType=== "contract"? <div className={msg?.fromSelf===true?" text-white max-w-[50%] bg-pink-500 rounded-full my-1 px-4 py-1":"text-black max-w-[50%] rounded-full my-2 px-4 py-1"}><Contract text={msg.message}/></div>:
                 <h1 className={msg?.fromSelf===true?" text-white max-w-[50%] bg-blue rounded-full my-1 px-4 py-1":"text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"}>{msg?.message}</h1>
+               }
             </div>)
             
         })}

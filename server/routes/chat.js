@@ -59,7 +59,8 @@ router.post("/getMessages", async (req, res, next)=>{
             console.log(message)
             return({
                 fromSelf : message.sender.toString() === from,
-                message : message.text
+                message : message.text,
+                msgType: message.msgType
             })
         })
         console.log(projectMessages)
