@@ -12,15 +12,17 @@ import { Button } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { TailSpin } from 'react-loader-spinner';
 const SignUpPageInfluencer = () => {
 
     const navigate = useNavigate();
     const [err, setErr] = useState(false);
     const [errMsg, setErrMsg] = useState("");
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit=(values)=>{
         console.log(values)
+        setLoading(true)
         var val = {name : values.username, email : values.email, password : values.password, role : "influencer"}
         axios.post("http://localhost:3000/influencer/register", val, {
             headers: {
@@ -36,10 +38,12 @@ const SignUpPageInfluencer = () => {
                 localStorage.setItem('user', JSON.stringify(res.data.user))
                 setErr(true)
                 setErrMsg(res.data.message)
+                setLoading(false)
             }
             else{
                 setErr(true)
                 setErrMsg(res.data.message)
+                setLoading(false)
             }
         })
         .catch(err => {
@@ -78,7 +82,16 @@ const SignUpPageInfluencer = () => {
                         <FormTextField2 name= "confirmPass" label= "Confirm Password" ></FormTextField2>
                           <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
-                            <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Sign Up</Button>
+                            <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">{loading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />: "Sign Up"}</Button>
                                 
                             </div >
                         </div>

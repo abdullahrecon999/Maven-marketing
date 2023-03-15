@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import BidsTable from './table'
 import Search from "./Search"
 import {useQuery, useMutation} from "@tanstack/react-query"
 import axios from "axios"
-import { AuthProvider} from "../../utils/authProvider"
+import { AuthContext, AuthProvider} from "../../utils/authProvider"
 import InfluencerGenaricModal from './InfluencerGenaricModal'
 import CloseIcon from '@mui/icons-material/Close';
 import DetailBox from './DetailBox'
@@ -161,9 +161,10 @@ const Bids =()=>{
     const [data, setData] = useState({})
     const [close, setClose] = useState(false)
     const [id, setId] = useState("");
+    const {user} = useContext(AuthContext)
     const {isLoading, data:bids, isError, isSuccess, status} = useQuery(["getinvites"],
     ()=>{
-      return axios.get(`http://localhost:3000/influencer/getInvites/63ea4d4624f3dc0cd469dada`,
+      return axios.get(`http://localhost:3000/influencer/getInvites/${user["_id"]}`,
       {headers: {
         'Content-Type': 'application/json'
       },

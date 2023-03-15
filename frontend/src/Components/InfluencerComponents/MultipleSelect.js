@@ -40,7 +40,7 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelect({setvalue,defaultValue,...props}) {
+export default function MultipleSelect({setvalue,defaultValue, names,...props}) {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
   const [feild, meta] = useField(props)
@@ -83,7 +83,7 @@ export default function MultipleSelect({setvalue,defaultValue,...props}) {
             <MenuItem
               key={name}
               value={name}
-              style={getStyles(name, personName, theme)}
+              // style={getStyles(name, personName, theme)}
             >
               {name}
             </MenuItem>

@@ -14,7 +14,7 @@ import axios from 'axios';
 import { AuthContext } from '../utils/authProvider';
 import image from "../images/profile.jpg"
 import {useMutation} from "@tanstack/react-query"
-
+import { TailSpin } from 'react-loader-spinner';
 // need to add multiple array in coutries language and categories
 const style = {
     width:{md:600},
@@ -40,6 +40,11 @@ const platforms = [
     "instagram"
 ]
 
+const categories =[
+    "Food",
+    "Techs and gadgets",
+    "Travel"
+]
 const Profilecompletion = () => {
     
     const navigate = useNavigate();
@@ -110,7 +115,8 @@ const Profilecompletion = () => {
             platforms: values.platform,
             url: values.url,
             photo: values.uImage,
-            profileComplete: 1
+            profileComplete: 1,
+            category: values.category
         }
        
         return await axios.post(`http://localhost:3000/influencer/completeProfile/${user["_id"]}`, val, {headers: {
@@ -180,7 +186,8 @@ const Profilecompletion = () => {
         discription: "",
         platform: "",
         url: "",
-        uImage:""
+        uImage:"",
+        category: ""
     }
    }
    onSubmit = {values=> mutate(values)}
@@ -241,6 +248,12 @@ const Profilecompletion = () => {
                 </div>
                {/* need to add functionality for multiple feilds */}
                <FormSelect data={platforms} setvalue = {formik.setFieldValue} name="platform" label="platform" ></FormSelect>
+               <div>
+                    <h1 className= 'text-base text-green font-railway md:text-xl'>Category</h1>
+                   
+                </div>
+               {/* need to add functionality for multiple feilds */}
+               <FormSelect data={categories} setvalue = {formik.setFieldValue} name="category" label="category" ></FormSelect>
               
                 <div className='flex flex-col space-y-2' >
                     <h2  className='font-railway text-sm md:text-base '>Social Media Url</h2>
@@ -255,12 +268,21 @@ const Profilecompletion = () => {
             </div>
            <div>
          
-                <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Submit for verification</Button>
+                <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">{loading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />:"Submit"}</Button>
                 {/* {console.log(formik)} */}
                 {/* needs to be fixed */}
-                <div className= {isSuccess && !isError? "flex ":"hidden"}>
-                    <h1> your profile was submitted successfully</h1>
-                    <p>Pleas wait while our system verfies your profile</p>
+                <div className= {isSuccess && !isError? "flex flex-col mt-2":"hidden"}>
+                    <h1 className='text-xl font-railway text-red-600'>Profile submitted Successfully</h1>
+                    <p className='text-base font-railway text-grey'>Pleas wait while our system verfies your profile, try to login after some time</p>
 
                 </div>
            </div>

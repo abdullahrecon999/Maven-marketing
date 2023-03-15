@@ -7,11 +7,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import AdminNavbar from '../Components/AdminNavbar';
 import axios from 'axios';
 import { AuthContext } from '../utils/authProvider';
-
+import Loader from '../Components/InfluencerComponents/Loader';
+import { TailSpin } from 'react-loader-spinner'
 const AdminLogin = () => {
     const {user, setUser} = useContext(AuthContext)
     const {loading} = useContext(AuthContext)
-    
+    const [isLoading, setIsLoading] = useState(false)
 
     const navigate = useNavigate()
     const [state, setState] = useState({
@@ -32,6 +33,7 @@ const AdminLogin = () => {
     const login = () => {
         // send email and password as body of axios with post request
         state.role = "admin"
+        setIsLoading(true)
         axios.post("http://localhost:3000/admin/login", state, {
             headers: {
               'Content-Type': 'application/json'
@@ -43,6 +45,7 @@ const AdminLogin = () => {
             if(res.data.success === true){
                 setUser(res.data.user)
                 localStorage.setItem('user', JSON.stringify(res.data.user))
+                setIsLoading(false)
                 navigate("/admin/home")
             }
             else{
@@ -50,6 +53,7 @@ const AdminLogin = () => {
             }
         })
         .catch(err => {
+            setIsLoading(false)
             setErr(true)
         })
     }
@@ -75,7 +79,16 @@ const AdminLogin = () => {
                         <TextField onChange={handleChange} type="password" name="password" size='small' id="outlined-basic" label="Password" variant="outlined" />
                     </div>
                     <div>
-                        <Button className='bg-blue' onClick={login} variant="contained">Log in</Button>
+                        <Button className='bg-blue' onClick={login} variant="contained">{isLoading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />: "Log in"}</Button>
                     </div>
                 </div>
             </section>

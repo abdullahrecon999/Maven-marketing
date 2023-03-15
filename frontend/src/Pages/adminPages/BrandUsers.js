@@ -12,6 +12,7 @@ import { NavLink } from 'react-router-dom';
 import Users from '../../Components/admindasboardcompents/Chart';
 import UsersTable from '../../Components/admindasboardcompents/UsersTable';
 import axios from 'axios'
+import Loader from '../../Components/InfluencerComponents/Loader';
 
 const getData = async () => {
     
@@ -45,6 +46,7 @@ function preventDefault(event) {
 const BrandUsers = () => {
   const [text, setText] = useState("")
   const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const isMountedRef = useIsMounted();
   useEffect(() => {
@@ -63,10 +65,12 @@ const BrandUsers = () => {
     console.log("get all influencers")
     const fetchUserAuth = async () => {
       console.log("Inside here")
+      setLoading(true)
       await axios.get("http://localhost:3000/brand/all", { withCredentials: true })
       .then(res => {
         console.log("Data: ",res.data); 
         setData(res.data.data.users)
+        setLoading(false)
       }).catch(err => {
         console.log(err);
       })
@@ -78,7 +82,7 @@ const BrandUsers = () => {
     <div>
       <AdminNavbar ></AdminNavbar>
      
-        <div className='flex'>
+        <div className='flex border shadow-inner'>
           <div className='bg-blue flex   duration-100md:w-[300px] md:h-[100vh] px-4 '>
             
             <NestedList></NestedList>
@@ -86,10 +90,14 @@ const BrandUsers = () => {
             <div className='flex flex-col px-14 pt-7  '>
               <div className=''>
                  <h1 className='font-railway text-blue text-base'>Brands</h1>
-                 <div  className='w-[900px]'>
-                 {(data != undefined)? ((data[0] !== undefined)? (
+                 <p className='text-xl font-railway pr-3 text-grey'>list of all the verfied Brands</p>
+                 <div  className='w-[900px] h-[80vh] border shadow-2xl'>
+                 {loading? <Loader title="fetching the user list"></Loader>:(data != undefined)? ((data[0] !== undefined)? (
                     <UsersTable data={data} type = "brand"></UsersTable>
                   ) : (<p>{console.log('waiting')}</p>)):(<p>{console.log('waitkjs')}</p>)}
+                 {/* {(data != undefined)? ((data[0] !== undefined)? (
+                    <UsersTable data={data} type = "brand"></UsersTable>
+                  ) : (<p>{console.log('waiting')}</p>)):(<p>{console.log('waitkjs')}</p>)} */}
                  </div>
               </div>
             </div>

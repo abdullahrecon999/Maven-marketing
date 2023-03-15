@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import TuneIcon from '@mui/icons-material/Tune';
 import SortIcon from '@mui/icons-material/Sort';
 import CampaignCard from "./CampaignCard"
@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import {useQuery} from "@tanstack/react-query"
 import axios from "axios"
 import { LineWave } from 'react-loader-spinner';
+import { TextField } from '@mui/material';
+import Search from '@mui/icons-material/Search';
 const SortModel = ({onClose})=>{
   return(
     <div className='z-10  absolute top-8 left-40  border  rounded-lg p-1  w-40 md:top-9 md:left-44'>
@@ -28,14 +30,17 @@ const SortModel = ({onClose})=>{
 }
 const InfluencerAllCampaigns = () => {
   const [openSort, setOpenSort] = useState(false)
+  const [query, setQuery] = useState("")
+  const [data, setData] = useState(null)
   const navigate = useNavigate()
+  const [isSearch, setIsSearch] = useState(false)
   const handleOpenSort = ()=> {
     setOpenSort(true)
     console.log("clicked")
     console.log(openSort)
   }
 
-  const {isLoading, data, isError, isSuccess} = useQuery(["getAllCampaigns"],
+  const {isLoading, data:campaigns, isError, isSuccess, status} = useQuery(["getAllCampaigns"],
     ()=>{
       return axios.get("http://localhost:3000/campaign/campaigns",
       {headers: {
@@ -43,19 +48,53 @@ const InfluencerAllCampaigns = () => {
       },
       withCredentials: true,
     })
-    }
+    },
+    {refetchInterval: 20000}
   )
 
-    
+  useEffect(()=>{
+    if(status === "success" && !isSearch){
+      setData(campaigns.data.data)
+    }
+  },[campaigns,status])
+
+ const handleSearchChange = (e)=>{
+      setQuery(e.target.value)
+ }
+
+ const handleSearch = ()=>{
+   console.log(data)
+   setIsSearch(true)
+  if(data != null)
+    {
+      const filtered = data.filter(item=>{
+        
+        return (item.title.toLowerCase().includes(query.toLowerCase()) ||
+        item.brand.name.toLowerCase().includes(query.toLowerCase())||
+        item.description.toLowerCase().includes(query.toLowerCase())||
+        item.country?.join("").toLowerCase().includes(query.toLowerCase())||
+        item.language?.join("").toLowerCase().includes(query.toLowerCase())||
+        item.platform?.join("").toLowerCase().includes(query.toLowerCase())
+        )
+        
+
+       
+
+      })
+      console.log("filtered",filtered)
+      setData(filtered)
+
+      
+
+      
+    }
+ }
 
   const handleCloseSort =()=>{
     setOpenSort(false)
   }
 
-  const openCampaign = (id)=>{
-
-
-  }
+  
 
   if(isLoading){
     return (<div className='flex flex-col justify-center items-center'>
@@ -89,6 +128,12 @@ const InfluencerAllCampaigns = () => {
   return (
     <div  className="flex flex-col ">
         <div className='flex space-x-5 relative'>
+            <div className='flex space-x-1'>
+              <TextField placeholder='Search....' variant='outlined' size='small' onChange={(e)=>{
+                  handleSearchChange(e)
+              }}></TextField>
+              <button onClick={()=> handleSearch()} className='bg-blue text-white p-2 rounded-full hover:bg-indigo-500'><Search></Search></button>
+            </div>
             <div className='border text-grey text-sm px-2 py-1 font-railway md:px-3 md:py-1 rounded-2xl border-grey hover:shadow-lg'> <TuneIcon></TuneIcon> <span className="">Filter</span>
             </div>
             <div>
@@ -105,10 +150,16 @@ const InfluencerAllCampaigns = () => {
         </div>
         <div className="flex flex-col  space-y-4 mt-4 px-1 md:mt-6 md:px-2">
             <h1 className="text-black font-railway text-lg md:text-xl">All Campaigns</h1>
-            <div className='flex flex-wrap mt-2 justify-start'>
+            {data?.length ===0?<div className='flex flex-col justify-center items-center my-5 '>
+                <h1 className='text-3xl font-railway text-grey'>no result found</h1>
+                <button onClick={()=>{
+                  setIsSearch(false)
+                }} classaName="font-railway px-3 py-5 border rounded-full">View More</button>
+            </div>:
+              <div className='flex flex-wrap mt-2 justify-start'>
               {/* <CampaignCard></CampaignCard> */}
-              {data.data.data.map((campaign) =>{
-                console.log(campaign.due_date.toString())
+              {data?.map((campaign) =>{
+                
                 return <CampaignCard name={campaign?.title} 
                 brand= {campaign?.brand?.name}
                 compensation = {campaign?.compensation}
@@ -116,9 +167,10 @@ const InfluencerAllCampaigns = () => {
                 id = {campaign["_id"]}
                   ></CampaignCard>
               })}
-              {console.log(data.data.data)}
+              
               
             </div>
+            }
             <hr></hr>
             <div className=" flex justify-center mt-8 pt-4 space-x-3">
                 <button className='border px-2 py-1 border-grey text-grey rounded-full hover:shadow-lg'>Previous</button>

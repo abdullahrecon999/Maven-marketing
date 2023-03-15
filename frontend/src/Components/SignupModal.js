@@ -9,7 +9,7 @@ const SignupModal = ({visible, onClose}) => {
     if(!visible)
         return null;
   return (
-    <div  id='container' onClick={handleClose} className='fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-30'>
+    <div  id='container' onClick={handleClose} className='fixed z-100 inset-0 flex items-center justify-center backdrop-blur-sm bg-30'>
         <div className='flex flex-col px-10 pb-10 space-y-4 bg-white border rounded pt-7 sm:mx-4 '>
             <h1 className='text-center font-railway text-blue sm:text-sm'> Sign Up as</h1>
             <div className='flex flex-row justify-between space-x-5 sm:'>

@@ -152,6 +152,24 @@ router.get("/getInactiveProfiles", ensureAuthenticated, utils.checkIsInRole(ROLE
 
 })
 
+router.get('/getInfluencers', async (req, res) => {
+  try {
+    const users = await User.find({ role: "influencer" });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        users
+      }
+    });
+  } catch (err) {
+    console.log(err)
+    res.status(404).json({
+      status: 'error',
+      message: err
+    });
+  }
+});
+
 //get the userProfile
 
 router.get("/influencer/:id", ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) , async(req, res, next)=>{

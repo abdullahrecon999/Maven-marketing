@@ -5,6 +5,7 @@ import  {useMutation} from "@tanstack/react-query"
 import axios from "axios"
 import CloseIcon from '@mui/icons-material/Close';
 import {AuthContext} from "../../utils/authProvider";
+import { TailSpin } from 'react-loader-spinner'
 const BidModal = ({data, brand, id, influencer, onClose}) => {
     
     const {user} = useContext(AuthContext)
@@ -51,6 +52,7 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                         <button type="button" onClick={()=> handleClose()} className="place-self-end px-5 pt-3"> <CloseIcon></CloseIcon></button>
                         <div className='w-[70%] h-[80%] bg-white p-4 border rounded-xl'>
                             <div className="space-y-2">
+                                {isSuccess? <p className='text-red'>Proposal submitted successfully</p>:null}
                                 <h1 className='text-2xl text-black font-railway mb-1'>Enter Proposal Details</h1>
                                 <hr></hr>
                                 <div className='space-y-1'>
@@ -92,7 +94,18 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                                     }}></TextField>
                                     </div>
                                 </div>
-                                <button type='submit' className='text-white text-xl font-railway text-center px-3 py-2 rounded-full bg-blue hover:bg-indigo-500'> Submit Proposal</button>
+                                <button type='submit' disabled={isSuccess}  className={`text-white text-xl font-railway text-center px-3 py-2 rounded-full bg-blue hover:bg-indigo-500 ${isSuccess=== true? "hidden":""}`}>
+                                  {isLoading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />: "Submit"} 
+                                </button>
                         </div>
                         </div>
                     </div>

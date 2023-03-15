@@ -139,7 +139,7 @@ router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Influenc
 // get all influencers
 router.get('/all', async (req, res) => {
   try {
-    const users = await User.find({ role: ROLES.Influencer });
+    const users = await User.find({ role: "influencer" });
     res.status(200).json({
       status: 'success',
       data: {
@@ -147,6 +147,7 @@ router.get('/all', async (req, res) => {
       }
     });
   } catch (err) {
+    console.log(err)
     res.status(404).json({
       status: 'fail',
       message: err
@@ -154,6 +155,21 @@ router.get('/all', async (req, res) => {
   }
 });
 
+router.get("/profile/:id",async(req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await User.findOne({_id:id})
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+
+  }
+})
 //email verification make it POST for rendering better pages from frontend
 router.get('/verifyEmail/:token', async (req, res) => {
   try {
@@ -265,8 +281,10 @@ router.put("/updateProfile/:id", async(req, res, next)=>{
 
   try{
     await User.updateOne({_id: id}, req.body)
+    const data = await User.findOne({_id:id})
     res.status(200).json({
-      status: "success"
+      status: "success",
+      data
     })
   }catch(e){
     res.status(500).json({
@@ -285,7 +303,7 @@ router.get("/campaigns", async(req, res, next)=>{
       status: "success",
       data
       
-    })
+    }).sort({updatedAt:1})
   }catch(e){
     console.log(e)
     res.status(502).json({
@@ -330,19 +348,13 @@ router.get("/myBids/:id", async(req, res)=>{
   try{
     const data = await bids.find({sender:id, accepted: false})
     .populate("to","name").populate("campaignId","title")
-    if(data?.length){
+   
       res.status(200).json({
         status: "success",
         data
       })
-    }
-    else{
-      res.status(404).json({
-        status: "error",
-        msg: "no bids found"
-        
-      })
-    }
+    
+    
 
   }catch(e){
     console.log(e)

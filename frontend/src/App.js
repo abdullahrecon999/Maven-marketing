@@ -33,7 +33,7 @@ import NewCampaignPage from './Pages/brandPages/NewCampaign';
 import Campaign from './Pages/brandPages/Campaign';
 import CampaignDetail from './Pages/brandPages/CampaignDetail';
 import { AuthContext } from './utils/authProvider';
-
+import ActivationRequests from "./Pages/adminPages/ActivationRequests"
 
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -78,7 +78,9 @@ function App() {
               <Route path='/admin/home' element={<AdminHome/>}></Route>
               <Route path='/admin/home/influencer/:id' element={<InfluencerDetails/>}></Route>
               <Route path='/admin/users' element={<Users/>}></Route>
+              <Route path='/admin/users/influencer/:id' element={<InfluencerDetails></InfluencerDetails>}></Route>
               <Route path='/admin/bUsers' element={<BrandUsers/>}></Route>
+              <Route path='/admin/activationRequests' element={<ActivationRequests/>}></Route>
             </Route>
 
             {/* Brand Protected Routes */}

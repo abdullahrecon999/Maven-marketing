@@ -61,7 +61,7 @@ const Profile = ({id})=> {
                         <h1 className='font-railway text-lg'>
                             Country
                         </h1>
-                        <DetailBox data={data.data.data.country[0]}/>
+                        <DetailBox data={data?.data?.data?.country[0]}/>
 
                 </div>
                 <div className='flex flex-col'>
@@ -79,7 +79,7 @@ const Profile = ({id})=> {
             </div>
             <div className='space-y-2'>
                 <h1 className='font-railway text-lg'>Description</h1>
-                <p className='font-Andika text-sm text-grey'>{data.data.data.description}</p>
+                <p className='font-Andika text-sm text-grey'>{data?.data?.data?.discription}</p>
 
             </div>
             <div>

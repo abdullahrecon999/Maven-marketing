@@ -22,7 +22,7 @@ const AdminNavbar = ({authenticated}) => {
   }
 
   return (
-    <nav className='container relative px-2 py-6 mx-auto'>
+    <nav className='container relative px-2 py-6 mx-auto '>
         <div className='flex items-center justify-between'>
             <h1 onClick={()=> navigate("/")} className='text-black font-railway'>Maven Marketing</h1>
 

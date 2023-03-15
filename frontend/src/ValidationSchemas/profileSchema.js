@@ -8,6 +8,7 @@ let profileSchema = yup.object().shape({
     platform: yup.array().required("please select a platform"),
     language: yup.array().required("please select a language"),
     country: yup.array().required("please select a country"),
+    category: yup.array().required("please select a category")
     });
 
 export default profileSchema

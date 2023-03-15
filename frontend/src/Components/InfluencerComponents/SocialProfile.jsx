@@ -1,5 +1,5 @@
-import React , {useState, lazy, Suspense, useMemo, useContext}from 'react'
-import  {useMutation} from "@tanstack/react-query"
+import React , {useState, lazy, Suspense, useMemo, useContext, useEffect}from 'react'
+import  {useMutation, useQuery} from "@tanstack/react-query"
 import image from "../../images/profile.jpg"
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,12 +13,41 @@ import ProfileImage from './ProfilePic';
 
 import { Formik, Form } from 'formik';
 import TextField from "./TextFeild";
+const languages = [
+    "Urdu",
+    "English",
+    "Hindi",
+    "Chinese"
+]
 
+const countries = [
+    "pakistan",
+    "China",
+    "India"
+]
+const platforms = [
+    "twitter",
+    "instagram"
+]
+
+const categories =[
+    "Food",
+    "Techs and gadgets",
+    "Travel"
+]
 const Profile = ({onEdit})=>{
     const {user,setUser} = useContext(AuthContext);
-    console.log(user)
+
+    
+    const {data, isLoading}= useQuery(["getProfile"],()=>{
+        return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
+    })
+
+    
     return(
+        
         <div className='flex-[0.6] bg-gray-50 justify-center px-4 py-9'>
+            
             <div
             onClick = {()=>{
                 
@@ -85,11 +114,11 @@ const Profile = ({onEdit})=>{
 
 
 const EditProfile = ({onSave})=>{
-    const {user} = useContext(AuthContext)
-    console.log(user)
+    const {user, setUser} = useContext(AuthContext)
+    
    
     const handleSubmit = async (values)=>{
-        console.log("fuck this damsnjahdfd shit")
+        onSave()
         return await axios.put(`http://localhost:3000/influencer/updateProfile/${user["_id"]}`, values, {headers: {
             'Content-Type': 'application/json'
           },
@@ -97,9 +126,10 @@ const EditProfile = ({onSave})=>{
         })
         
         
+        
     }
-    const{mutate, isLoading, isSuccess, isError} = useMutation(handleSubmit)
-
+    const{mutate, isLoading, isSuccess, isError,data} = useMutation(handleSubmit)
+    
     return(
     
         <Formik
@@ -159,11 +189,11 @@ const EditProfile = ({onSave})=>{
                     <div className='flex flex-col space-y-1'>
                         <div className='px-2 flex flex-col flex-1 space-y-1'>
                             <h1 className='text-blue font-railway text-base'>Country</h1>
-                            <MultipleSelect  name="country" setvalue={formik.setFieldValue}></MultipleSelect>
+                            <MultipleSelect  name="country" names={countries} defaultValue={user?.language[0]} setvalue={formik.setFieldValue}></MultipleSelect>
                         </div>
                         <div className='px-2 flex flex-col space-y-1'>
                                 <h1 className='text-blue font-railway text-base'>languages </h1>
-                                <MultipleSelect   name="language" setvalue={formik.setFieldValue}  ></MultipleSelect>
+                                <MultipleSelect   name="language" names={languages} setvalue={formik.setFieldValue}  ></MultipleSelect>
                         </div>
 
                     </div>
@@ -171,8 +201,10 @@ const EditProfile = ({onSave})=>{
 
                     <div className='px-2 flex flex-col space-y-1'>
                                 <h1 className='text-blue font-railway text-base'>Categories </h1>
-                                <MultipleSelect name="category" setvalue={formik.setFieldValue}></MultipleSelect>
+                                <MultipleSelect name="category" defaultValue={user?.category[0]} names={categories} setvalue={formik.setFieldValue}></MultipleSelect>
                     </div>
+                </div>
+                <div>
                 </div>
 
             </div>
@@ -199,7 +231,7 @@ const InitialOtherDetails = ()=>{
 
 
 const SocialProfile = () => {
-    const {open, setOpen}= useState(false)
+    const [open, setOpen]= useState(false)
     const handleEdit = ()=>{
         setOpen(true)
     }
@@ -210,7 +242,7 @@ const SocialProfile = () => {
   return (
     <div className='flex'>
 
-        {false? <EditProfile onSave={handleSave}/>: <Profile onEdit= {handleEdit}/>}
+        {open? <EditProfile onSave={setOpen}/>: <Profile onEdit= {handleEdit}/>}
         <InitialOtherDetails></InitialOtherDetails>
 
         <div className='flex-[0.75] bg-slate-50 border-l-2 shadow'>

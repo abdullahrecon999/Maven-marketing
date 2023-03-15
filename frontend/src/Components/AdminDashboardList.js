@@ -83,16 +83,16 @@ export default function NestedList() {
         </List>
       </Collapse>
 
-      <ListItemButton onClick={handleClick}>
+      {/* <ListItemButton onClick={handleClick}>
         <ListItemIcon>
           <GroupIcon className='text-white' />
         </ListItemIcon>
         <ListItemText primary={<Texts title= "Activation Requests"></Texts>} />
         {open ? <ExpandLess className='text-white'/> : <ExpandMore className='text-white' />}
-      </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      </ListItemButton> */}
+      {/* <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
+          <ListItemButton sx={{ pl: 4 }} onClick={()=>navigate("/admin/activationRequests")} name = "acitivation">
             <ListItemIcon>
               <PersonIcon className="text-white"/>
             </ListItemIcon>
@@ -100,7 +100,7 @@ export default function NestedList() {
            </ListItemButton>
            
         </List>
-      </Collapse>
+      </Collapse> */}
     </List>
     </div>
   );
