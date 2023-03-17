@@ -30,6 +30,7 @@ import InfluencerHome from './Pages/InfluencerHome';
 import PasswordReset from './Pages/passwordReset';
 import NewCampaignPage from './Pages/brandPages/NewCampaign';
 import Campaign from './Pages/brandPages/Campaign';
+import { LaunchCampaign } from './Pages/brand/launchCampaign';
 import CampaignDetail from './Pages/brandPages/CampaignDetail';
 import { AuthContext } from './utils/authProvider';
 import ActivationRequests from "./Pages/adminPages/ActivationRequests"
@@ -89,6 +90,7 @@ function App() {
               <Route path='/createCampaign' element={<NewCampaignPage/>} ></Route>
 
               <Route path='/brandhome' element={<BrandHome/>} ></Route>
+              <Route path='/editcampaign/:id' element={<LaunchCampaign/>} ></Route>
             </Route>
 
             {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>

@@ -76,7 +76,7 @@ export function LaunchCampaign() {
 	};
 
 	return (
-		<>
+		<div data-theme="cupcake">
 			<div className="mb-3 flex justify-between sticky bg-white top-16 z-40 items-center pl-3 pr-3 h-12 border rounded-bl-xl rounded-br-xl">
 				<p className="text-xl font-bold">Edit Campaign</p>
 				<div className="flex gap-2">
@@ -276,6 +276,6 @@ export function LaunchCampaign() {
 					</Row>
 				</Form>
 			</div>
-		</>
+		</div>
 	);
 }

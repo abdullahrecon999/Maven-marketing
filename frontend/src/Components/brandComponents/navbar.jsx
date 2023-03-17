@@ -2,8 +2,11 @@
 import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
 import logo from "../../assets/AppLogo.png";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const logout = async () => {
+  const navigate = useNavigate();
   await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
     localStorage.removeItem('user')
     navigate("/")
@@ -161,7 +164,7 @@ export function NavBar({avatar, name, email}) {
               </a>
             </li>
             <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
+            <li><a onClick={()=>logout()}>Logout</a></li>
           </ul>
         </div>
       </div>
@@ -196,7 +199,7 @@ export function NavBar({avatar, name, email}) {
               <ul className="menu menu-compact bg-base-100 w-100 p-1 rounded-box">
                 <li><a>Profile</a></li>
                 <li><a>Settings</a></li>
-                <li><a onClick={()=>logout()}>Logout</a></li>
+                <li onClick={()=>logout()}>Logout</li>
               </ul>
 
             </div>

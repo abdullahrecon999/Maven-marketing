@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Tab } from '@headlessui/react'
 import { DownOutlined, SmileOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
+import { useNavigate, Link } from "react-router-dom";
 
-export function CampaignListing({banner, title, date, status}) {
+export function CampaignListing({banner, title, date, status, id}) {
+
+	const navigate = useNavigate();
+
 	const items = [
 		{
 			key: '1',
@@ -16,9 +20,9 @@ export function CampaignListing({banner, title, date, status}) {
 		{
 			key: '2',
 			label: (
-				<a href="#">
+				<Link target="_blank" to={"/editcampaign/"+id}>
 					Edit
-				</a>
+				</Link>
 			),
 		},
 		{

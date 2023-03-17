@@ -59,7 +59,7 @@ export function TabComponent({uid}) {
 						} */}
 						{
 							isLoading ? <div>Loading...</div> : campaigns?.map((campaign) => (
-								<CampaignListing key={campaign._id} banner={campaign.bannerImg} title={campaign.title} status={campaign.status} date={campaign.updatedAt} />
+								<CampaignListing id={campaign._id} key={campaign._id} banner={campaign.bannerImg} title={campaign.title} status={campaign.status} date={campaign.updatedAt} />
 							))
 						}
 					</Tab.Panel>
