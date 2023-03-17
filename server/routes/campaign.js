@@ -120,10 +120,10 @@ router.get("/campaigns", async(req, res, next)=>{
     }
   })
 
-  // launch Campaign change status to "live"
-  router.patch("/launch/:id", async(req, res, next)=>{
+  // update Campaign details that have changed in body of request and set status to live
+  router.patch("/publish/:id", async(req, res, next)=>{
     try{
-      const data = await Campaign.findOneAndUpdate({_id: req.params.id}, {status: "live"}, {new: true})
+      const data = await Campaign.findOneAndUpdate({_id: req.params.id}, {...req.body, status: "live"}, {new: true})
       res.status(200).json({
         status: "success",
         data
@@ -135,6 +135,7 @@ router.get("/campaigns", async(req, res, next)=>{
       })
     }
   })
+
   
   // delete Campaign
   router.delete("/delete/:id", async(req, res, next)=>{

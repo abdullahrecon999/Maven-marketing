@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Divider } from 'antd';
-import { message, Upload } from 'antd';
+import { message, Upload, notification } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { useParams  } from "react-router-dom";
@@ -31,6 +31,15 @@ const props = {
 export function LaunchCampaign() {
 
 	let { id } = useParams();
+
+	const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, msg, desc) => {
+    api[type]({
+      message: msg,
+      description:
+        desc,
+    });
+  };
 
 	const fetchCampaigns = async () => {
 		const res = await fetch("http://localhost:3000/campaign/view/"+id);
@@ -76,23 +85,65 @@ export function LaunchCampaign() {
 	const showDrawer = () => {
 		setOpen(true);
 	};
+
 	const onClose = () => {
 		setOpen(false);
 	};
-	const onFinish = (values) => {
+
+	const onFinish = async (values) => {
 		console.log('Success:', values);
+		// Launch Campaign to live
+
+		const res = await fetch("http://localhost:3000/campaign/publish/"+id, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(values),
+		});
+		const data = await res.json();
+
+		if (data.status === "success") {
+			// message.success("Campaign launched successfully");
+			openNotificationWithIcon('success', 'Campaign launched successfully', 'Campaign launched successfully');
+		} else {
+			// message.error("Error launching campaign");
+			openNotificationWithIcon('error', 'Error launching campaign', 'Error launching campaign');
+		}
 	};
+
 	const onReset = () => {
 		form.resetFields();
 	};
 
+	const saveDraft = async () => {
+		console.log('Success:', form.getFieldsValue());
+		const res = await fetch("http://localhost:3000/campaign/update/"+id, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(form.getFieldsValue()),
+		});
+		const data = await res.json();
+		
+		if (data.status === "success") {
+			// message.success("Campaign saved successfully");
+			openNotificationWithIcon('success', 'Campaign saved successfully', 'Campaign saved successfully');
+		} else {
+			// message.error("Error saving campaign");
+			openNotificationWithIcon('error', 'Error saving campaign', 'Error saving campaign');
+		}
+	};
+
 	return (
 		<div data-theme="cupcake">
+			{contextHolder}
 			{console.log(campaign)}
 			<div className="mb-3 flex justify-between sticky bg-white top-16 z-40 items-center pl-3 pr-3 h-12 border rounded-bl-xl rounded-br-xl">
 				<p className="text-xl font-bold">Edit Campaign</p>
 				<div className="flex gap-2">
-					<button className="btn btn-outline btn-accent btn-sm rounded-lg">Save</button>
+					<button className="btn btn-outline btn-accent btn-sm rounded-lg" onClick={()=>saveDraft()}>Save</button>
 					<button className="btn btn-success btn-sm rounded-lg" onClick={() => form.submit()}>Launch</button>
 				</div>
 			</div>
@@ -104,6 +155,7 @@ export function LaunchCampaign() {
 					<p>Error</p>
 				) : isSuccess ? (
 					<Form layout="vertical" form={form} hideRequiredMark onFinish={onFinish}>
+						{console.log(campaign.data)}
 					<Row gutter={16}>
 						<Col span={24}>
 							<Form.Item
@@ -124,6 +176,7 @@ export function LaunchCampaign() {
 					<Row gutter={16}>
 						<Col span={24}>
 							<Form.Item
+								initialValue={campaign.data.description}
 								name="description"
 								label={<span className="text-base font-bold">Campaign Description</span>}
 								rules={[
@@ -140,6 +193,7 @@ export function LaunchCampaign() {
 					<Row gutter={16}>
 						<Col span={12}>
 							<Form.Item
+								initialValue={!(campaign.data?.platforms)? ['All'] : campaign.data.platforms}
 								name="platforms"
 								label={<span className="text-base font-bold">Required Platforms</span>}
 								rules={[
@@ -159,6 +213,7 @@ export function LaunchCampaign() {
 						</Col>
 						<Col span={12}>
 							<Form.Item
+								initialValue={!(campaign.data?.audience)? ['All'] : campaign.data.audience}
 								name="audience"
 								label={<span className="text-base font-bold">Audience</span>}
 								rules={[
@@ -181,6 +236,7 @@ export function LaunchCampaign() {
 					<Row gutter={16}>
 						<Col span={24}>
 							<Form.Item
+								initialValue={!(campaign.data?.tags)? ['All'] : campaign.data.tags}
 								name="tags"
 								label={<span className="text-base font-bold">Tags</span>}
 								rules={[
@@ -230,6 +286,7 @@ export function LaunchCampaign() {
 					<Row gutter={16}>
 						<Col span={24}>
 							<Form.Item
+								initialValue={!(campaign.data?.questions)? ['All'] : campaign.data.questions}
 								name="questions"
 								label={<span className="text-base font-bold">Add Questions</span>}
 								rules={[{required: false}]}

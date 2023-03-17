@@ -66,7 +66,13 @@ export function CampaignListing({banner, title, date, status, id}) {
 						</div>
 					</a>
 				</Dropdown>
-				<div className="badge badge-accent">{status}</div>
+				{
+					status === "live" ? (
+						<div className="badge badge-success">{status}</div>
+					) : (
+						<div className="badge badge-accent">{status}</div>
+					)
+				}
 			</div>
 		</div>
 	);

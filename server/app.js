@@ -26,7 +26,7 @@ var app = express();
 const corsOptions = {
     //multiple origins
     origin: "http://localhost:5173",
-    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE', 'PATCH'],
     optionsSuccessStatus: 200,
     credentials: true,
 }

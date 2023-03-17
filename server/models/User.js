@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema({
         {
             platform: String,
             handle: String,
+            followers: Number,
         }
     ],
   },

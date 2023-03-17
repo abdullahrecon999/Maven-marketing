@@ -11,6 +11,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space } from 'antd';
 import { message, Upload, notification } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import { useQuery } from "react-query";
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -36,10 +37,18 @@ const props = {
   },
 };
 
+const getInfluencers = async () => {
+  const response = await fetch("http://localhost:3000/influencer/topinfluencers");
+  const data = await response.json();
+  console.log(data)
+  return data.data;
+}
+
 export function Dashboard({uid}) {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
+  const { data: influencer, isLoading, isError, isSuccess } = useQuery("influencer", getInfluencers);
 
   const openNotificationWithIcon = (type) => {
     api[type]({
@@ -80,6 +89,7 @@ export function Dashboard({uid}) {
       .then((res) => res.json())
       .then((data) => {
        console.log(data);
+       openNotificationWithIcon('success');
       })
       .catch((err) => {
         console.log(err);
@@ -202,7 +212,7 @@ export function Dashboard({uid}) {
         </Form>
       </Drawer>
       <div data-theme="cupcake" className="flex-col px-9 h-full bg-transparent">
-        <div className="flex justify-between items-center py-3">
+        <div className="flex justify-between items-center py-3 relative">
           <h1 className="text-xl font-bold text-slate-200">Dashboard</h1>
           <button className="btn btn-warning gap-1" onClick={showDrawer}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -311,7 +321,33 @@ export function Dashboard({uid}) {
             </div>
 
             <div className="flex w-full h-[450px]">
-              <Swiper
+              {
+                isLoading ? (
+                  <div className="flex justify-center items-center w-full h-full">
+                    <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12 mb-4"></div>
+                  </div>
+                ) : (
+                  isSuccess && (
+                    <Swiper
+                      slidesPerView={5}
+                      spaceBetween={250}
+                      centeredSlides={true}
+                      navigation={true}
+                      modules={[Navigation]}
+                      className="mySwiper w-full"
+                    >
+                      {
+                        influencer.map((item, index) => (
+                          <SwiperSlide key={index}>
+                            <ListingCard avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0].followers} banner={item.photo} />
+                          </SwiperSlide>
+                        ))
+                      }
+                    </Swiper>
+                  )
+                )
+              }
+              {/* <Swiper
                 slidesPerView={5}
                 spaceBetween={250}
                 centeredSlides={true}
@@ -320,12 +356,7 @@ export function Dashboard({uid}) {
                 className="mySwiper w-full"
               >
                 <SwiperSlide><ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" /></SwiperSlide>
-                <SwiperSlide><ListingCard /></SwiperSlide>
-                <SwiperSlide><ListingCard /></SwiperSlide>
-                <SwiperSlide><ListingCard /></SwiperSlide>
-                <SwiperSlide><ListingCard /></SwiperSlide>
-                <SwiperSlide><ListingCard /></SwiperSlide>
-              </Swiper>
+              </Swiper> */}
             </div>
 
           </div>

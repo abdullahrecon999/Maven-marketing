@@ -23,6 +23,23 @@ const sendEmail = require('../utils/sendEmail');
 router.get('/', function(req, res, next) {
   res.send('Influencer Router called');
 });
+
+// get 5 influencers with only id, name, social media, photo, and banner photo using Influencer model
+router.get("/topinfluencers", async(req, res, next)=>{
+  try{
+    const data = await User.find({role: "influencer"}).limit(5).select("name photo socialMediaHandles")
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
+
 // geting a particular user
 router.get("/:id", async (req, res, next) => {
     const id = req.params.id
@@ -595,17 +612,9 @@ router.post("/invite/reject/:id", async(req, res, next)=>{
   }
 })
 
-
-
-
-router.post("/acceptcontract", ()=>{
-
-})
+router.post("/acceptcontract", ()=>{})
 
 router.post("/rejectContract", ()=>{})
-
-
-
 
 
 

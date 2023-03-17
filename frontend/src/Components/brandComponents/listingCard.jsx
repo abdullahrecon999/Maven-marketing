@@ -10,14 +10,14 @@ export const ListingCard = ({ avatar, name, social, followers, ratings, price, d
 
 				<div className="flex">
 					<div className="avatar online placeholder">
-						<div className="bg-neutral-focus text-neutral-content rounded-full w-11">
+						<div className="bg-neutral-focus text-neutral-content rounded-full w-11 h-11">
 							{/* <img src="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" /> */}
 							<img src={avatar} />
 						</div>
 					</div>
 					<div className="flex-col ml-2">
 						<h2 className="font-bold">{name}</h2>
-						<div className="flex gap-1 items-center">
+						<div className="flex gap-1 items-center w-full">
 
 							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 								width="20" height="20"
