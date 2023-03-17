@@ -10,6 +10,7 @@ import InfluencerAllCampaigns from './InfluencerAllCampaigns';
 import SocialProfile from './SocialProfile';
 import InfluencerBids from "./InfluencerBids"
 import WorkTabs from './WorkTabs';
+import InfluencerInvites from './InfluencerInvites';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -54,7 +55,7 @@ export default function BasicTabs() {
   }
 
   return (
-    <Box sx={{ width: '100%'  }}>
+    <Box sx={{ width: '100%', marginTop :2}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs sx={{width: '100%','& .MuiTabs-flexContainer': {
             flexWrap: 'wrap',
@@ -62,14 +63,15 @@ export default function BasicTabs() {
            onChange={handleChange}
           
            >
-          <Tab label="Dashboared" {...a11yProps(0)} />
+          <Tab label="Current Campaigns" {...a11yProps(0)} />
           
-          <Tab label="My Work" {...a11yProps(1)} />
-          <Tab label="Transactions" {...a11yProps(2)} />
+          <Tab label="Bids and Proposals" {...a11yProps(1)} />
+          <Tab label="Campaign invites" {...a11yProps(2)} />
           <Tab label="Social" {...a11yProps(3)} />
           
         </Tabs>
       </Box>
+      <Box >
       <TabPanel sx={{mt:0}} value={value} index={0}>
         <InfluencerDashboared onCampaignViewClick={(value)=>{
           handleChangeFromInterestedCampaignButton(value)
@@ -77,16 +79,17 @@ export default function BasicTabs() {
       </TabPanel>
       <Suspense fallback={<div>loading</div>}>
         <TabPanel value={value} index={1}>
-          <WorkTabs></WorkTabs>
-          {/* <InfluencerBids/> */}
+          {/* <WorkTabs></WorkTabs> */}
+          <InfluencerBids/>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Item Three
+          <InfluencerInvites></InfluencerInvites>
         </TabPanel>
         <TabPanel value={value} index={3}>
           <SocialProfile></SocialProfile>
         </TabPanel>
       </Suspense>
+      </Box>
     </Box>
   );
 }

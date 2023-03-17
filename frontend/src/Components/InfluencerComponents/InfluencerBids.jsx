@@ -75,29 +75,38 @@ const Modal = ({onClose, id})=>{
   return (
     <InfluencerGenaricModal>
       
+        <div className='flex justify-end bg-slate-200'>
         <CloseIcon onClick={()=>{
           handleClose()
-        }} className="self-end hover:bg-slate-100"></CloseIcon>
+        }} className=" hover:bg-slate-100"></CloseIcon>
 
+        </div >
         {isLoading?<Loader title="Please Wait" subtitle="bid details are being loaded"/>:
-          <>
-          <h1 className='text-xl md:2xl text-blue font-railway'>Bid Details</h1>
+          <div className=' h-full'>
+          <h1 className='text-2xl bg-slate-200 py-2 border-b-2 mt-0 border px-4 text-gray-800 font-railway'>Bid Details</h1>
+
+          <div className='px-4 flex flex-col h-full bg-pink'>
           <div>
-            {console.log(bidDetails.data.data)}
-            <h1 className='text-base text-black font-railway '>Brand Name</h1>
+           
             
-            <p className="text-xl text-black ">{bidDetails?.data?.data?.to?.name}</p>
+           <p className="text-3xl text-black font-railway ">{bidDetails?.data?.data?.to?.name}</p>
+         </div>
+         <div>
+
+           <p className='text-gray-600 font-railway text-xl '>{bidDetails.data.data.campaignId.title}</p>
+         </div>
+         <p className='mt-7 text-base text-stone-500 font-light font-railway'>{bidDetails.data.data.discription}</p>
+         <div className='w-[50%] mt-10'>
+           <h1 className='text-grey-500 font-semibold'> Submitted at</h1>
+           <DetailBox  text={bidDetails.data.data.createdAt}></DetailBox>
+         </div>
+
+         <div className='w-[50%] mt-10'>
+           <h1 className='text-grey-500 font-semibold'> Proposal Amount</h1>
+           <DetailBox  text={bidDetails.data.data.amount}></DetailBox>
+         </div>
           </div>
-          <div>
-            <h1 className='text-xl text-black font-railway'>Title</h1>
-            <p className='text-grey'>{bidDetails.data.data.campaignId.title}</p>
           </div>
-          <p className='text-xl font-light'>{bidDetails.data.data.discription}</p>
-          <div className='w-[50%]'>
-            <h1 className='text-green font-railway'> Submitted at</h1>
-            <DetailBox  text={bidDetails.data.data.createdAt}></DetailBox>
-          </div>
-          </>
         }
         
       </InfluencerGenaricModal>
@@ -175,24 +184,23 @@ const Bids =()=>{
       
         {!close &&
         <>
-        <div className=' flex flex-col items-center rounded-t-lg border-2 min-h-[60vh] py-5 border-blue shadow-2xl'>
-        <div className="flex flex-col items-start mb-2 md:flex-row">
-            <div >
+        <div className=' flex flex-col items-center shadow-md h-100 p-10 rounded-xl  bg-slate-50 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'>
+        <div className="flex flex-col self-start items-start mb-2 md:flex-row">
+            <div className='self-start' >
             <h1 className='text-xl self-start md:text-2xl text-black font-railway mb-1 pl-4' >Your Bids here</h1>
             <p className='text-sm self-start text-grey mb-6 pl-4 md:text-base'> All of the bids that you submitted and aare pendeling approval are displayed here</p>
             </div>
-            <div className='px-4'>
-            <Search handleSetSearch={handleSetSearch}/>
-            </div>
+            
 
         </div>
           
-        <></>
+        <div className='bg-white rounded-md w-full flex justify-center  py-10 '>
         {isLoading&& !isSuccess?<Loader
           title="Loading your Bids"
         />: <>
         {data === "undefined"?null:<BidsTable rows={data} onOpen={handleOpen} columns={columns}></BidsTable>}
         </>}
+        </div>
         
         
         

@@ -119,7 +119,7 @@ const InfluencerAllCampaigns = () => {
   }
 
   if(isError){
-    return(<div className='text-2xl font-railway flex flex-col justify-center items-center'>
+    return(<div className='text-2xl h-[80vh] font-railway flex flex-col justify-center items-center'>
       <h1 className='text-xxl font-railway text-black md:text-3xl'>Oppss! Something went Wrong</h1>
       <p className='text-base text-grey md:text-xl'>Please check your internet connect or try again later</p>
     </div>)
@@ -136,13 +136,15 @@ const InfluencerAllCampaigns = () => {
                   setIsSearch(false)
                 }} classaName="font-railway px-3 py-5 border rounded-full">View More</button>
             </div>:
-              <div className='flex flex-wrap mt-2 justify-start'>
+              <div className='flex flex-wrap mt-2 justify-start space-y-3 md:space-x-3 md:space-y-0'>
               {/* <CampaignCard></CampaignCard> */}
               {data?.map((campaign) =>{
                 
-                return <CampaignCard title={campaign?.title} 
+                return <CampaignCard 
+                avatar={campaign?.brand?.photo}
+                title={campaign?.title} 
                 brandName= {campaign?.brand?.name}
-                banner={campaign?.banner}
+                banner={campaign?.bannerImg}
                 description={campaign?.description}
                 id = {campaign["_id"]}
                   ></CampaignCard>

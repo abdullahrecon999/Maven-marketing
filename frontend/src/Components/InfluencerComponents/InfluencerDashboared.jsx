@@ -159,7 +159,7 @@ const InfluencerDashboared = ({onCampaignViewClick}) => {
         <div className="border w-full rounded-xl h-20 p-2 bg-white flex items-center hover:shadow-lg">
 			<div className="avatar">
 				<div className="w-14 rounded">
-					<img src={item.campaignId.banner}  alt="src"/>
+					<img src={item.campaignId.bannerImg}  alt="src"/>
 				</div>
 			</div>
 			<div className="ml-4">

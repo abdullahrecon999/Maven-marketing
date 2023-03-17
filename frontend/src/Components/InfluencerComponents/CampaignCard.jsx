@@ -27,18 +27,18 @@ const CampaignCard = ({avatar,brandName, title, description, banner, id})=>{
   return (
     <div onClick={()=>{
       openCampaign()
-    }} className="card h-[430px] border flex bg-base-100 hover:shadow-xl rounded-xl max-w-[270px] min-w-[270px]">
+    }} className="card h-[430px] border flex bg-base-100 hover:shadow-xl rounded-xl max-w-[290px] min-w-[270px]">
 			<div className="p-3">
 
 				<div className="flex">
 					<div className="avatar online placeholder">
-						<div className="bg-neutral-focus text-neutral-content rounded-full w-11">
+						<div className="bg-neutral-focus text-neutral-content rounded-full w-11 h-11">
 							{/* <img src="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" /> */}
 							<img src={avatar} />
 						</div>
 					</div>
 					<div className="flex-col ml-2">
-						<h2 className="font-bold">{brandName}</h2>
+						
             <h3 className='font-bold'>{title}</h3>
 						<div className="flex gap-1 items-center">
 

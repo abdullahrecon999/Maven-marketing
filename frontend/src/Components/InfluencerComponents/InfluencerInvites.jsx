@@ -28,7 +28,7 @@ const columns = [
   },
   {
     field: 'submittedAt',
-    headerName: 'Submitted At',
+    headerName: 'Recieved At',
     
     width: 110,
     
@@ -44,10 +44,10 @@ const columns = [
 
 
 const Initialbids = ()=>{
-    return (<div className=' px-[20%]'>
-        <div className=' flex flex-col justify-center items-center rounded-t-lg border-2 h-[60vh] border-blue'>
+    return (<div className=' px-[20%] w-full'>
+        <div className=' flex flex-col justify-center items-center rounded-t-lg border-2 h-[60vh] bg-slate-50'>
             <h1 className='text-xl md:text-4xl text-black font-railway' >Oppps! so Empty</h1>
-            <p className='text-base text-center md:text-xl text-blue font-railway'>Go the the campaigns and place some bids</p>
+            <p className='text-base text-center md:text-xl text-gray-500 font-railway'>Go the the campaigns and place some bids</p>
         </div>
     </div>)
 }
@@ -55,7 +55,7 @@ const Initialbids = ()=>{
 const Modal = ({onClose, id})=>{
 
    
-    const navigate = useNavigation()
+   
     const {isLoading, data:bidDetails, isError, isSuccess, status} = useQuery(["getInvites"],
     ()=>{
       return axios.get(`http://localhost:3000/influencer/invites/detail/${id}`,
@@ -114,39 +114,50 @@ const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutatio
   }
   return (
     <InfluencerGenaricModal>
-      {console.log(bidDetails.data.data)}
-        <CloseIcon onClick={()=>{
+      
+      <div className='flex justify-end bg-slate-200'>
+      <CloseIcon onClick={()=>{
           handleClose()
         }} className="self-end hover:bg-slate-100"></CloseIcon>
-        <h1 className='text-xl md:2xl text-black font-railway'>Invite Details</h1>
+      </div>
+        <h1 className='text-2xl bg-slate-200 text-gray-800 py-2 border-2 font-railway'>Invite Details</h1>
         <hr></hr>
         
         <div>
-          <p className='text-xl text-black font-railway '>{bidDetails.data.data.campaignId.title}</p>
+          <p className='text-2xl px-2 text-black font-railway '>{bidDetails.data.data.campaignId.title}</p>
         </div>
-        <p className=" text-grey text-base">{bidDetails.data.data.campaignId.description}</p>
-        <div>
-          <h1 className='text-black font-railway text-base'> Recieved At</h1>
-          <DetailBox text={bidDetails.data.data.createdAt}></DetailBox>
+        <div className='flex-1 mb-6'>
+        <p className=" px-2 text-grey text-base">{bidDetails.data.data.campaignId.description}</p>
         </div>
-        <div>
-          <h1 className='text-black font-railway text-base'> Plateforms</h1>
+        <div className='px-2'>
+          <h1 className='text-black font-railway text-base'> Platforms</h1>
+          <div className="flex flex-wrap">
           {bidDetails.data.data.campaignId.platform.map(item=>{
             return  <DetailBox text={item} key={item}></DetailBox>
 
           })}
+          </div>
         </div>
+        <div className="flex space-x-4 px-2">
+        <div>
+          <h1 className='text-black font-railway text-base'> Recieved At</h1>
+          <DetailBox text={bidDetails.data.data.updatedAt}></DetailBox>
+        </div>
+        
         <div>
           <h1 className='text-black font-railway text-base'> Compensation</h1>
           <DetailBox text={bidDetails.data.data.campaignId.compensation}></DetailBox>
 
         </div>
+        </div>
+        <div className="w-[30%] my-6 px-4">
         <Link to="/campaigndetails" state={{id: bidDetails.data.data.campaignId["_id"],inviteId: bidDetails.data.data["_id"], invite: true}}>
             <h1 className='text-white bg-blue text-xl text-center font-railway border rounded-full py-1 px-2 hover:bg-indigo-500 shadow-lg'><PageviewIcon></PageviewIcon>View Campaign</h1>
         </Link>
+        </div>
 
         <hr></hr>
-        <div className='flex space-x-3 px-4'>
+        <div className='flex self-stretchs space-x-3 px-4 my-3'>
             <button onClick={()=>{
               handleInviteAccept()
             }} className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Accept</button>
@@ -170,17 +181,21 @@ const Bids =()=>{
       },
       withCredentials: true,
     })
+    },
+    {
+      refetchInterval:5000
     }
   )
 
   useEffect(()=>{
     if(isSuccess){
       const data= bids?.data.data.map((item,i)=>{
+        console.log(item)
         return {
           id: item["_id"],
           title: item?.campaignId?.title,
-          brandName: item?.to.name,
-          submittedAt: item?.submitted,
+          brandName: item?.sender.name,
+          submittedAt: item?.updatedAt,
           status: "Pending"
     
         }
@@ -228,23 +243,23 @@ const Bids =()=>{
     
       {!close &&
       <>
-      <div className=' flex flex-col items-center rounded-t-lg border-2 min-h-[60vh] py-5 border-blue shadow-2xl'>
-      <div className="flex flex-col items-start mb-2 md:flex-row">
-          <div >
+      <div className=' flex flex-col items-center shadow-md h-100 p-10 rounded-xl  bg-slate-50 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'>
+      <div className="flex flex-col self-start items-start mb-2 md:flex-row">
+          <div className='self-start' >
           <h1 className='text-xl self-start md:text-2xl text-black font-railway mb-1 pl-4' >Invites</h1>
           <p className='text-sm self-start text-grey mb-6 pl-4 md:text-base'> All the invites that you recieve are displayed here. Accept the invites to collaborate in the campaign</p>
           </div>
-          <div className='px-4'>
-          <Search handleSetSearch={handleSetSearch}/>
-          </div>
+          
 
       </div>
       
+      <div className='bg-white rounded-md w-full flex justify-center  py-10 ' >
       {isLoading&& !isSuccess?<Loader
         title="Loading your Bids"
       />: <>
       {data === "undefined"?null:<BidsTable rows={data} onOpen={handleOpen} columns={columns}></BidsTable>}
       </>}
+      </div>
       
       
   </div>
