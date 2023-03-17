@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const invitesSchema = new mongoose.Schema({
+const contracts = new mongoose.Schema({
     campaignId :{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Campaign",
@@ -25,7 +25,7 @@ const invitesSchema = new mongoose.Schema({
         default: false,
 
     },
-    discription: {
+    description: {
         type: String,
         default: null,
        
@@ -38,15 +38,19 @@ const invitesSchema = new mongoose.Schema({
     }, 
     expiresAt: {
         type: Date,
-        required: true,
+        
     },
     expired: {
         type: Boolean,
         default: false,
-        required: true
+        
     }
     
 
 },{
     timestamps: true
 })
+
+const contract = mongoose.model('contract',contracts);
+
+module.exports = contract;

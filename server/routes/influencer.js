@@ -14,6 +14,7 @@ const bids = require("../models/Proposals")
 const contracts = require("../models/Contracts")
 const invites = require("../models/Invites")
 const contacts = require("../models/MessageContacts")
+const Contracts = require("../models/Contracts")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 
@@ -413,7 +414,23 @@ router.post("/bidCampaign/:id", async (req, res, next) => {
   }
 
 })
+router.get("/getmyContracts/:id", async(req,res, next)=>{
+      const id = req.params.id
+      try{
+        const data = await contracts.find({to: id, accepted:true}).populate("sender", "name").populate("campaignId")
+        res.status(200).json({
+          status: "success",
+          data
+        })
+      }catch(e){
+        console.log(e)
+        res.status(500).json({
+          status: "error",
 
+        })
+      }
+
+})
 // these routes need to be fixed also
 
 router.get("/allContracts", async(req, res, next)=>{

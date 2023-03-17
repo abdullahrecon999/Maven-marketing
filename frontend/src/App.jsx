@@ -35,7 +35,8 @@ import CampaignDetail from './Pages/brandPages/CampaignDetail';
 import { AuthContext } from './utils/authProvider';
 import ActivationRequests from "./Pages/adminPages/ActivationRequests"
 import { BrandHome } from './Pages/brand/brandHome';
-
+import InfluencerAllCampaigns from './Components/InfluencerComponents/InfluencerAllCampaigns';
+import SocialProfile from './Components/InfluencerComponents/SocialProfile';
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
 // const Whyus = lazy(import('./Pages/Whyus'))
@@ -102,6 +103,8 @@ function App() {
               <Route path='/profileCompletion' element={<Profilecompletion />} ></Route>
               <Route path='/influencerHome' element={<InfluencerHome />} ></Route>
               <Route path="/campaigndetails" element={<CampaignDetailInfluencer/>}></Route>
+              <Route path="/CampaignMarketPlace" element={<InfluencerAllCampaigns/>}></Route>
+              <Route path='/SocialProfile' element={<SocialProfile/>}></Route>
             </Route>
             
             {/* Protected complementary Routes */}

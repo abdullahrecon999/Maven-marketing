@@ -8,6 +8,7 @@ var utils = require('../config/authUtils');
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const User = require('../models/User');
 const Campaign = require('../models/Campaign');
+const Contract = require("../models/Contracts");
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 
@@ -196,4 +197,22 @@ router.post('/campaigns', (req, res) => {
   })
 })
 
+router.post("/createContract", async (req, res)=>{
+    const data= req.body
+
+    try{
+      
+      await Contract.create(req.body)
+
+      res.status(200).json({
+        status: "success"
+      })
+
+    }catch(e){
+      res.status(500).json({
+        status: "error"
+      })
+    }
+  
+})
 module.exports = router;

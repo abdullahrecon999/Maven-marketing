@@ -63,10 +63,10 @@ export default function BasicTabs() {
           
            >
           <Tab label="Dashboared" {...a11yProps(0)} />
-          <Tab label="All Campaigns" {...a11yProps(1)} />
-          <Tab label="My Work" {...a11yProps(2)} />
-          <Tab label="Transactions" {...a11yProps(3)} />
-          <Tab label="Social" {...a11yProps(4)} />
+          
+          <Tab label="My Work" {...a11yProps(1)} />
+          <Tab label="Transactions" {...a11yProps(2)} />
+          <Tab label="Social" {...a11yProps(3)} />
           
         </Tabs>
       </Box>
@@ -77,16 +77,13 @@ export default function BasicTabs() {
       </TabPanel>
       <Suspense fallback={<div>loading</div>}>
         <TabPanel value={value} index={1}>
-          <InfluencerAllCampaigns></InfluencerAllCampaigns>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
           <WorkTabs></WorkTabs>
           {/* <InfluencerBids/> */}
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={2}>
           Item Three
         </TabPanel>
-        <TabPanel value={value} index={4}>
+        <TabPanel value={value} index={3}>
           <SocialProfile></SocialProfile>
         </TabPanel>
       </Suspense>

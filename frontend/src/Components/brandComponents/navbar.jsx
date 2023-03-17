@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
 import logo from "../../assets/AppLogo.png";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const logout = async () => {
   const navigate = useNavigate();
@@ -15,7 +15,9 @@ const logout = async () => {
   })
 }
 
-export function NavBar({avatar, name, email}) {
+export function NavBar({avatar, name, email, role}) {
+
+  
 
   return (
     <div className="navbar bg-base-100 sticky top-0 z-50 " data-theme="cupcake">
@@ -28,11 +30,16 @@ export function NavBar({avatar, name, email}) {
           <form class="group relative justify-center items-center hidden lg:flex w-6/12 max-w-sm">
 
             <div className="dropdown dropdown-end w-full">
-              <label tabIndex={0}>
+              <label tabIndex={0} onClick={()=>{
+                console.log("cliclsjsjadjs")
+              }}>
                 <svg width="20" height="20" fill="currentColor" class="absolute left-3 top-1/2 -mt-2.5 text-slate-400 pointer-events-none group-focus-within:text-blue-500" aria-hidden="true">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
                 </svg>
-                <input class="focus:ring-1 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-full py-2 pl-10 ring-1 ring-slate-200 shadow-sm" type="text" placeholder="Search Influencers..." />
+                <input 
+                class="focus:ring-1 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-full py-2 pl-10 ring-1 ring-slate-200 shadow-sm" 
+                type="text" 
+                placeholder={role==="influencer"?"Search Campaigns ......": "Search Influencers"} />
               </label>
 
               <ul tabIndex={0} className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-full z-50">
@@ -92,12 +99,12 @@ export function NavBar({avatar, name, email}) {
         </div>
 
         <div className="items-baseline space-x-4 mr-2 hidden lg:flex">
-          <a
-            href="#"
+          <Link to={role==="influencer"?"/influencerhome":"/brandhome"}
+            
             className=" hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
           >
             Dashboard
-          </a>
+          </Link>
 
           <a
             href="#"
@@ -106,12 +113,12 @@ export function NavBar({avatar, name, email}) {
             Chat
           </a>
 
-          <a
-            href="#"
+          <Link
+            to={role ==="influencer"? "/CampaignMarketPlace": "#"}
             className="hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
           >
             Marketplace
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -159,9 +166,9 @@ export function NavBar({avatar, name, email}) {
           </label>
           <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
             <li>
-              <a className="justify-between">
+              <Link to={role==="influencer"? "/SocialProfile":""} className="justify-between">
                 Profile
-              </a>
+              </Link>
             </li>
             <li><a>Settings</a></li>
             <li><a onClick={()=>logout()}>Logout</a></li>
@@ -190,14 +197,16 @@ export function NavBar({avatar, name, email}) {
               <div className="divider mt-0 mb-0"></div>
 
               <ul className="menu menu-compact bg-base-100 w-100 p-1 rounded-box">
-                <li><a>Dashboard</a></li>
+                <li><Link to={role==="influencer"?"/influencerhome":"/brandhome"}>Dashboard</Link></li>
                 <li><a>Chat</a></li>
-                <li><a>Marketplace</a></li>
+                <li><Link to={role ==="influencer"? "/CampaignMarketPlace": "#"}>Marketplace</Link></li>
               </ul>
               <div className="divider mt-0 mb-0"></div>
 
               <ul className="menu menu-compact bg-base-100 w-100 p-1 rounded-box">
-                <li><a>Profile</a></li>
+                <li><Link to={role==="influencer"? "/SocialProfile":""} className="justify-between">
+                Profile
+              </Link></li>
                 <li><a>Settings</a></li>
                 <li onClick={()=>logout()}>Logout</li>
               </ul>

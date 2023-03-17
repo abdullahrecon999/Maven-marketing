@@ -5,7 +5,7 @@ import CampaignCard from "./CampaignCard"
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
-import {useQuery} from "@tanstack/react-query"
+import {useQuery} from "react-query"
 import axios from "axios"
 import { LineWave } from 'react-loader-spinner';
 import { TextField } from '@mui/material';
@@ -126,28 +126,8 @@ const InfluencerAllCampaigns = () => {
   }
 
   return (
-    <div  className="flex flex-col ">
-        <div className='flex space-x-5 relative'>
-            <div className='flex space-x-1'>
-              <TextField placeholder='Search....' variant='outlined' size='small' onChange={(e)=>{
-                  handleSearchChange(e)
-              }}></TextField>
-              <button onClick={()=> handleSearch()} className='bg-blue text-white p-2 rounded-full hover:bg-indigo-500'><Search></Search></button>
-            </div>
-            <div className='border text-grey text-sm px-2 py-1 font-railway md:px-3 md:py-1 rounded-2xl border-grey hover:shadow-lg'> <TuneIcon></TuneIcon> <span className="">Filter</span>
-            </div>
-            <div>
-            <div onClick={()=>{
-              handleOpenSort()
-            }} className='border text-grey text-sm px-2 py-1 font-railway md:px-3 md:py-1 rounded-2xl border-grey hover:shadow-lg'> <SortIcon></SortIcon> <span>Sort</span>
-              
-            </div>
-            {openSort && <SortModel onClose={handleCloseSort}></SortModel>}
-            
-            </div>
-            
-            
-        </div>
+    <div  className="flex flex-col mx-7 my-5 ">
+        
         <div className="flex flex-col  space-y-4 mt-4 px-1 md:mt-6 md:px-2">
             <h1 className="text-black font-railway text-lg md:text-xl">All Campaigns</h1>
             {data?.length ===0?<div className='flex flex-col justify-center items-center my-5 '>
@@ -160,10 +140,10 @@ const InfluencerAllCampaigns = () => {
               {/* <CampaignCard></CampaignCard> */}
               {data?.map((campaign) =>{
                 
-                return <CampaignCard name={campaign?.title} 
-                brand= {campaign?.brand?.name}
-                compensation = {campaign?.compensation}
-                banner={campaign?.banner} 
+                return <CampaignCard title={campaign?.title} 
+                brandName= {campaign?.brand?.name}
+                banner={campaign?.banner}
+                description={campaign?.description}
                 id = {campaign["_id"]}
                   ></CampaignCard>
               })}
