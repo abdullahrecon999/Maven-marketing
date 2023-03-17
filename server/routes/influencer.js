@@ -15,6 +15,7 @@ const contracts = require("../models/Contracts")
 const invites = require("../models/Invites")
 const contacts = require("../models/MessageContacts")
 const Contracts = require("../models/Contracts")
+const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 
@@ -415,13 +416,24 @@ router.get("/bidDetails/:id", async(req, res, next)=>{
 })
 
 router.post("/bidCampaign/:id", async (req, res, next) => {
-  const id = req.params.id
+  const {campaignId, sender} = req.body
   
   try{
-    bids.create(req.body)
+
+    const data = bids.find({campaignId:campaignId, sender: sender})
+    console.log("this is the damsn",data)
+    if(data.length !== 0){
+      res.status(409).json({
+        status: "error",
+        msg: "Bid All ready submitted"
+      })
+    }
+    else{
+      bids.create(req.body)
     res.status(200).json({
       status: "success",
     })
+    }
     
   }catch(e){
     console.log(e)
@@ -511,8 +523,8 @@ router.get("/contractDetails/:id", async (req, res)=>{
 router.get("/getInvites/:id", async (req, res, next)=>{
    const id = req.params.id;
    try{
-    const data = await invites.find({to: id})
-    .populate("campaign")
+    const data = await invites.find({to: id, accepted: false})
+    .populate("campaignId")
     .populate("sender", "name")
 
     res.status(200).json(
@@ -539,15 +551,40 @@ router.post("/invite/accept/:id", async(req, res, next)=>{
       accepted: true
     }
     if(Object.keys(data).length !==0){
-      await invites.updateOne({_id: id}, val)
-      await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
-      await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
 
+      await invites.updateOne({_id: id}, val)
+
+    const msg = {
+    text: "Accepting the invite",
+    users:[
+      data["sender"].toString(),
+      data["to"].toString()
+    ],
+    sender: data["to"]
+  }
+    await Message.create(msg)
+      
+     const hasUser= await contacts.find({user:data["to"], "contacts.contact":data["sender"]})
+     if(hasUser?.length){
+      console.log("hase user", hasUser)
       res.status(200).json({
         status: "success",
         msg: "accepted"
   
       })
+     }
+     else{
+      await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
+      await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
+      res.status(200).json({
+        status: "success",
+        msg: "accepted"
+  
+      })
+     }
+      
+      
+    
     }
     else{
       res.status(404).json({

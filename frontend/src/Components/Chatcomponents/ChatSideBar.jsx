@@ -1,5 +1,5 @@
 import React ,  { useContext}from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from 'react-query'
 import axios from "axios"
 import { AuthContext } from '../../utils/authProvider'
 import { ChatContext } from './ChatProvider'

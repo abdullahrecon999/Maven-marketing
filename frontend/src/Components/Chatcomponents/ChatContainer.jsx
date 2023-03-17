@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { AuthContext } from '../../utils/authProvider'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation } from 'react-query'
 import { ChatContext } from './ChatProvider'
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { TextField  } from '@mui/material';

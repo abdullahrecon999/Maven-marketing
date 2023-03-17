@@ -75,7 +75,7 @@ const CampaignDetailInfluencer = () => {
               </div>
             
               <div className='h-[55vh] '>
-                  <img className="object-fill w-[100%] h-[100%] rounded-r-3xl" src={data.data.data.banner} alt={data.data.data.banner}></img>
+                  <img className="object-fill w-[100%] h-[100%] rounded-r-3xl" src={data.data.data.bannerImg} alt={data.data.data.banner}></img>
               </div>
 
           </div>
@@ -91,7 +91,7 @@ const CampaignDetailInfluencer = () => {
                   <h1 className='text-xl text-black font-railway'>Required Platforms</h1>
                   <div className='flex w-[70%] flex-wrap space-x-1 pt-2'>
                   
-                    {data?.data?.data?.required_platforms.map(items=>{
+                    {data?.data?.data?.platform.map(items=>{
                       return <Detail text= {items}></Detail>
                     })}
                   </div>
@@ -104,13 +104,13 @@ const CampaignDetailInfluencer = () => {
                   <h1 className='text-xl text-black font-railway'>
                     Due By
                   </h1>
-                  <Detail text={data.data.data.due_date}/>
+                  <Detail text={data.data.data.deliveryDate}/>
                 </div>
                 <div className='space-y-2'>
                   <h1 className='text-xl text-black font-railway'>
                     Compensation
                   </h1>
-                  <Detail text={data.data.data.compensation}/>
+                  <Detail text="Cash"/>
                 </div>
 
 
@@ -120,7 +120,7 @@ const CampaignDetailInfluencer = () => {
               <h1 className='text-xl text-black font-railway'>Information Requests</h1>
               <p className='text-base text-grey font-semibold'>Additional information lets brand know if you are a best fit for the campaign</p>
                 <div className='flex flex-col items-start space-y-3 p-6 border rounded-3xl shadow-md'>
-                      {data.data.data.questions.map((items, i)=>{
+                      {data?.data?.data?.questions.map((items, i)=>{
                         return (<CampaignQuestions text={items} i={i}></CampaignQuestions>)
                       })}
                 </div>

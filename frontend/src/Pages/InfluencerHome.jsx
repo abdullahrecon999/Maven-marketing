@@ -158,6 +158,7 @@ const InfluencerHome = () => {
                 modules={[Navigation]}
                 className="mySwiper w-full"
               >
+                
                 {data?.data?.data.map(item=>{
                 return <SwiperSlide>
                   <CampaignCard  
@@ -165,7 +166,7 @@ const InfluencerHome = () => {
                   brandName={item?.brand?.name}
                   title={item?.title}
                   description={item?.description}
-                  banner={item?.banner}
+                  banner={item?.bannerImg}
                   id={item["_id"]} /></SwiperSlide>
                   
               })}
