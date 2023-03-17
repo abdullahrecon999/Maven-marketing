@@ -21,13 +21,41 @@ const campaignSchema = new mongoose.Schema({
     type: Array,
     default: ["Any"]
   },
-  
   description: {
     type: String,
   },
   platform:{
     type: Array,
     default: ["Any"]
+  },
+  status: {
+    type: String,
+    default: "draft"
+  },
+  bannerImg: {
+    type: String,
+  },
+  tags:{
+    type: Array,
+  },
+  questions: {
+    type: Array,
+  },
+  audience: {
+    type: Array,
+    default: ["Any"]
+  },
+  campaignFiles: {
+    type: Array,
+  },
+  campaignLinks: {
+    type: Array,
+  },
+  deliveryDate: {
+    type: Date,
+  },
+  campaignType: {
+    type: Array,
   }
 }, { timestamps: true });
 

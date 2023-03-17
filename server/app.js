@@ -24,7 +24,8 @@ var campaign = require("./routes/campaign")
 var app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:5000',
+    //multiple origins
+    origin: "http://localhost:5173",
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     optionsSuccessStatus: 200,
     credentials: true,

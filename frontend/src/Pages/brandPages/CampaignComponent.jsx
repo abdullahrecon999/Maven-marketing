@@ -1,4 +1,3 @@
-import { SingleCampaign } from './SingleCampaign';
 import React from 'react'
 import campaigns from './campaigndata'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';

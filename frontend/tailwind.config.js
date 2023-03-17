@@ -38,5 +38,9 @@ module.exports = {
   
   }
   },
-  plugins: [],
+  plugins: [
+    require("daisyui"),
+    require('@tailwindcss/line-clamp'),
+    require('tailwind-scrollbar')
+  ],
 }
