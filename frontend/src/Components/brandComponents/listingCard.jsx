@@ -56,7 +56,7 @@ export const ListingCard = ({ avatar, name, social, followers, ratings, price, d
 						</div>
 					) : (
 						<div className="flex justify-center">
-							<img className="object-cover h-[280px] w-[270px]" src={banner} />
+							<img className="object-cover h-[280px] w-[270px]" src={banner}  alt="abc"/>
 						</div>
 					)
 				}

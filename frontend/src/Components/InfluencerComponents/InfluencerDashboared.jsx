@@ -1,7 +1,7 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {Box} from '@mui/material'
 import { useTheme } from '@mui/material/styles';
-
+import CampaignCard from "./CampaignCard"
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -11,6 +11,9 @@ import Button from "@mui/material/Button"
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import axios from "axios"
+import {useQuery} from "@tanstack/react-query"
+import { AuthContext } from '../../utils/authProvider';
 function DashboardCard ({title, subtitle, buttonText}){
   const theme = useTheme();
 
@@ -77,30 +80,30 @@ const CardDate = ()=> {
   )
 }
 
-const CampaignCard = ()=>{
-    return(<div className="flex flex-col border rounded-xl w-[100%] mt-2 h-[95%] md:w-[230px] shadow-xl hover:translate-y-1 hover:shadow-2xl">
+// const CampaignCard = ()=>{
+//     return(<div className="flex flex-col border rounded-xl w-[100%] mt-2 h-[95%] md:w-[230px] shadow-xl hover:translate-y-1 hover:shadow-2xl">
  
-              <div className='flex p-3   space-x-4'>
-                <CampaignIcon className=' text-4xl text-green'/>
-                <div className='flex flex-col '>
-                  <h1 className="font-railway text-base text-black">Campaign Name</h1>
-                  <h1 className= "font-railwat text-sm text-grey">Work with brand Name</h1>
-                </div>
-              </div>
-              <img src={image} alt="asjkshd" className="object-cover h-[54%] w-[100%] opacity-50 hover:opacity-100  "></img>
-              {/* <div className='flex flex-col mt-1 '>
-                <h4 className='text-xxs font-railway text-grey'>Category</h4>
-                <h1 className='font-Andika text-white px-2 py-1 mr-1 mb-2 rounded-full text-xs w-[80px] bg-green text-center'>twitter</h1>
-              </div> */}
+//               <div className='flex p-3   space-x-4'>
+//                 <CampaignIcon className=' text-4xl text-green'/>
+//                 <div className='flex flex-col '>
+//                   <h1 className="font-railway text-base text-black">Campaign Name</h1>
+//                   <h1 className= "font-railwat text-sm text-grey">Work with brand Name</h1>
+//                 </div>
+//               </div>
+//               <img src={image} alt="asjkshd" className="object-cover h-[54%] w-[100%] opacity-50 hover:opacity-100  "></img>
+//               {/* <div className='flex flex-col mt-1 '>
+//                 <h4 className='text-xxs font-railway text-grey'>Category</h4>
+//                 <h1 className='font-Andika text-white px-2 py-1 mr-1 mb-2 rounded-full text-xs w-[80px] bg-green text-center'>twitter</h1>
+//               </div> */}
               
-              <div className='flex-start flex justify-between mx-3 pt-3 '>
+//               <div className='flex-start flex justify-between mx-3 pt-3 '>
                   
-                  <CardDate></CardDate>
-                  <AttachMoneyIcon className= "text-lg text-green"></AttachMoneyIcon>
-              </div>
+//                   <CardDate></CardDate>
+//                   <AttachMoneyIcon className= "text-lg text-green"></AttachMoneyIcon>
+//               </div>
               
-     </div>)
-}
+//      </div>)
+// }
 
 const CampaignCarasoul = ()=>{
   return (<div className=' overflow-x-auto flex flex-1 space-x-4 bg-orange-500 w-[100%] '>
@@ -119,12 +122,7 @@ const InfluencerDashboaredCampaign = ({onViewClick})=>{
         
       </div>
       <hr></hr>
-      <div className="flex flex-col  px-5 space-x-3 md:flex-row">
-        <CampaignCard></CampaignCard>
-        <CampaignCard></CampaignCard>
-        <CampaignCard></CampaignCard>
-        
-      </div>
+      
 
      </div>       
            
@@ -132,127 +130,56 @@ const InfluencerDashboaredCampaign = ({onViewClick})=>{
 }
 
 const InfluencerDashboared = ({onCampaignViewClick}) => {
+
+  const [data, setdata] = React.useState({})
+
+  React.useEffect(()=>{
+    async function getData(){
+      const user = JSON.parse(localStorage.getItem("user"))
+      
+      const data = await axios.get("http://localhost:3000/influencer/getmyContracts/"+user["_id"])
+      setdata(data.data.data)
+      
+    }
+    getData()
+    
+  },[])
+  // const {data, isLoading, isError, isSuccess} = useQuery(["getMyContracts"], ()=>{
+
+  //   return axios.get("http://localhost:3000/influencer/getmyContracts/")
+  // })
+  
   return (
-    <Box sx={{display: "flex"}}>
-        <Box sx={{display: "flex", flex: 1,
-          flexDirection: "column",
-          
-          }}>
-            <Box
-            sx={{
-              display: "flex",
-              flexDirection: {
-                sm: "column",
-                md: "row",
-                xs: "column"
-              },
-              paddingTop: 2
-            }}
-            >
-              <Box 
-                sx={{
-                  display: "flex",
-                  flexDirection: {
-                    md: "row",
-                    sm: "row",
-                    xs: "column"
-                  }
-                }}
-              >
-                <DashboardCard title="Bid on Campaigns" subtitle="Put yourself out there to collaborate with brands" buttonText="submit Bids"></DashboardCard>
-                <DashboardCard title="View All campaigns" subtitle="view campaings in order to collaborate with brands"  buttonText="View Campaigns"></DashboardCard>
-              </Box>
-              <Box>
-                <PayoutCard title="Payouts" subtitle= "your pending and available paoyouts are here" buttonText="View"  amount={10}></PayoutCard> 
-              </Box>
-            </Box>
+  <div className='overflow-y-auto h-96 p-10 rounded-xl  bg-slate-50 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'>
+    <h1 className='font-bold mb-2'>Campaing that you have open contracts</h1>
+    
+    {Object.keys(data).length !== 0?<>
+      {data.map(item=>{
+        return (<>
+        <div className="border w-full rounded-xl h-20 p-2 bg-white flex items-center hover:shadow-lg">
+			<div className="avatar">
+				<div className="w-14 rounded">
+					<img src={item.campaignId.banner}  alt="src"/>
+				</div>
+			</div>
+			<div className="ml-4">
+				<div className="text-sm  font-bold text-gray-900">{item.campaignId.title}</div>
+				<div className="text-sm text-gray-500">
+					<time dateTime="2020-01-07"></time>
+				</div>
+			</div>
+			<div className="ml-auto">
+				
+				<div className="badge badge-accent">open</div>
+			</div>
+		</div>
+    </>
+        
+        )
+      })}
+      </> : <></>}
 
-            <InfluencerDashboaredCampaign onViewClick={onCampaignViewClick}></InfluencerDashboaredCampaign>
-
-        </Box>
-        <Box 
-          sx={{
-            
-            flex: 0.5,
-            border:0.5,
-            display: {
-              xs: "none",
-              sm: "none",
-              md: "flex"
-            },
-            flexDirection: 'column',
-            borderColor: "divider",
-            boxShadow: 0.5,
-            padding : 2,
-            backgroundColor: "#fafafa",
-            
-
-          }}
-        >
-          <Box sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent : "space-between",
-            marginBottom: 4
-            
-          }}>
-            <h1 className="text-lg font-railway">Add Platform</h1>
-            <h1 className='text-blue font-bold font railway text-base'> Why?</h1>
-          </Box>
-
-          <Box
-          
-            sx= {{
-              display: "flex",
-              width: "80%",
-              padding: 1,
-              
-              justifyContent: "center",
-              paddingLeft: 2,
-              paddingRight: 2,
-              marginLeft: 6,
-              marginBottom: 1,
-              border:1,
-              borderRadius: 2,
-              borderColor: "divider"
-
-            }}
-          >
-            <div className='flex space-x-2'>
-            <h1> logo</h1>
-            <h1 className='text-black font-railway text-base'>connect with platform</h1>
-            </div>
-          </Box>
-
-          <Box
-            sx= {{
-              display: "flex",
-              width: "80%",
-              padding: 1,
-              
-              justifyContent: "center",
-              paddingLeft: 2,
-              paddingRight: 2,
-              marginLeft: 6,
-              marginBottom: 1,
-              border:1,
-              borderRadius: 2,
-              borderColor: "divider"
-
-            }}
-          >
-            <div className='flex space-x-2'>
-            <h1> logo</h1>
-            <h1 className='text-black font-railway text-base'>connect with platform</h1>
-            </div>
-          </Box>
-          
-
-          
-          
-
-        </Box>
-    </Box>
+  </div>
   )
 }
 

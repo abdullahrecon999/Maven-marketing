@@ -1,7 +1,7 @@
 import React , {useContext}from 'react'
 import {Formik, Form} from "formik"
 import { TextField } from '@mui/material'
-import  {useMutation} from "@tanstack/react-query"
+import  {useMutation} from "react-query"
 import axios from "axios"
 import CloseIcon from '@mui/icons-material/Close';
 import {AuthContext} from "../../utils/authProvider";

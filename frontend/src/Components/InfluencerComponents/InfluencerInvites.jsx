@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import BidsTable from './table'
 import Search from "./Search"
-import {useQuery, useMutation} from "@tanstack/react-query"
+import {useQuery, useMutation} from "react-query"
 import axios from "axios"
 import { AuthContext, AuthProvider} from "../../utils/authProvider"
 import InfluencerGenaricModal from './InfluencerGenaricModal'

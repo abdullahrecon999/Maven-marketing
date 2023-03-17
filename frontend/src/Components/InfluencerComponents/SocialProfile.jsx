@@ -1,5 +1,5 @@
 import React , {useState, lazy, Suspense, useMemo, useContext, useEffect}from 'react'
-import  {useMutation, useQuery} from "@tanstack/react-query"
+import  {useMutation, useQuery} from "react-query"
 import image from "../../images/profile.jpg"
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
@@ -240,12 +240,12 @@ const SocialProfile = () => {
         setOpen(false)
     }
   return (
-    <div className='flex'>
+    <div className='flex mx-auto container my-3 shadow-md'>
 
         {open? <EditProfile onSave={setOpen}/>: <Profile onEdit= {handleEdit}/>}
         <InitialOtherDetails></InitialOtherDetails>
 
-        <div className='flex-[0.75] bg-slate-50 border-l-2 shadow'>
+        <div className='flex-[0.75] bg-slate-50 border-l-2 shadow '>
             <AddConnection></AddConnection>
         </div>
     </div>

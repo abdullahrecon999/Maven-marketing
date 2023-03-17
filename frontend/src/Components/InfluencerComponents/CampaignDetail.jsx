@@ -1,6 +1,6 @@
 import React ,  {useState}from 'react'
 import { useLocation } from 'react-router-dom'
-import {useQuery} from "@tanstack/react-query"
+import {useQuery} from "react-query"
 import axios from "axios"
 import HelpIcon from '@mui/icons-material/Help';
 import BidModal from './BidModal';
@@ -57,7 +57,7 @@ const CampaignDetailInfluencer = () => {
   }
   return (
     
-    <div className='relative container mx-auto'>
+    <div className='relative container mx-auto my-16'>
     {state?.invite && <div className='fixed w-[100%] bg-white shadow-xl flex justify-end items-center -mx-5 px-9 py-4 space-x-1'>
       
         <h1 className='text-base text-grey '>Accept or decline the invite?</h1>
@@ -69,7 +69,7 @@ const CampaignDetailInfluencer = () => {
       
       {open && <BidModal data = {data.data.data.questions} brand={ data.data.data.brand["_id"]} id={data.data.data["_id"]} onClose={handleClose}></BidModal>}
         <div className='flex flex-col space-y-4'>
-          <div className="flex space-x-2 rounded-3xl">
+          <div className="flex space-x-2 rounded-3xl shadow-md">
               <div className='flex bg-gradient-to-r from-blue rounded-l-3xl to-green w-[65%] h-[55vh] bg-red-500 place-items-end pl-5 pb-4'>
                   <h1 className='text-white text-4xl font-railway'>{data.data.data.title} </h1>
               </div>
@@ -139,20 +139,7 @@ const CampaignDetailInfluencer = () => {
           
           <div>
             <h1>Similar Campaigns</h1>
-            <Carousel>
-                <div>
-                    <img src="assets/1.jpeg" />
-                    <p className="legend">Legend 1</p>
-                </div>
-                <div>
-                    <img src="assets/2.jpeg" />
-                    <p className="legend">Legend 2</p>
-                </div>
-                <div>
-                    <img src="assets/3.jpeg" />
-                    <p className="legend">Legend 3</p>
-                </div>
-            </Carousel>
+            
 
           </div>
 

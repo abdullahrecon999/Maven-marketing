@@ -4,7 +4,24 @@ var router = express.Router();
 
 router.get("/campaigns", async(req, res, next)=>{
     try{
-      const data = await Campaign.find({}).populate("brand")
+      const data = await Campaign.find({status:{$ne: "draft"}}).populate("brand")
+      console.log(data)
+      res.status(200).json({
+        status: "success",
+        data
+        
+      })
+    }catch(e){
+      console.log(e)
+      res.status(502).json({
+        status: "error"
+      })
+    }
+  })
+
+  router.get("/campaigns/limit", async(req, res, next)=>{
+    try{
+      const data = await Campaign.find({status:{$ne: "draft"}}).limit(10).populate("brand")
       console.log(data)
       res.status(200).json({
         status: "success",

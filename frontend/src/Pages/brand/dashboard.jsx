@@ -24,8 +24,8 @@ const props = {
     }
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
-      openNotificationWithIcon('success');
-      form.resetFields();
+      // openNotificationWithIcon('success');
+      // form.resetFields();
       return info.file.name;
     } else if (status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
