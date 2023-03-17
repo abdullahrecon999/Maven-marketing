@@ -1,13 +1,45 @@
-import React ,  {useState}from 'react'
+import React ,  {useState, useEffect}from 'react'
 import { useLocation } from 'react-router-dom'
-import {useQuery} from "react-query"
+import {useQuery, useMutation} from "react-query"
 import axios from "axios"
 import HelpIcon from '@mui/icons-material/Help';
 import BidModal from './BidModal';
 import Loader from './Loader';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
-
+import BidsTable from './table';
+import InfluencerGenaricModal from "./InfluencerGenaricModal"
+import CloseIcon from '@mui/icons-material/Close';
+import DetailBox from './DetailBox';
+const columns = [
+  { field: 'id', headerName: 'ID', width: 90 },
+  {
+    field: 'title',
+    headerName: 'Campaign Title',
+    width: 150,
+    
+  },
+  {
+    field: 'brandName',
+    headerName: 'Brand Name',
+    width: 150,
+    
+  },
+  {
+    field: 'submittedAt',
+    headerName: 'Submitted At',
+    
+    width: 110,
+    
+  },
+  {
+    field: 'status',
+    headerName: 'Status',
+    description: 'This column has a value getter and is not sortable.',
+    sortable: false,
+    width: 110,
+  }
+];
 
 const Detail = ({text})=>{
   return (<h1 className='px-2 text-center py-1 rounded-full  text-grey border border-grey'>
@@ -18,10 +50,88 @@ const Detail = ({text})=>{
 const CampaignQuestions = ({text, i})=>{
   return (<h1 className='border-b-2 py-2 px-3 w-[100%] text-black font-railway text-base'><HelpIcon></HelpIcon> {i+1}. {text}</h1>)
 }
+
+
+const InfluencerBidsDetailModal = ({handleClose, id})=>{
+
+  const {isLoading, data, isError, isSuccess} = useQuery(["getbiddetails"],
+    ()=>{
+      return axios.get(`http://localhost:3000/brand/getbiddetails/${id}`,
+      {headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true,
+    })
+    }
+  )
+
+  const handlebidAccept = (id)=>{
+    return  axios.post(`http://localhost:3000/influencer/invite/reject/${id}`, {
+      accepted: false,
+      rejected: true
+    },
+    {headers: {
+      'Content-Type': 'application/json'
+    },
+    withCredentials: true,
+  })
+}
+
+  
+
+const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutation(handlebidAccept)
+
+  return (<InfluencerGenaricModal>
+
+<div className='h-full'>
+
+<div className='flex justify-end bg-slate-200'>
+        <CloseIcon onClick={()=>{
+          handleClose()
+        }} className=" hover:bg-slate-100"></CloseIcon>
+{console.log("the id of the bid is", id)}
+        </div >
+
+        <div className='flex flex-col'>
+          <h1 className='text-3xl text-bold text-gray-800 font-railway'>Proposal Details</h1>
+          <div className='h-full  flex flex-col'>
+              <h1>{data?.data?.data?.sender?.name}</h1>
+              <p>{data?.data?.data?.discription}</p>
+
+              <div className='flex justify-between'>
+                  <div>
+                    {
+                     data?.data?.data?.sender?.country.map(item=>{
+                      return <Detail text={item}></Detail>
+                     }) 
+                    }
+                  </div>
+              </div>
+
+              <div>
+                <button className='bg-blue px-3 py-2 rounded-full text-white' onClick={()=>{
+                  
+                }}> Accept Bid</button>
+              </div>
+          </div>
+        </div>
+</div>
+      
+  </InfluencerGenaricModal>)
+
+}
+
 const CampaignDetailInfluencer = () => {
   const {state} = useLocation()
   const [open, setOpen] = useState(false)
-  
+  const [user, setUser] = useState({})
+  const [bidsdata, setData] = useState({})
+  const [close, setClose] = useState(false)
+  const [id, setId] = useState("");
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"))
+    setUser(user)
+  },[])
 
   const handleClose = ()=> {
     setOpen(!open)
@@ -30,8 +140,28 @@ const CampaignDetailInfluencer = () => {
   const handleOpen = ()=> {
     setOpen(!open)
   }
-  console.log(state.id)
 
+  const handleBidOpen = (id)=>{
+    setId(id);
+    setClose(true)
+  }
+
+  const handleBidClose =()=>{
+    setClose(!close)
+  }
+  
+  const {isLoading:bidsIsloading, data:bids, isError:bidsIsError} = useQuery(["getallbids"],
+    ()=>{
+      return axios.get(`http://localhost:3000/brand/getallbids/${state.id}`,
+      {headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true,
+    })
+    }
+    ,
+    
+  )
   const {isLoading, data, isError, isSuccess} = useQuery(["getCampaignDetails"],
     ()=>{
       return axios.get(`http://localhost:3000/campaign/campaigns/details/${state.id}`,
@@ -42,6 +172,27 @@ const CampaignDetailInfluencer = () => {
     })
     }
   )
+
+  useEffect(()=>{
+    console.log(user)
+    if(isSuccess){
+      const data= bids?.data.data.map((item,i)=>{
+  
+        return {
+          id: item["_id"],
+          title: item?.campaignId?.title,
+          brandName: item?.to.name,
+          
+          submittedAt: item?.updatedAt,
+          status: "Pending"
+    
+        }
+      })
+      
+      setData(data)
+    }
+  },[bids?.data?.data])
+  
 
   
   if(isLoading){
@@ -137,11 +288,17 @@ const CampaignDetailInfluencer = () => {
           </div>
           <button onClick={()=> handleOpen()}  className='bg-blue text-center text-white font-railway py-2 px-3 rounded-full shadow hover:bg-indigo-600 md:hidden'> Submit a Bid</button>
           
-          <div>
-            <h1>Similar Campaigns</h1>
-            
-
-          </div>
+          {close && <InfluencerBidsDetailModal handleClose={handleBidClose} id={id} ></InfluencerBidsDetailModal>}
+          {user?.role === "brand"? <div className='flex flex-col item-center border bg-slate-100 p-10'>
+                    <div className='my-4'>
+                    <h1 className="text-3xl text-gray-800 font-railway ">Bids</h1>
+                    <p className='text-xl text-gray-500'>The bids place by the influencers are show here</p>
+                    </div>
+                    <div className='py-10 bg-white flex justify-center'>
+                    <BidsTable rows={bidsdata} columns={columns} onOpen={handleBidOpen}></BidsTable>
+                    </div>
+          </div>:
+          null}
 
         </div>
 

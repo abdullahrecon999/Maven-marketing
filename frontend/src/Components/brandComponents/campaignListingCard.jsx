@@ -12,9 +12,12 @@ export function CampaignListing({banner, title, date, status, id}) {
 		{
 			key: '1',
 			label: (
-				<a href="#">
+				<Link to="/campaigndetails" state={{
+					id: id
+				}}
+					>
 					Open
-				</a>
+				</Link>
 			),
 		},
 		{

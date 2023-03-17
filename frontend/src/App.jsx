@@ -98,6 +98,7 @@ function App() {
               <Route path='/marketplace' element={<Marketplace />} ></Route>
               <Route path='/influencerlisting' element={<InfluencerListing />} ></Route>
               <Route path='/influencerprofile' element={<InfluencerProfile />} ></Route>
+              <Route path='/campaigndetails/' element={<CampaignDetailInfluencer/>} ></Route>
             </Route>
 
             {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>
