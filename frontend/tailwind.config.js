@@ -1,16 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  important: "#root",
   theme: {
-    screens: {
-      sm: '480px',
-      md: '786px',
-      lg: '986px',
-      xl: "1440px"
-    },
     fontSize: {
       xxs: '0.6rem',
       xs: '0.75rem',
@@ -44,3 +38,4 @@ module.exports = {
     require('tailwind-scrollbar')
   ],
 }
+

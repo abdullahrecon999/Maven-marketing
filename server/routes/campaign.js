@@ -71,6 +71,22 @@ router.get("/campaigns", async(req, res, next)=>{
     }
   })
 
+  //View campaign details by its id
+  router.get("/view/:id", async(req, res, next)=>{
+    try{
+      const data = await Campaign.findOne({_id: req.params.id})
+      res.status(200).json({
+        status: "success",
+        data
+      })
+    }catch(e){
+      console.log(e)
+      res.status(502).json({
+        status: "error"
+      })
+    }
+  })
+
   // update Campaign details that have changed in body of request
   router.patch("/update/:id", async(req, res, next)=>{
     try{

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { ListingCard } from "../components/listingCard";
+import { ListingCard } from "../../Components/brandComponents/listingCard";
 import Pagination from '@mui/material/Pagination';
 import TextField from '@mui/material/TextField';
 import { Button, Modal, Slider, Switch, InputNumber, Divider, Checkbox, Select, Dropdown } from 'antd';
@@ -297,7 +297,7 @@ export const Marketplace = () => {
                   onChange([value, inputValue[1]])
                 }}
               />
-              <divider className="lg:divider divider-vertical lg:w-20" />
+              <div className="lg:divider divider-vertical lg:w-20" />
               <InputNumber
                 min={1000}
                 max={100000}
@@ -500,23 +500,19 @@ export const Marketplace = () => {
           </div>
         </div>
 
-        <div className="border border-purple-700 mb-2">
+        <div className="mb-2">
           <h1 className="font-bold">All Influencers</h1>
         </div>
 
-        <div className="border border-purple-700 flex flex-wrap justify-between gap-3">
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
-          <ListingCard />
+        <div className="flex flex-wrap justify-between gap-3">
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
         </div>
 
         <div className="flex justify-center p-5">

@@ -3,6 +3,8 @@ import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Divid
 import { message, Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
+import { useParams  } from "react-router-dom";
+import { useQuery } from "react-query";
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -27,6 +29,15 @@ const props = {
 };
 
 export function LaunchCampaign() {
+
+	let { id } = useParams();
+
+	const fetchCampaigns = async () => {
+		const res = await fetch("http://localhost:3000/campaign/view/"+id);
+		return res.json();
+	};
+	const { data: campaign, isLoading, isError, isSuccess } = useQuery("campaign", fetchCampaigns);
+
 	const [open, setOpen] = useState(false);
 	const [form] = Form.useForm();
 
@@ -77,6 +88,7 @@ export function LaunchCampaign() {
 
 	return (
 		<div data-theme="cupcake">
+			{console.log(campaign)}
 			<div className="mb-3 flex justify-between sticky bg-white top-16 z-40 items-center pl-3 pr-3 h-12 border rounded-bl-xl rounded-br-xl">
 				<p className="text-xl font-bold">Edit Campaign</p>
 				<div className="flex gap-2">
@@ -85,10 +97,17 @@ export function LaunchCampaign() {
 				</div>
 			</div>
 			<div className="p-2">
-				<Form layout="vertical" form={form} hideRequiredMark onFinish={onFinish}>
+			{
+				isLoading ? (
+					<p>Loading...</p>
+				) : isError ? (
+					<p>Error</p>
+				) : isSuccess ? (
+					<Form layout="vertical" form={form} hideRequiredMark onFinish={onFinish}>
 					<Row gutter={16}>
 						<Col span={24}>
 							<Form.Item
+								initialValue={campaign.data.title}
 								name="title"
 								label={<span className="text-base font-bold">Campaign Title</span>}
 								rules={[
@@ -275,6 +294,14 @@ export function LaunchCampaign() {
 						</Col>
 					</Row>
 				</Form>
+				) : (
+					<div className="flex flex-col items-center justify-center h-full">
+						<div className="flex flex-col items-center justify-center">
+							<CheckCircleOutlined className="text-6xl text-green-500" />
+							<h1 className="text-2xl font-bold">Campaign Created Successfully</h1>
+						</div>
+					</div>
+			)}
 			</div>
 		</div>
 	);

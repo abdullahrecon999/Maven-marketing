@@ -35,6 +35,9 @@ import CampaignDetail from './Pages/brandPages/CampaignDetail';
 import { AuthContext } from './utils/authProvider';
 import ActivationRequests from "./Pages/adminPages/ActivationRequests"
 import { BrandHome } from './Pages/brand/brandHome';
+import { Marketplace } from './Pages/brand/marketplace';
+import { InfluencerListing } from './Pages/brand/influencerListing';
+import { InfluencerProfile } from './Pages/brand/influencerProfile';
 
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -59,7 +62,7 @@ function App() {
 
   return (
     <Router>
-        <div className='app'>
+        <div className='app' data-theme="cupcake">
         {loading? (<h1>loadig</h1>) : (
           <Suspense fallback={<div>loading</div>}>
             <Routes>
@@ -91,6 +94,9 @@ function App() {
 
               <Route path='/brandhome' element={<BrandHome/>} ></Route>
               <Route path='/editcampaign/:id' element={<LaunchCampaign/>} ></Route>
+              <Route path='/marketplace' element={<Marketplace />} ></Route>
+              <Route path='/influencerlisting' element={<InfluencerListing />} ></Route>
+              <Route path='/influencerprofile' element={<InfluencerProfile />} ></Route>
             </Route>
 
             {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>
