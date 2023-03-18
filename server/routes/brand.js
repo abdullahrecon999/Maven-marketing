@@ -204,9 +204,20 @@ router.post("/createContract", async (req, res)=>{
     const data= req.body
 
     try{
-      
-      await Contract.create(req.body)
 
+    const contract =  await Contract.create(req.body)
+     const msg = {
+      text: "Contract available",
+      users:[
+        data["sender"].toString(),
+        data["to"].toString()
+      ],
+      sender: data["sender"],
+      msgType: "contract",
+      contract: contract["_id"]
+    }
+    await Message.create(msg)
+    console.log(msg)
       res.status(200).json({
         status: "success"
       })
@@ -238,7 +249,7 @@ router.get("/getallbids/:id", async (req, res)=>{
 router.get("/getbiddetails/:id", async (req, res)=>{
   const id = req.params.id
   try{
-    const data = await Bids.findOne({_id:id}).populate("sender")
+    const data = await Bids.findOne({_id:id}).populate("sender").populate("campaignId")
     res.status(200).json({
       status: "success",
       data
@@ -314,6 +325,23 @@ router.post("/bid/accept/:id", async(req, res, next)=>{
       status: "error",
       msg: "an error occured"
 
+    })
+  }
+})
+
+
+router.get("/getacceptedbids/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await Bids.find({campaignId:id, accepted:true}).populate("campaignId", "title").populate("sender", ["name", "photo"])
+    console.log(data)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
     })
   }
 })
