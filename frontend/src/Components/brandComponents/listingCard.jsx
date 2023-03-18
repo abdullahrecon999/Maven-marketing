@@ -3,9 +3,9 @@ import React from 'react';
 import vid from '../../assets/pexels-mehmet-ali-turan-5512609.mp4'
 import HoverVideoPlayer from 'react-hover-video-player';
 
-export const ListingCard = ({ avatar, name, social, followers, ratings, price, description, banner, video }) => {
+export const ListingCard = ({ avatar, name, social, followers, ratings, price, description, banner, video, onclick }) => {
 	return (
-		<div className="card h-[430px] border flex bg-base-100 hover:shadow-xl rounded-xl max-w-[270px] min-w-[270px]">
+		<div onClick={onclick} className="card h-[430px] border flex bg-base-100 hover:shadow-xl rounded-xl max-w-[270px] min-w-[270px]">
 			<div className="p-3">
 
 				<div className="flex">

@@ -1,12 +1,31 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ListingCard } from "../../Components/brandComponents/listingCard";
 import Pagination from '@mui/material/Pagination';
 import TextField from '@mui/material/TextField';
 import { Button, Modal, Slider, Switch, InputNumber, Divider, Checkbox, Select, Dropdown } from 'antd';
+import { useQuery } from "react-query"
+let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+
+const fetchInfluencers = async () => {
+  const res = await fetch('http://localhost:3000/influencer/allinfluencers');
+  console.log(res)
+  return res.json();
+};
+
+const InfluencerListing = (id) => {
+  window.open('/influencerlisting/'+id,'_blank')
+}
 
 export const Marketplace = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [influencersData, setInfluencersData] = useState([]);
+  const { data:influencer, isLoading, isSuccess } = useQuery('influencer', fetchInfluencers, {onCompleted: setInfluencersData});
+
+  useEffect(() => {
+    setInfluencersData(influencer?.data ?? []);
+  }, [influencer?.data]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -505,12 +524,26 @@ export const Marketplace = () => {
         </div>
 
         <div className="flex flex-wrap justify-between gap-3">
-          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
-          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
-          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
-          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
-          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
-          <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          {
+            isLoading ? (
+              <div className="flex justify-center items-center">
+                <p>Loading</p>
+              </div>
+            ) : (
+              isSuccess && (
+                influencer.data.map((influencer) => (
+                  <ListingCard
+                    onclick={()=>InfluencerListing(influencer._id)}
+                    avatar={influencer.photo}
+                    name={influencer.name}
+                    followers={formatter.format(influencer.socialMediaHandles[0].followers)}
+                    banner={influencer.photo}
+                  />
+                ))
+              )
+            )
+          }
+          
           <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
           <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
         </div>

@@ -99,7 +99,7 @@ export function NavBar({avatar, name, email, role}) {
         </div>
 
         <div className="items-baseline space-x-4 mr-2 hidden lg:flex">
-          <Link to={role==="influencer"?"/influencerhome":"/brandhome"}
+          <Link reloadDocument to={role==="influencer"?"/influencerhome":"/brandhome"}
             
             className=" hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
           >
@@ -157,7 +157,7 @@ export function NavBar({avatar, name, email, role}) {
         </div>
 
         <div className="dropdown dropdown-end ml-1">
-          <label tabIndex={0} className="btn btn-circle avatar">
+          <label tabIndex={0} className=" avatar">
             <div className="avatar online placeholder">
               <div className="bg-neutral-focus text-neutral-content rounded-full w-10">
                 <img src={avatar} alt="avatar" />

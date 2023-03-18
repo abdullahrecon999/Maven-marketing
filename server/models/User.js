@@ -70,6 +70,9 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  registered: {
+    type: Boolean,
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

@@ -48,7 +48,7 @@ export function Dashboard({uid}) {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
-  const { data: influencer, isLoading, isError, isSuccess } = useQuery("influencer", getInfluencers);
+  const { data: influencer, isLoading, isError, isSuccess } = useQuery("influencer", getInfluencers, {fetchPolicy: "network-only"});
 
   const openNotificationWithIcon = (type) => {
     api[type]({

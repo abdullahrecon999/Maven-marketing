@@ -41,6 +41,39 @@ router.get("/topinfluencers", async(req, res, next)=>{
   }
 })
 
+// get all influencers using Influencer model name, photo, country, category, description, socialMediaHandels, language and registered
+router.get("/allinfluencers", async(req, res, next)=>{
+  try{
+    const data = await User.find({role: "influencer"}).select("name photo country category description socialMediaHandles language registered")
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
+
+// get influencer by id using Influencer model
+router.get("/influencer/:id", async(req, res, next)=>{
+  try{
+    const id = req.params.id
+    const data = await User.findOne({_id: id})
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
+
 // geting a particular user
 router.get("/:id", async (req, res, next) => {
     const id = req.params.id
