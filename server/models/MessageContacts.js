@@ -12,7 +12,7 @@ const contactSchema = new mongoose.Schema({
             ref: "User",
             
             default: null,
-            unique: true
+            
         },
     }
     ]

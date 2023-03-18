@@ -9,6 +9,9 @@ const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const User = require('../models/User');
 const Campaign = require('../models/Campaign');
 const Contract = require("../models/Contracts");
+const Bids = require("../models/Proposals")
+const contacts = require("../models/MessageContacts")
+const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 
@@ -215,4 +218,104 @@ router.post("/createContract", async (req, res)=>{
     }
   
 })
+
+router.get("/getallbids/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await Bids.find({campaignId:id, accepted:false}).populate("campaignId", "title").populate("sender", "name")
+    console.log(data)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.get("/getbiddetails/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await Bids.findOne({_id:id}).populate("sender")
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+
+router.post("/bid/accept/:id", async(req, res, next)=>{
+  const id = req.params.id
+  
+  try{
+    const data = await Bids.findOne({_id: id})
+    const val = {
+      accepted: true
+    }
+    if(Object.keys(data).length !==0){
+
+      await Bids.updateOne({_id: id}, val)
+
+    const msg = {
+    text: "Accepting the bid",
+    users:[
+      data["sender"].toString(),
+      data["to"].toString()
+    ],
+    sender: data["to"]
+  }
+
+  console.log("to",data["to"])
+  console.log("sender", data["sender"])
+    await Message.create(msg)
+      
+     const hasUser= await contacts.find({user:data["to"], "contacts.contact":data["sender"]})
+     
+     if(hasUser?.length){
+      console.log("hase user", hasUser)
+      res.status(200).json({
+        status: "success",
+        msg: "accepted"
+  
+      })
+     }
+     else{
+      console.log("haree user", hasUser)
+      await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
+      await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
+      res.status(200).json({
+        status: "success",
+        msg: "accepted"
+  
+      })
+     }
+      
+      
+    
+    }
+    else{
+      res.status(404).json({
+        status: "not found"
+
+      })
+    }
+  }
+  catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+      msg: "an error occured"
+
+    })
+  }
+})
+
 module.exports = router;

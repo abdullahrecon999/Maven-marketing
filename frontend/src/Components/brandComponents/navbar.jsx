@@ -6,13 +6,16 @@ import axios from "axios";
 import { useNavigate, Link } from 'react-router-dom';
 
 const logout = async () => {
-  const navigate = useNavigate();
-  await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
-    localStorage.removeItem('user')
-    navigate("/")
-  }).catch(err => {
-    console.log(err)
-  })
+  // const navigate = useNavigate();
+  localStorage.removeItem('user')
+  // navigate("/")
+
+  // await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
+  //   localStorage.removeItem('user')
+  //   navigate("/")
+  // }).catch(err => {
+  //   console.log(err)
+  // })
 }
 
 export function NavBar({avatar, name, email, role}) {
@@ -106,12 +109,12 @@ export function NavBar({avatar, name, email, role}) {
             Dashboard
           </Link>
 
-          <a
+          <Link to={role ==="influencer"?"/influencerchat":"/brandchat"}
             href="#"
             className="hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
           >
             Chat
-          </a>
+          </Link>
 
           <Link
             to={role ==="influencer"? "/CampaignMarketPlace": "#"}
