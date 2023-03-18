@@ -117,7 +117,7 @@ export function NavBar({avatar, name, email, role}) {
           </Link>
 
           <Link
-            to={role ==="influencer"? "/CampaignMarketPlace": "#"}
+            to={role ==="influencer"? "/CampaignMarketPlace": "/marketplace"}
             className="hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
           >
             Marketplace

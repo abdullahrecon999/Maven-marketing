@@ -531,7 +531,7 @@ export const Marketplace = () => {
               </div>
             ) : (
               isSuccess && (
-                influencer.data.map((influencer) => (
+                influencer?.data?.map((influencer) => (
                   <ListingCard
                     onclick={()=>InfluencerListing(influencer._id)}
                     avatar={influencer.photo}

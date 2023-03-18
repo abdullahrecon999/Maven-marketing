@@ -26,6 +26,10 @@ const messageSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    contract:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'contract'
+    }
     
 
 },
