@@ -222,7 +222,8 @@ router.post("/createContract", async (req, res)=>{
 router.get("/getallbids/:id", async (req, res)=>{
   const id = req.params.id
   try{
-    const data = await Bids.find({campaignId:id})
+    const data = await Bids.find({campaignId:id, accepted:false}).populate("campaignId", "title").populate("sender", "name")
+    console.log(data)
     res.status(200).json({
       status: "success",
       data
@@ -253,7 +254,7 @@ router.get("/getbiddetails/:id", async (req, res)=>{
 
 router.post("/bid/accept/:id", async(req, res, next)=>{
   const id = req.params.id
-  console.log("data    ",id)
+  
   try{
     const data = await Bids.findOne({_id: id})
     const val = {
@@ -271,9 +272,13 @@ router.post("/bid/accept/:id", async(req, res, next)=>{
     ],
     sender: data["to"]
   }
+
+  console.log("to",data["to"])
+  console.log("sender", data["sender"])
     await Message.create(msg)
       
      const hasUser= await contacts.find({user:data["to"], "contacts.contact":data["sender"]})
+     
      if(hasUser?.length){
       console.log("hase user", hasUser)
       res.status(200).json({
@@ -283,6 +288,7 @@ router.post("/bid/accept/:id", async(req, res, next)=>{
       })
      }
      else{
+      console.log("haree user", hasUser)
       await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
       await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
       res.status(200).json({

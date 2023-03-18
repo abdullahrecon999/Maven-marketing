@@ -144,7 +144,7 @@ const InfluencerHome = () => {
         <div className="flex justify-between py-5 min-w-xl">
           <div className="flex-col card-body p-4 rounded-lg h-auto bg-base-100 w-full" data-theme="corporate">
             <div>
-              <h1 className="font-bold">Campaigns That you might linke</h1>
+              <h1 className="font-bold">Campaigns That you might like</h1>
               <div className="divider m-0"></div>
             </div>
 

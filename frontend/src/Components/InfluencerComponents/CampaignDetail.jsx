@@ -11,6 +11,7 @@ import BidsTable from './table';
 import InfluencerGenaricModal from "./InfluencerGenaricModal"
 import CloseIcon from '@mui/icons-material/Close';
 import DetailBox from './DetailBox';
+import { TailSpin } from 'react-loader-spinner';
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -21,13 +22,13 @@ const columns = [
   },
   {
     field: 'brandName',
-    headerName: 'Brand Name',
+    headerName: 'Influencer Name',
     width: 150,
     
   },
   {
     field: 'submittedAt',
-    headerName: 'Submitted At',
+    headerName: 'Recieved At',
     
     width: 110,
     
@@ -65,8 +66,9 @@ const InfluencerBidsDetailModal = ({handleClose, id})=>{
     }
   )
 
-  const handlebidAccept = (id)=>{
-    return  axios.post(`http://localhost:3000/influencer/invite/reject/${id}`, {
+  const handlebidAccept = ()=>{
+    console.log("the id in mutate is", id)
+    return  axios.post(`http://localhost:3000/brand/bid/accept/${id}`, {
       accepted: false,
       rejected: true
     },
@@ -79,7 +81,7 @@ const InfluencerBidsDetailModal = ({handleClose, id})=>{
 
   
 
-const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutation(handlebidAccept)
+const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess, status} = useMutation(handlebidAccept)
 
   return (<InfluencerGenaricModal>
 
@@ -92,27 +94,58 @@ const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutatio
 {console.log("the id of the bid is", id)}
         </div >
 
-        <div className='flex flex-col'>
-          <h1 className='text-3xl text-bold text-gray-800 font-railway'>Proposal Details</h1>
-          <div className='h-full  flex flex-col'>
-              <h1>{data?.data?.data?.sender?.name}</h1>
-              <p>{data?.data?.data?.discription}</p>
-
-              <div className='flex justify-between'>
-                  <div>
+        <div className='flex flex-col space-y-5 flex-1'>
+          <h1 className='text-3xl text-bold bg-slate-100 text-gray-800 font-railway'>Proposal Details</h1>
+          <div className='h-full  flex flex-col px-6  space-y-3'>
+              <h1 className="text-2xl text-gray-700  font-railway">{data?.data?.data?.sender?.name}</h1>
+              <div className='flex-1 min-h-[20vh]'>
+                <p>{data?.data?.data?.discription}</p>
+              </div>
+              
+              <div className='flex justif-between'>
+                  <div className="w-[50%] space-y-2">
+                    <h1 className="text-xl text-gray-700 font-railway">Category</h1>
+                    <div className="flex flex-wrap space-x-3 ">
                     {
-                     data?.data?.data?.sender?.country.map(item=>{
-                      return <Detail text={item}></Detail>
-                     }) 
-                    }
+                      
+                      data?.data?.data?.sender?.category.map(item=>{
+                       
+                       return <Detail text={item}></Detail>
+                      }) 
+                     }
+                    </div>
+                  </div>
+                  <div className="w-[50%] space-y-2">
+                    <h1 className="text-xl text-gray-700 font-railway">Platform</h1>
+                    <div className="flex flex-wrap space-x-3 ">
+                    {
+                      
+                      data?.data?.data?.sender?.category.map(item=>{
+                       
+                       return <Detail text={item}></Detail>
+                      }) 
+                     }
+                    </div>
                   </div>
               </div>
 
-              <div>
-                <button className='bg-blue px-3 py-2 rounded-full text-white' onClick={()=>{
-                  
-                }}> Accept Bid</button>
+              <div className='place-self-stretch space-x-3'>
+                <button className='bg-green px-3 py-2 rounded-full text-white'>View Profile</button>
+                <button disabled={isAcceptingSuccess} className='bg-blue px-3 py-2 rounded-full text-white' onClick={(id)=>{
+                  mutate(id)
+                }}> {isAccepting?<TailSpin
+                  height="20"
+                  width="20"
+                  color="white"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                  />:"Accept Bid"}</button>
               </div>
+              {console.log(status)}
+              {status==="success"&&<p className="text-red-500">Bid Accepted successfull</p>}
           </div>
         </div>
 </div>
@@ -181,7 +214,7 @@ const CampaignDetailInfluencer = () => {
         return {
           id: item["_id"],
           title: item?.campaignId?.title,
-          brandName: item?.to.name,
+          brandName: item?.sender?.name,
           
           submittedAt: item?.updatedAt,
           status: "Pending"
@@ -295,6 +328,7 @@ const CampaignDetailInfluencer = () => {
                     <p className='text-xl text-gray-500'>The bids place by the influencers are show here</p>
                     </div>
                     <div className='py-10 bg-white flex justify-center'>
+                      {console.log(bidsdata)}
                     <BidsTable rows={bidsdata} columns={columns} onOpen={handleBidOpen}></BidsTable>
                     </div>
           </div>:
