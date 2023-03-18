@@ -14,7 +14,7 @@ const bids = require("../models/Proposals")
 const contracts = require("../models/Contracts")
 const invites = require("../models/Invites")
 const contacts = require("../models/MessageContacts")
-const Contracts = require("../models/Contracts")
+
 const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
@@ -682,7 +682,34 @@ router.post("/invite/reject/:id", async(req, res, next)=>{
   }
 })
 
-router.post("/acceptcontract", ()=>{})
+router.post("/acceptcontract/:id", async (req, res) => {
+  const id= req.params.id
+  try{
+    const data = await contracts.find({_id:id})
+    await contracts.updateOne({_id:id}, {accepted:true})
+    const msg = {
+      text: "Contract accepted",
+      users:[
+        data["sender"].toString(),
+        data["to"].toString()
+      ],
+      sender: data["to"]
+    }
+    await Message.create(msg)
+    res.status(200).json({
+      status: "success",
+      
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+      msg: "an error occured",
+      message: e
+    
+    })
+  }
+})
 
 router.post("/rejectContract", ()=>{})
 
