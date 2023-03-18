@@ -538,6 +538,7 @@ export const Marketplace = () => {
                     name={influencer.name}
                     followers={formatter.format(influencer.socialMediaHandles[0].followers)}
                     banner={influencer.photo}
+                    description={influencer.description}
                   />
                 ))
               )

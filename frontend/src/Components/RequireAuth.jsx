@@ -5,6 +5,7 @@ import ErrorLogin from "../Pages/errorPages/notLoggedIn";
 import { NavBar } from "./brandComponents/navbar";
 import { Footer } from "./brandComponents/footer";
 import { useQuery } from "react-query";
+import Loader from "./InfluencerComponents/Loader.jsx";
 
 const fetchUser = async () => {
   // check if user exixts in local storage
@@ -31,17 +32,23 @@ const RequireAuth = ({ allowedRoles }) => {
   console.log("user2 ", localStorage.getItem('user'))
 
   return(
+    isLoading ? (
+      <div className="h-screen">
+        <Loader />
+      </div>
+    ) :
+    isSuccess && (
     allowedRoles.includes(user?.role)
         ? (
             <div>
-              <NavBar avatar={user.photo} name={user.name} email={user.email} role={user?.role} />
+              <NavBar avatar={user.photo} name={user.name} email={user.email} role={user?.role} id={user?._id} user={user} />
               <Outlet />
               <Footer />
             </div>
           )
         : user 
          ? <Navigate to="/unauthorized" state={{ from: location}} replace />
-         : <ErrorLogin />
+         : <ErrorLogin />)
   )
 }
 

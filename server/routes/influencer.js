@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
 // get 5 influencers with only id, name, social media, photo, and banner photo using Influencer model
 router.get("/topinfluencers", async(req, res, next)=>{
   try{
-    const data = await User.find({role: "influencer"}).limit(5).select("name photo socialMediaHandles")
+    const data = await User.find({role: "influencer"}).limit(5).select("name photo socialMediaHandles description")
     res.status(200).json({
       status: "success",
       data

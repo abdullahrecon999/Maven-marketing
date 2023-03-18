@@ -12,12 +12,15 @@ import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space } from
 import { message, Upload, notification } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { useQuery } from "react-query";
+import {v4} from "uuid"
+import { storage } from '../../utils/fireBase/fireBaseInit';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+
 const { Option } = Select;
 const { Dragger } = Upload;
 
 const props = {
   name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
   onChange(info) {
     const { status } = info.file;
     if (status !== 'uploading') {
@@ -35,6 +38,44 @@ const props = {
   onDrop(e) {
     console.log('Dropped files', e.dataTransfer.files);
   },
+  async customRequest({ file, onSuccess }) {
+    const storage = firebase.storage();
+    const metadata = {
+      contentType: 'image/jpeg'
+    }
+    const storageRef = await storage.ref();
+    const imageName = generateHashName(); //a unique name for the image
+    const imgFile = storageRef.child(`files/${imageName}`);
+    try {
+      const image = await imgFile.put(file, metadata);
+      onSuccess(null, image);
+    } catch (e) {
+      onError(e);
+    }
+  }
+};
+
+let uploadImage = async ({
+  file,
+  onSuccess,
+  onError,
+  onProgress,
+}) => {
+  const fileRef = ref(storage, `files/${file.name + v4()}`)
+  uploadBytes(fileRef, file).then(() => {
+    console.log("uploading the files in the db")
+
+    getDownloadURL(fileRef).then((url) => {
+      console.log("this is the file reference")
+      console.log(url)
+    }).then(() => {
+      console.log("this is the file reference")
+      onSuccess(null,file);
+    })
+
+  }).catch((e) => {
+    console.log(e)
+  })
 };
 
 const getInfluencers = async () => {
@@ -44,11 +85,11 @@ const getInfluencers = async () => {
   return data.data;
 }
 
-export function Dashboard({uid}) {
+export function Dashboard({ uid }) {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
-  const { data: influencer, isLoading, isError, isSuccess } = useQuery("influencer", getInfluencers, {fetchPolicy: "network-only"});
+  const { data: influencer, isLoading, isError, isSuccess } = useQuery("influencer", getInfluencers, { fetchPolicy: "network-only" });
 
   const openNotificationWithIcon = (type) => {
     api[type]({
@@ -70,30 +111,30 @@ export function Dashboard({uid}) {
     console.log('Success:', values);
     console.log(uid)
 
-    const data = {
-      brand: uid,
-      title: values.title,
-      description: values.description,
-      campaignType: values.campaignType,
-      deliveryDate: values.date,
-      bannerImg: values.file
-    }
+    // const data = {
+    //   brand: uid,
+    //   title: values.title,
+    //   description: values.description,
+    //   campaignType: values.campaignType,
+    //   deliveryDate: values.date,
+    //   bannerImg: values.file
+    // }
 
-    fetch("http://localhost:3000/campaign/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-       console.log(data);
-       openNotificationWithIcon('success');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // fetch("http://localhost:3000/campaign/create", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //    console.log(data);
+    //    openNotificationWithIcon('success');
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   return (
@@ -180,7 +221,7 @@ export function Dashboard({uid}) {
                 ]}
               >
                 <DatePicker
-                  placement="bottomRight"
+                  placement="bottomLeft"
                   style={{
                     width: '100%',
                   }}
@@ -190,18 +231,21 @@ export function Dashboard({uid}) {
             </Col>
             <Row gutter={16}>
               <Col span={28}>
-                <Form.Item 
-                  name="file"
+                <Form.Item
+                  name="Banner Photo"
                   label="File"
                   getValueFromEvent={props.onChange}
                 >
-                  <Dragger {...props}>
+                  <Dragger
+                    accept="image"
+                    customRequest={uploadImage}
+                  >
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
                     </p>
                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                     <p className="ant-upload-hint">
-                      Support for a single or bulk upload. Strictly prohibited from uploading company data or other
+                      Support for a single upload. Strictly prohibited from uploading company data or other
                       banned files.
                     </p>
                   </Dragger>
@@ -221,7 +265,7 @@ export function Dashboard({uid}) {
             <p>Create Campaign</p>
           </button>
         </div>
-        
+
         <ProfileStatusCard />
 
         <div className="flex justify-between py-10 flex-wrap gap-5">
@@ -339,7 +383,7 @@ export function Dashboard({uid}) {
                       {
                         influencer.map((item, index) => (
                           <SwiperSlide key={index}>
-                            <ListingCard avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0].followers} banner={item.photo} />
+                            <ListingCard description={item.description} avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0].followers} banner={item.photo} />
                           </SwiperSlide>
                         ))
                       }

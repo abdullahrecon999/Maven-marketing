@@ -40,6 +40,9 @@ import { InfluencerListing } from './Pages/brand/influencerListing';
 import { InfluencerProfile } from './Pages/brand/influencerProfile';
 import InfluencerAllCampaigns from './Components/InfluencerComponents/InfluencerAllCampaigns';
 import SocialProfile from './Components/InfluencerComponents/SocialProfile';
+import { BrandProfile } from './Pages/brand/brandProfile';
+import { LinkedInCallback } from 'react-linkedin-login-oauth2';
+
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
 // const Whyus = lazy(import('./Pages/Whyus'))
@@ -68,8 +71,8 @@ function App() {
           <Suspense fallback={<div>loading</div>}>
             <Routes>
              {/* Public Routes */}
-             <Route path='/' element={<Home/>} ></Route>
-             <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
+            <Route path='/' element={<Home/>} ></Route>
+            <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
             <Route path='/businesslogin' element={<BusinessLogin/>}></Route>
             <Route path='/adminLogin' element={<AdminLogin/>}></Route>
             <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
@@ -100,6 +103,8 @@ function App() {
               <Route path='/influencerprofile/:id' element={<InfluencerProfile />} ></Route>
               <Route path='/campaigndetails/' element={<CampaignDetailInfluencer/>} ></Route>
               <Route path='/brandchat' element={<Chat/>}></Route>
+              <Route path='/brandprofile' element={<BrandProfile/>}></Route>
+              <Route path='/brand/linkedin' element={<LinkedInCallback />}></Route>
             </Route>
 
             {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>

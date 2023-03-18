@@ -18,9 +18,8 @@ const logout = async () => {
   // })
 }
 
-export function NavBar({avatar, name, email, role}) {
-
-  
+export function NavBar({avatar, name, email, role, id, user}) {
+  const navigate = useNavigate();
 
   return (
     <div className="navbar bg-base-100 sticky top-0 z-50 " data-theme="cupcake">
@@ -169,7 +168,7 @@ export function NavBar({avatar, name, email, role}) {
           </label>
           <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
             <li>
-              <Link to={role==="influencer"? "/SocialProfile":""} className="justify-between">
+              <Link to={role==="influencer"? "/SocialProfile":"/brandprofile"} state={{user: user}} className="justify-between">
                 Profile
               </Link>
             </li>

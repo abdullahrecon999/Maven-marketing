@@ -66,7 +66,7 @@ export const ListingCard = ({ avatar, name, social, followers, ratings, price, d
 				<p className="text-xs font-bold">30$</p>
 			</div>
 			<div className="w-full p-1">
-				<p className="text-sm line-clamp-2">Test description added here to check the description description now Test description added here to check the description description now Test description added here to check the description description now</p>
+				<p className="text-sm line-clamp-2">{description}</p>
 			</div>
 		</div>
 	);

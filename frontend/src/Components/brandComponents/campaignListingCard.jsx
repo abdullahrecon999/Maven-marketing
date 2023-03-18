@@ -1,12 +1,29 @@
 import React, { useState } from "react";
 import { Tab } from '@headlessui/react'
 import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown, Space } from 'antd';
+import { Dropdown, Space, notification } from 'antd';
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 export function CampaignListing({banner, title, date, status, id}) {
 
 	const navigate = useNavigate();
+
+	const openNotification = () => {
+		notification.open({
+			message: 'Campaign Deleted',
+			description:
+				'Campaign has been deleted successfully',
+			icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+		});
+	};
+
+	const deleteCampaign = async () => {
+		const response = await axios.delete("http://localhost:3000/campaign/delete/"+id);
+		console.log(response);
+		message.success("Campaign Deleted");
+		openNotification();
+	}
 
 	const items = [
 		{
@@ -32,7 +49,7 @@ export function CampaignListing({banner, title, date, status, id}) {
 			key: '3',
 			danger: true,
 			label: (
-				<a href="#">
+				<a onClick={()=>deleteCampaign()}>
 					Delete
 				</a>
 			),

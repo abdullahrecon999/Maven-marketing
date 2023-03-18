@@ -1,5 +1,6 @@
 const Campaign = require("../models/Campaign");
 const express = require("express")
+const axios = require('axios');
 var router = express.Router();
 
 router.get("/campaigns", async(req, res, next)=>{
@@ -76,10 +77,15 @@ router.get("/campaigns", async(req, res, next)=>{
   router.post("/create", async(req, res, next)=>{
     try{
       const data = await Campaign.create(req.body)
+      let tags = await getKeywords(req.body.description, data._id)
+      // console.log("Tags Here:"+tags)
       res.status(200).json({
         status: "success",
         data
       })
+      
+      // set tags in campaign model
+      
     }catch(e){
       console.log(e)
       res.status(502).json({
@@ -152,5 +158,28 @@ router.get("/campaigns", async(req, res, next)=>{
       })
     }
   })
+
+  const getKeywords = async (description, id) => {
+
+    const url = "http://127.0.0.1:6000/keywords";
+    // make axios post call on url
+  
+    axios.post(url, {
+      description: description
+    })
+    .then(async function (response) {
+      // handle success
+      console.log(response.data);
+      //patch the campaign with the keywords in tags
+      const data = await Campaign.findOneAndUpdate({_id: id}, {tags: response.data}, {new: true})
+
+      return (response.data);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+      return (error);
+    })
+  }
 
   module.exports = router
