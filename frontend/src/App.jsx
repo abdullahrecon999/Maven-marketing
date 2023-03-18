@@ -40,6 +40,7 @@ import { InfluencerListing } from './Pages/brand/influencerListing';
 import { InfluencerProfile } from './Pages/brand/influencerProfile';
 import InfluencerAllCampaigns from './Components/InfluencerComponents/InfluencerAllCampaigns';
 import SocialProfile from './Components/InfluencerComponents/SocialProfile';
+import AccountNotVerified from './Pages/AccountNotVerified';
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
 // const Whyus = lazy(import('./Pages/Whyus'))
@@ -114,6 +115,7 @@ function App() {
               <Route path="/CampaignMarketPlace" element={<InfluencerAllCampaigns/>}></Route>
               <Route path='/SocialProfile' element={<SocialProfile/>}></Route>
               <Route path='/influencerchat' element={<Chat/>}></Route> 
+              <Route path='/accountnotverified' element={<AccountNotVerified/>} ></Route>
             </Route>
             
             

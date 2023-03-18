@@ -205,7 +205,11 @@ const InfluencerLogin = () => {
                 if(res.data.user.profileComplete === 0){
                     navigate("/profileCompletion")    
                 
-                }else{
+                }else if (res.data.user.profileActive === 0){
+                    navigate("/accountnotverified")
+                }
+                
+                else{
                 navigate("/influencerhome")
                 }
             }

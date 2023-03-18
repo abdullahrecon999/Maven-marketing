@@ -13,7 +13,7 @@ import ProfileImage from '../Components/ProfileImage';
 import axios from 'axios';
 import { AuthContext } from '../utils/authProvider';
 import image from "../images/profile.jpg"
-import {useMutation} from "@tanstack/react-query"
+import {useMutation} from "react-query"
 import { TailSpin } from 'react-loader-spinner';
 // need to add multiple array in coutries language and categories
 const style = {

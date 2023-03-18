@@ -125,7 +125,10 @@ router.post('/register', (req, res) => {
                 //res.redirect('/admin/login');
 
                 console.log('Here user: ', user);
-
+                await contacts.create({
+                  user: user["_id"],
+                  contacts: []
+                })
                 // Not working
                 // send email verification link
                 const verifyEmailToken = user.createEmailVerificationToken();
