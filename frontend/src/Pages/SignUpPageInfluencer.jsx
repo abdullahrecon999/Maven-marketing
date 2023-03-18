@@ -78,8 +78,8 @@ const SignUpPageInfluencer = () => {
                     <div className='flex flex-col space-y-5 '>
                         <FormTextField2 name= "username" label= "Username"></FormTextField2>
                         <FormTextField2 name= "email" label= "Email"></FormTextField2>
-                        <FormTextField2 name= "password" label= "Password" ></FormTextField2>
-                        <FormTextField2 name= "confirmPass" label= "Confirm Password" ></FormTextField2>
+                        <FormTextField2 type="password" name= "password" label= "Password" ></FormTextField2>
+                        <FormTextField2 type="password"  name= "confirmPass" label= "Confirm Password" ></FormTextField2>
                           <div className='flex flex-col justify-center items-center space-y-2'>
                             <div className='flex justify-center pt-1 pr-3'>
                             <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">{loading?<TailSpin

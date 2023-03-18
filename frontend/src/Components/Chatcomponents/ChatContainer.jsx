@@ -11,6 +11,9 @@ import {ref, uploadBytes, getDownloadURL} from "firebase/storage"
 import {v4} from "uuid"
 import {TailSpin} from "react-loader-spinner"
 import messageImage from "../../images/Messaging-rafiki.png"
+import Contract from './ContractContainer';
+import InfluencerGenaricModel from "../InfluencerComponents/InfluencerGenaricModal"
+import CloseIcon from '@mui/icons-material/Close';
 const FallBack=()=>{
     return(<div className="h-screen flex flex-col flex-1 justify-center items-center px-4 py-4 bg-slate-50">
         <div className='flex flex-col border border-blue px-12 py-10 rounded-lg shadow-2xl w-[70%] h-[70vh] justify-center items-center'>
@@ -23,9 +26,67 @@ const FallBack=()=>{
     </div>)
 }
 
+const ContractModel =()=>{
+    const [Data, setData] = useState({})
+    const {openContract, setOpenContract, Id} = useContext(ChatContext)
+    const {data, isLoading} = useQuery(["getContractdetails"],()=>{
+        return axios.get("http://localhost:3000/chats/getcontractdetails/"+Id)
+      })
+    
+
+    useEffect(()=>{
+        setData(data?.data?.data)
+    },[data])
+    return <InfluencerGenaricModel>
+  <div className="h-full flex flex-col justify-start ">
+        <div className='flex justify-end bg-slate-200 '>
+        <CloseIcon onClick={()=>{
+          setOpenContract(false)
+        }} className=" hover:bg-slate-100"></CloseIcon>
+        
+        </div >
+        
+
+        <div className="px-5">
+            <h1 className='text-xl text-gray-900 font-railway'>Contract Details</h1>
+            <p className='text-sm text-gray-500 font-railway'>Enter Contract details to set up the contract between the you and influencer</p>
+        </div>
+        <div className='flex-1 justify-start h-full px-5 mt-4  overflow-y-auto'>
+            <div className="space-y-5 mb-3">
+                <h1 className='text-2xl font-railway '>{Data?.campaignId?.title}</h1>
+                <p className='text-sm text-gray-600'>{Data?.campaignId?.description}</p>
+            </div>
+            <div className='spa'>
+                <h1 className='text-2xl font-railway '>Brand Information</h1>
+                <h1 className='text-xl text-gray-600'>{Data?.sender?.name}</h1>
+            </div>
+            <form className='flex flex-col  space-y-3'>
+                <div className='flex justify-between w-[50%]'>
+                <div>
+                    <h1 className='text-xl font-railway'>Contract Amount</h1>
+                    <h2 className='text-xl font-railway text-gray-700'>{Data?.amount}</h2>
+                </div>
+                <div>
+                    <h1 className='text-xl font-railway'>End Date</h1>
+                    <h1 required className="bg-slate-100 rounded-full px-2" >{Data?.expiresAt}</h1>
+                    
+                   
+                </div>
+                </div>
+                <div className='flex h-56 '>
+                    <button type='submit' className='bg-blue px-2 py-1 hover:opacity-80 shadow-lg h-[50px] text-white font-railway rounded-full'>Accept Contract</button>  
+                </div>
+            </form>
+            
+              
+        </div>
+        </div>        
+    </InfluencerGenaricModel>
+}
+
 const ChatContainer = () => {
     const {user} = useContext(AuthContext)
-    const {currentUser} = useContext(ChatContext)
+    const {currentUser, openContract} = useContext(ChatContext)
     const [message, setMessage] = useState("")
     const [fileUpload, setFileUpload] = useState(null)
     const[disable, setdisable] = useState(false)
@@ -121,6 +182,7 @@ const ChatContainer = () => {
     })
   return (
     <>
+    {openContract && <ContractModel></ContractModel>}
     {Object.keys(currentUser).length === 0?<FallBack/>:
     <div className='flex flex-col flex-1 shadow-inner'>
     <div className='flex shadow-md w-[100%] px-5 py-4'>
@@ -132,8 +194,12 @@ const ChatContainer = () => {
         {data?.data?.projectMessages.map(msg=>{
             
             return (<div className={msg?.fromSelf===true?"flex justify-end my-1":"justify-start my-1"}>
-                <h1 className={msg?.fromSelf===true?" text-white max-w-[50%] bg-blue rounded-full my-1 px-4 py-1":"text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"}>{msg?.message}</h1>
-            </div>)
+
+              
+            {msg.msgType=== "contract"? <div className={msg?.fromSelf===true?" text-white max-w-[50%] bg-pink-500 rounded-full my-1 px-4 py-1":"text-black max-w-[50%] rounded-full my-2 px-4 py-1"}><Contract id={msg?.id} text={msg.msgType}/></div>:
+             <h1 className={msg?.fromSelf===true?" text-white max-w-[50%] bg-blue rounded-full my-1 px-4 py-1":"text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"}>{msg?.message}</h1>
+            }
+         </div>)
             
         })}
     </div>

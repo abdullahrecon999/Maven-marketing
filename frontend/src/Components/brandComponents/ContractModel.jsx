@@ -51,8 +51,7 @@ const ContractModel = ({handleClose, id}) => {
         }} className=" hover:bg-slate-100"></CloseIcon>
         
         </div >
-        {console.log(id, "this is the bid id")}
-        {console.log(bidData)}
+        
 
         <div className="px-5">
             <h1 className='text-xl text-gray-900 font-railway'>Contract Details</h1>

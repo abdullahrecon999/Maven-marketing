@@ -42,6 +42,7 @@ import InfluencerAllCampaigns from './Components/InfluencerComponents/Influencer
 import SocialProfile from './Components/InfluencerComponents/SocialProfile';
 import { BrandProfile } from './Pages/brand/brandProfile';
 import { LinkedInCallback } from 'react-linkedin-login-oauth2';
+import AccountNotVerified from './Pages/AccountNotVerified';
 
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -119,6 +120,7 @@ function App() {
               <Route path="/CampaignMarketPlace" element={<InfluencerAllCampaigns/>}></Route>
               <Route path='/SocialProfile' element={<SocialProfile/>}></Route>
               <Route path='/influencerchat' element={<Chat/>}></Route> 
+              <Route path='/accountnotverified' element={<AccountNotVerified/>} ></Route>
             </Route>
             
             
