@@ -12,6 +12,8 @@ import InfluencerGenaricModal from "./InfluencerGenaricModal"
 import CloseIcon from '@mui/icons-material/Close';
 import DetailBox from './DetailBox';
 import { TailSpin } from 'react-loader-spinner';
+import CampaignAcceptedList from '../brandComponents/campaignAcceptedList';
+import ContractModel from "../brandComponents/ContractModel"
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -161,6 +163,9 @@ const CampaignDetailInfluencer = () => {
   const [bidsdata, setData] = useState({})
   const [close, setClose] = useState(false)
   const [id, setId] = useState("");
+  const [contract, setOpenContract] = useState(false)
+  const [bidId, setBidId] = useState("")
+
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem("user"))
     setUser(user)
@@ -181,6 +186,16 @@ const CampaignDetailInfluencer = () => {
 
   const handleBidClose =()=>{
     setClose(!close)
+  }
+
+  const handleOpenContract=(id)=>{
+    setBidId(id)
+    
+    setOpenContract(true)
+
+  }
+  const handleCloseContract= ()=>{
+    setOpenContract(!contract)
   }
   
   const {isLoading:bidsIsloading, data:bids, isError:bidsIsError} = useQuery(["getallbids"],
@@ -205,6 +220,18 @@ const CampaignDetailInfluencer = () => {
     })
     }
   )
+
+  const {isLoading:acceptedBidsLoading, data:acceptedBids} = useQuery(["getacceptedbids"],
+    ()=>{
+      return axios.get(`http://localhost:3000/brand/getacceptedbids/${state.id}`,
+      {headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true,
+    })
+    }
+  )
+
 
   useEffect(()=>{
     console.log(user)
@@ -322,17 +349,43 @@ const CampaignDetailInfluencer = () => {
           <button onClick={()=> handleOpen()}  className='bg-blue text-center text-white font-railway py-2 px-3 rounded-full shadow hover:bg-indigo-600 md:hidden'> Submit a Bid</button>
           
           {close && <InfluencerBidsDetailModal handleClose={handleBidClose} id={id} ></InfluencerBidsDetailModal>}
-          {user?.role === "brand"? <div className='flex flex-col item-center border bg-slate-100 p-10'>
+          <div className='flex flex-col md:flex-row space-x-1 '>
+        {user?.role === "brand"? <div className='flex flex-col  flex-1 item-center border bg-slate-100 p-10'>
                     <div className='my-4'>
                     <h1 className="text-3xl text-gray-800 font-railway ">Bids</h1>
                     <p className='text-xl text-gray-500'>The bids place by the influencers are show here</p>
                     </div>
                     <div className='py-10 bg-white flex justify-center'>
-                      {console.log(bidsdata)}
+                     
                     <BidsTable rows={bidsdata} columns={columns} onOpen={handleBidOpen}></BidsTable>
                     </div>
           </div>:
           null}
+
+
+          
+          {user?.role === "brand"?<div className='flex flex-row  md:flex-col border flex-[0.5] py-5 px-5 shadow-inner'>
+            <h1 className="text-gray-800 text-xl font-railway">Accepted Invites</h1>
+            <div className="h-full overflow-y-auto px-5 space-y-2 py-5 bg-white border">
+                    {acceptedBids?.data?.data?.map(item=>{
+                     
+                      return (<CampaignAcceptedList
+                      name={item?.sender?.name}
+                      avatar={item?.sender?.photo}
+                      influencerId={item?.sender["_id"]}
+                      brandId={item?.to}
+                      id={item["_id"]}
+                      onOpen={handleOpenContract}
+                      ></CampaignAcceptedList>)
+                    })}
+                        
+            </div>
+                  
+            {contract && <ContractModel  id={bidId} handleClose={handleCloseContract}/>}
+                      
+          </div>:null}
+
+        </div>
 
         </div>
 
