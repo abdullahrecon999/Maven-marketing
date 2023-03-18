@@ -28,9 +28,7 @@ const props = {
     }
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
-      // openNotificationWithIcon('success');
-      // form.resetFields();
-      return info.file.name;
+      return info.file.xhr;
     } else if (status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
     }
@@ -55,28 +53,14 @@ const props = {
   }
 };
 
-let uploadImage = async ({
-  file,
-  onSuccess,
-  onError,
-  onProgress,
-}) => {
-  const fileRef = ref(storage, `files/${file.name + v4()}`)
-  uploadBytes(fileRef, file).then(() => {
-    console.log("uploading the files in the db")
-
-    getDownloadURL(fileRef).then((url) => {
-      console.log("this is the file reference")
-      console.log(url)
-    }).then(() => {
-      console.log("this is the file reference")
-      onSuccess(null,file);
-    })
-
-  }).catch((e) => {
-    console.log(e)
-  })
+// custom request for upload that returns file upload url instead of file name
+const customRequest = async ({ file, onSuccess }) => {
+  const storageRef = ref(storage, `files/${file.name + v4()}`)
+  const snapshot = await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(snapshot.ref);
+  onSuccess(null, downloadURL);
 };
+
 
 const getInfluencers = async () => {
   const response = await fetch("http://localhost:3000/influencer/topinfluencers");
@@ -111,30 +95,30 @@ export function Dashboard({ uid }) {
     console.log('Success:', values);
     console.log(uid)
 
-    // const data = {
-    //   brand: uid,
-    //   title: values.title,
-    //   description: values.description,
-    //   campaignType: values.campaignType,
-    //   deliveryDate: values.date,
-    //   bannerImg: values.file
-    // }
+    const data = {
+      brand: uid,
+      title: values.title,
+      description: values.description,
+      campaignType: values.campaignType,
+      deliveryDate: values.date,
+      bannerImg: values.file
+    }
 
-    // fetch("http://localhost:3000/campaign/create", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //    console.log(data);
-    //    openNotificationWithIcon('success');
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    fetch("http://localhost:3000/campaign/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+       console.log(data);
+       openNotificationWithIcon('success');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -232,13 +216,16 @@ export function Dashboard({ uid }) {
             <Row gutter={16}>
               <Col span={28}>
                 <Form.Item
-                  name="Banner Photo"
+                  name="photo"
                   label="File"
                   getValueFromEvent={props.onChange}
                 >
                   <Dragger
                     accept="image"
-                    customRequest={uploadImage}
+                    customRequest={customRequest}
+                    listType="picture"
+                    maxCount={1}
+                    multiple={false}
                   >
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />

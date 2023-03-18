@@ -57,6 +57,213 @@ router.get("/allinfluencers", async(req, res, next)=>{
   }
 })
 
+// get influencers and add filter, search and sort and use mongoose-paginate-v2 for pagination for role influencer
+router.get("/influencers", async(req, res, next)=>{
+  try{
+    const {page, limit, search, sort, category, country, language, socialMediaHandles} = req.query
+    const options = {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 10,
+      sort: {},
+      collation: {
+        locale: 'en'
+      }
+    }
+    if (sort) {
+      const sortingField = sort.split(':')
+      options.sort[sortingField[0]] = sortingField[1] === 'asc' ? 1 : -1
+    } else {
+      options.sort = {
+        registered: -1
+      }
+    }
+    const query = {}
+    if(search){
+      query.$or = [
+        {name: {$regex: search, $options: 'i'}},
+        {description: {$regex: search, $options: 'i'}},
+        {category: {$in: search.split(',').map(s => s.trim())}},
+        {country: {$regex: search, $options: 'i'}},
+        {language: {$regex: search, $options: 'i'}},
+        {socialMediaHandles: {$regex: search, $options: 'i'}},
+      ]
+    }
+    if(category){
+      const categories = category.split(',')
+      query.category = { $in: categories.map(c => new RegExp(c, 'i')) }
+    }
+    if(country){
+      const countries = country.split(',')
+      query.country = { $all: countries.map(c => new RegExp(c, 'i')) }
+    }
+    if(language){
+      query.language = language
+    }
+    if(socialMediaHandles){
+      query.socialMediaHandles = {
+        $elemMatch: {
+          platform: socialMediaHandles,
+          followers: {
+            $exists: true
+          }
+        }
+      }
+    }
+    const data = await User.paginate({role: "influencer", ...query}, options)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
+
+
+// router.get("/influencers", async(req, res, next)=>{
+//   try{
+//     const {page, limit, search, sort, category, country, language, socialMediaHandles} = req.query
+//     const options = {
+//       page: parseInt(page, 10) || 1,
+//       limit: parseInt(limit, 10) || 10,
+//       sort: {},
+//       collation: {
+//         locale: 'en'
+//       }
+//     }
+//     if (sort) {
+//       const sortingField = sort.split(':')
+//       options.sort[sortingField[0]] = sortingField[1] === 'asc' ? 1 : -1
+//     } else {
+//       options.sort = {
+//         registered: -1
+//       }
+//     }
+//     const query = {}
+//     if(search){
+//       query.$or = [
+//         {name: {$regex: search, $options: 'i'}},
+//         {description: {$regex: search, $options: 'i'}},
+//         {category: {$regex: search, $options: 'i'}},
+//         {country: {$regex: search, $options: 'i'}},
+//         {language: {$regex: search, $options: 'i'}},
+//         {socialMediaHandles: {$regex: search, $options: 'i'}},
+//       ]
+//     }
+//     if(category){
+//       query.category = category
+//     }
+//     if(country){
+//       query.country = country
+//     }
+//     if(language){
+//       query.language = language
+//     }
+//     if(socialMediaHandles){
+//       query.socialMediaHandles = socialMediaHandles
+//     }
+//     const data = await User.paginate({role: "influencer", ...query}, options)
+//     res.status(200).json({
+//       status: "success",
+//       data
+//     })
+//   }catch(e){
+//     console.log(e)
+//     res.status(502).json({
+//       status: "error"
+//     })
+//   }
+// })
+
+
+
+// router.get("/influencers", async(req, res, next)=>{
+//   try{
+//     const {page, limit, search, sort, category, country, language, socialMediaHandles} = req.query
+//     const options = {
+//       page: parseInt(page, 10) || 1,
+//       limit: parseInt(limit, 10) || 10,
+//       sort: {
+//         registered: -1
+//       },
+//       collation: {
+//         locale: 'en'
+//       }
+//     }
+//     const query = {}
+//     if(search){
+//       query.$or = [
+//         {name: {$regex: search, $options: 'i'}},
+//         {description: {$regex: search, $options: 'i'}},
+//         {category: {$regex: search, $options: 'i'}},
+//         {country: {$regex: search, $options: 'i'}},
+//         {language: {$regex: search, $options: 'i'}},
+//         {socialMediaHandles: {$regex: search, $options: 'i'}},
+//       ]
+//     }
+//     if(category){
+//       query.category = category
+//     }
+//     if(country){
+//       query.country = country
+//     }
+//     if(language){
+//       query.language = language
+//     }
+//     if(socialMediaHandles){
+//       query.socialMediaHandles = socialMediaHandles
+//     }
+//     const data = await User.paginate({role: "influencer", ...query}, options)
+//     res.status(200).json({
+//       status: "success",
+//       data
+//     })
+//   }catch(e){
+//     console.log(e)
+//     res.status(502).json({
+//       status: "error"
+//     })
+//   }
+// })
+
+// router.get("/influencers", async(req, res, next)=>{
+//   try{
+//     const page = parseInt(req.query.page)
+//     const limit = parseInt(req.query.limit)
+//     const sort = req.query.sort
+//     const category = req.query.category
+//     const country = req.query.country
+//     const language = req.query.language
+//     const search = req.query.search
+//     const filter = {}
+//     if(category){
+//       filter.category = category
+//     }
+//     if(country){
+//       filter.country = country
+//     }
+//     if(language){
+//       filter.language = language
+//     }
+//     if(search){
+//       filter.name = {$regex: search, $options: "i"}
+//     }
+//     const data = await User.paginate({role: "influencer", ...filter}, {page, limit, sort})
+//     res.status(200).json({
+//       status: "success",
+//       data
+//     })
+//   }catch(e){
+//     console.log(e)
+//     res.status(502).json({
+//       status: "error"
+//     })
+//   }
+// })
+
 // get influencer by id using Influencer model
 router.get("/influencer/:id", async(req, res, next)=>{
   try{

@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -132,6 +133,7 @@ userSchema.methods.createEmailVerificationToken = function() {
   return verificationToken;
 };
 
+userSchema.plugin(mongoosePaginate);
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
