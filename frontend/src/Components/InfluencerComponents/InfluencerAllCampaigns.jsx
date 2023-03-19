@@ -10,6 +10,7 @@ import axios from "axios"
 import { LineWave } from 'react-loader-spinner';
 import { TextField } from '@mui/material';
 import Search from '@mui/icons-material/Search';
+import Pagination from '@mui/material/Pagination';
 import { useSearchParams } from "react-router-dom";
 
 const SortModel = ({ onClose }) => {
@@ -141,8 +142,8 @@ const InfluencerAllCampaigns = () => {
           <div className='flex flex-wrap mt-2 justify-start space-y-3 md:space-x-3 md:space-y-0'>
             {/* <CampaignCard></CampaignCard> */}
             {campaign?.data?.docs?.map((campaign) => {
-
-              return <CampaignCard
+              if(campaign?.status === "live"){
+                return <CampaignCard
                 avatar={campaign?.brand?.photo}
                 title={campaign?.title}
                 brandName={campaign?.brand?.name}
@@ -150,15 +151,15 @@ const InfluencerAllCampaigns = () => {
                 description={campaign?.description}
                 id={campaign["_id"]}
               ></CampaignCard>
+              }
             })}
 
 
           </div>
         }
         <hr></hr>
-        <div className=" flex justify-center mt-8 pt-4 space-x-3">
-          <button className='border px-2 py-1 border-grey text-grey rounded-full hover:shadow-lg'>Previous</button>
-          <button className='border px-2 py-1 border-grey text-grey rounded-full hover:shadow-lg'>Next</button>
+        <div className="flex justify-center p-5">
+          <Pagination count={campaign?.data?.totalPages} showFirstButton showLastButton />
         </div>
       </div>
     </div>

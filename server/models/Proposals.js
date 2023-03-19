@@ -37,9 +37,10 @@ const invitesSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true
+    },
+    file:{
+        type: String,
     }
-    
-
 },{
     timestamps: true
 })

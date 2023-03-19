@@ -680,7 +680,7 @@ router.post("/bidCampaign/:id", async (req, res, next) => {
   try{
 
     const data = await bids.find({campaignId:campaignId, sender:sender})
-    console.log("this is the damsn",data)
+    console.log("this is the ",data)
     if(data.length !== 0){
       res.status(409).json({
         status: "error",
@@ -688,10 +688,11 @@ router.post("/bidCampaign/:id", async (req, res, next) => {
       })
     }
     else{
-      bids.create(req.body)
-    res.status(200).json({
-      status: "success",
-    })
+      await bids.create(req.body)
+      res.status(200).json({
+        status: "success",
+        msg: "Bid submitted"
+      })
     }
     
   }catch(e){

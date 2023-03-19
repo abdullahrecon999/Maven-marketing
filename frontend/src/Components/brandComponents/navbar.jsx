@@ -12,7 +12,8 @@ export function NavBar({avatar, name, email, role, id, user}) {
     // const navigate = useNavigate();
     await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
       localStorage.removeItem('user')
-      navigate("/")
+      // redirect to login page without navigate
+      window.location.href = "/"
     }).catch(err => {
       console.log(err)
     })

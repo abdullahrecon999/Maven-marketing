@@ -291,7 +291,6 @@ const CampaignDetailInfluencer = () => {
         </div>
       </div>}
 
-      {open && <BidModal data={data.data.data.questions} brand={data.data.data.brand["_id"]} id={data.data.data["_id"]} onClose={handleClose}></BidModal>}
       <div className='flex flex-col space-y-4'>
         <div className="flex space-x-1 rounded-3xl shadow-md">
           <div className='flex bg-gradient-to-r from-blue rounded-l-3xl to-green w-[65%] h-[55vh] bg-red-500 place-items-end pl-5 pb-4'>
@@ -325,7 +324,7 @@ const CampaignDetailInfluencer = () => {
                   })}
                 </div>
               </div>
-
+              {open && <BidModal data={data.data.data.questions} brand={data.data.data.brand["_id"]} id={data.data.data["_id"]} onClose={handleClose}></BidModal>}
 
             </div>
             <div className='flex  flex-col md:w-[40%] md:flex-row md:justify-between '>

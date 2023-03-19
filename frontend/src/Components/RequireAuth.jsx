@@ -28,34 +28,37 @@ const RequireAuth = ({ allowedRoles }) => {
   const { data: user, isLoading, isError, isSuccess } = useQuery("brandUser", fetchUser);
 
   // const user = JSON.parse(localStorage.getItem('user') || null);
-  
+
   // console.log("user2 ", localStorage.getItem('user'))
 
-  return(
+  return (
     isLoading ? (
-      <div className="h-screen">
-        <Loader />
-      </div>
-    ) :
-    isSuccess && (
-    allowedRoles.includes(user?.role)
-        ? (
-            <div>
-              {
-                user?.role === "admin" ? (
-                  <></>
-                ):(
-                  <NavBar avatar={user.photo} name={user.name} email={user.email} role={user?.role} id={user?._id} user={user} />
-                )
-              }
-              <Outlet />
-              <Footer />
-            </div>
+      <Loader />
+    ) : (
+      isError ? (
+        <ErrorLogin />
+      ) : (
+        isSuccess && (
+          allowedRoles.includes(user?.role)? (
+            user?.role === "admin" ? (
+              <>
+                <Outlet />
+                <Footer />
+              </>
+            ) : (
+              <>
+                <NavBar avatar={user.photo} name={user.name} email={user.email} role={user?.role} id={user?._id} user={user} />
+                <Outlet />
+                <Footer />
+              </>
+            )
+          ) : (
+            <Navigate to="/unauthorized" state={{ from: location }} replace />
           )
-        : user
-         ? <Navigate to="/unauthorized" state={{ from: location}} replace />
-         : <ErrorLogin />)
-  )
+        )
+      )
+    )
+  );
 }
 
 export default RequireAuth;

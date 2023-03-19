@@ -13,7 +13,7 @@ router.get('/user', function(req, res, next) {
     res.send(req.user);
   }else{
     // user not loggedin
-    res.status(404).send('User not logged in');
+    res.status(403).send('User not logged in');
   }
 });
 
@@ -21,16 +21,23 @@ router.get('/user', function(req, res, next) {
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 
 // the callback after google has authenticated the user
+router.get(
+  '/google/callback',  
+  passport.authenticate("google", {
+  successRedirect: "http://localhost:5173/brandhome",
+  failureRedirect: "/auth/login/failed"
+ })); 
+
 // router.get('/auth/google/callback',function(req, res, next) {
 
 //   // generate the authenticate method (the anonymous method) and
 //   //     associate it with the 'local' strategy
 //   passport.authenticate('google', function(err, user, info) {
 //     if (err) { return next(err); }
-//     console.log(user);
+//     // res.redirect('http://localhost:5173');
 //     if (!user) { return res.redirect('/'); }
     
-//     return res.send(user);
+//     return res.redirect('http://localhost:5173/brandhome');
 //   })(req, res, next);
 // });
 
