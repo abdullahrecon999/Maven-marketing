@@ -25,6 +25,7 @@ router.get('/', function(req, res, next) {
   res.send('Influencer Router called');
 });
 
+
 // get 5 influencers with only id, name, social media, photo, and banner photo using Influencer model
 router.get("/topinfluencers", async(req, res, next)=>{
   try{

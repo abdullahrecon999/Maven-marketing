@@ -28,7 +28,7 @@ const invitesSchema = new mongoose.Schema({
     discription: {
         type: String,
         default: null,
-        required: true
+        
     },
     
 

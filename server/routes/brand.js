@@ -14,7 +14,7 @@ const contacts = require("../models/MessageContacts")
 const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
-
+const invites = require ("../models/Invites")
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('Brand Router called');
@@ -240,6 +240,34 @@ router.get("/getallbids/:id", async (req, res)=>{
       data
     })
   }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.get("/inviteinfluencers", async(req,res)=>{
+  try{
+    const data= await User.find({role: "influencer"}).limit(5)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
+
+router.post("/sendinvite", async(req, res)=>{
+  try{
+    await invites.create(req.body)
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error"
     })
