@@ -209,7 +209,7 @@ const Profilecompletion = () => {
                     <h1 className='text-base text-green font-railway md:text-xl'>Personal Information</h1>
                     
                 <div className='flex flex-col space-y-3'>
-                    <h1 className='font-railway text-sm md:text-base '>Upload your Profile Pic</h1>
+                    <h1 className='font-railway text-sm md:text-base '>Upload your Profile Pic <span className='text-xl text-red-500'>*</span></h1>
                     <ProfileImage name = "uImage" setvalue = {formik.setFieldValue}></ProfileImage>
                     <div className='space-y-3'>
         
@@ -219,12 +219,12 @@ const Profilecompletion = () => {
 
                 </div>
                 <div className='flex flex-col space-y-2' >
-                    <h2  className='font-railway text-sm md:text-base '>Full name</h2>
+                    <h2  className='font-railway text-sm md:text-base '>Full name <span className='text-xl text-red-500'>*</span></h2>
                     
-                    <FormTextField name= "name" label= "Enter your full name"></FormTextField>
+                    <FormTextField required name= "name" label= "Enter your full name"></FormTextField>
 
                 </div>
-                <h1  className='font-railway text-sm md:text-base '>Select Country and languages</h1>
+                <h1  className='font-railway text-sm md:text-base '>Select Country and languages <span className='text-xl text-red-500'>*</span></h1>
                 <div className='flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3'>
                    
                 <FormSelect data = {countries} setvalue = {formik.setFieldValue} name ="country" label="Country" placeholder= 'Country'></FormSelect>
@@ -234,7 +234,7 @@ const Profilecompletion = () => {
                 </div>
                
                 <div className='flex flex-col space-y-2' >
-                    <h1 className='font-railway text-sm md:text-base '>Discription </h1>
+                    <h1 className='font-railway text-sm md:text-base '>Discription <span className='text-xl text-red-500'>*</span></h1>
                     {/* <textarea name='discription' id="message" rows="5" class=" resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue focus:border-blue dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter discription about your self......"></textarea> */}
                     <Textarea name="discription"></Textarea>
                 </div>    
@@ -243,20 +243,20 @@ const Profilecompletion = () => {
             <div className='border'></div>
             <div className='flex flex-col space-y-4'>
                 <div>
-                    <h1 className= 'text-base text-green font-railway md:text-xl'>Platform Information</h1>
+                    <h1 className= 'text-base text-green font-railway md:text-xl'>Platform Information <span className='text-xl text-red-500'>*</span></h1>
                    
                 </div>
                {/* need to add functionality for multiple feilds */}
                <FormSelect data={platforms} setvalue = {formik.setFieldValue} name="platform" label="platform" ></FormSelect>
                <div>
-                    <h1 className= 'text-base text-green font-railway md:text-xl'>Category</h1>
+                    <h1 className= 'text-base text-green font-railway md:text-xl'>Category <span className='text-xl text-red-500'>*</span></h1>
                    
                 </div>
                {/* need to add functionality for multiple feilds */}
                <FormSelect data={categories} setvalue = {formik.setFieldValue} name="category" label="category" ></FormSelect>
               
                 <div className='flex flex-col space-y-2' >
-                    <h2  className='font-railway text-sm md:text-base '>Social Media Url</h2>
+                    <h2  className='font-railway text-sm md:text-base '>Social Media Url <span className='text-xl text-red-500'>*</span></h2>
                     {/* <FormTextField name="url" label="Enter your social media profile link"></FormTextField> */}
                     <div className='flex flex-row space-x-4'>
                        
