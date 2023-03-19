@@ -43,7 +43,13 @@ const RequireAuth = ({ allowedRoles }) => {
     allowedRoles.includes(user?.role)
         ? (
             <div>
-              <NavBar avatar={user.photo} name={user.name} email={user.email} role={user?.role} id={user?._id} user={user} />
+              {
+                user?.role === "admin" ? (
+                  <></>
+                ):(
+                  <NavBar avatar={user.photo} name={user.name} email={user.email} role={user?.role} id={user?._id} user={user} />
+                )
+              }
               <Outlet />
               <Footer />
             </div>

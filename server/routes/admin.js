@@ -84,12 +84,16 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+//forgot password
+router.post('/password-reset', authController.PasswordReset);
+
+// reset password
+router.post('/resetPassword/:token', authController.PasswordResetVerify);
+
 router.get('/logout', (req, res) => {
     req.logout();
     res.status(200).send('Logout Success');
 });
-
-
 
 router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) ,async (req, res, next) => {
   try{

@@ -106,8 +106,10 @@ export function Dashboard({ uid }) {
       description: values.description,
       campaignType: values.campaignType,
       deliveryDate: values.date,
-      bannerImg: values.file
+      bannerImg: values.photo
     }
+
+    // console.log("campaign: ",data)
 
     fetch("http://localhost:3000/campaign/create", {
       method: "POST",

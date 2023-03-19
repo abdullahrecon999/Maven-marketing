@@ -8,7 +8,7 @@ const sendEmail = require('../utils/sendEmail');
 exports.PasswordReset = async (req, res, next) => {
     try {
         const user = await User.findOne({ email: req.body.email })
-        console.log(user._id)
+        console.log(user?._id)
     
         if (!user) {
           return res.status(400).send("user with given email doesn't exist");

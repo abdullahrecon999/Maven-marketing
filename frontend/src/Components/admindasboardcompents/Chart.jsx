@@ -4,12 +4,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 
-
-
-
-
-
-
 const columns = [
   { field: '_id', headerName: 'ID', width: 90 },
   {
@@ -34,14 +28,10 @@ const columns = [
   
 ];
 
-
-
-
 export default function Users({data}) {
 
-
-  
   const navigate = useNavigate()
+
   const convertData = (data)=>{
     return data?.map(data=> {
       return {
@@ -50,11 +40,9 @@ export default function Users({data}) {
         platform: data?.platforms.toString(),
         profileActive: data?.profileActive,
         //country: data?.country.toString()
-
-
     }})
-    
   }
+
   const userData = useMemo(()=>{
     return convertData(data)
   }, [data])
@@ -75,7 +63,7 @@ export default function Users({data}) {
       
       <DataGrid
         onRowClick={handleClick}
-        rows={userData}
+        rows={convertData(data)}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}

@@ -118,14 +118,15 @@ function App() {
             <Route element={<RequireAuth allowedRoles={['influencer']} />} >
               <Route path='/profileCompletion' element={<Profilecompletion />} ></Route>
               <Route path='/influencerHome' element={<InfluencerHome />} ></Route>
-              <Route path="/campaigndetails" element={<CampaignDetailInfluencer/>}></Route>
               <Route path='/SocialProfile' element={<SocialProfile/>}></Route>
               <Route path='/influencerchat' element={<Chat/>}></Route> 
               <Route path='/accountnotverified' element={<AccountNotVerified/>} ></Route>
               <Route path="/CampaignMarketPlace/" element={<InfluencerAllCampaigns/>}></Route>
-              <Route path='/campaigndetails' element={<CampaignDetailInfluencer/>} ></Route>
             </Route>
-            
+
+            <Route element={<RequireAuth allowedRoles={['influencer', 'brand']} />} >
+              <Route path="/campaigndetails" element={<CampaignDetailInfluencer/>}></Route>
+            </Route>
             
             {/* Protected complementary Routes */}
             <Route path='/p' element={<Profilecompletion/>}></Route>
