@@ -5,22 +5,26 @@ import Pagination from '@mui/material/Pagination';
 import TextField from '@mui/material/TextField';
 import { Button, Modal, Slider, Switch, InputNumber, Divider, Checkbox, Select, Dropdown } from 'antd';
 import { useQuery } from "react-query"
+import { useSearchParams } from "react-router-dom";
 let formatter = Intl.NumberFormat('en', { notation: 'compact' });
-
-const fetchInfluencers = async () => {
-  const res = await fetch('http://localhost:3000/influencer/allinfluencers');
-  console.log(res)
-  return res.json();
-};
 
 const InfluencerListing = (id) => {
   window.open('/influencerlisting/'+id,'_blank')
 }
 
 export const Marketplace = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  let search = searchParams.get('search')
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchInfluencers = async () => {
+    const res = await fetch('http://localhost:3000/influencer/influencers?'+decodeURIComponent(searchParams));
+    return res.json();
+  };
+
   const [influencersData, setInfluencersData] = useState([]);
-  const { data:influencer, isLoading, isSuccess } = useQuery('influencer', fetchInfluencers, {onCompleted: setInfluencersData});
+  const { data:influencer, isLoading, isSuccess, refetch } = useQuery(['influencer',search], fetchInfluencers, {onCompleted: setInfluencersData});
+
 
   useEffect(() => {
     setInfluencersData(influencer?.data ?? []);
@@ -179,7 +183,7 @@ export const Marketplace = () => {
       label: (
         <div className="flex justify-between">
           <button className="btn btn-xs rounded-md px-2 py-1 btn-error">Clear</button>
-          <button className="btn btn-xs rounded-md px-2 py-1 btn-success">Apply</button>
+          <button onClick={() => sortRequest()} className="btn btn-xs rounded-md px-2 py-1 btn-success">Apply</button>
         </div>
       ),
     },
@@ -215,6 +219,28 @@ export const Marketplace = () => {
   const onChangePlatforms = (checkedValues) => {
     console.log('checked = ', checkedValues);
   };
+
+  const filterRequest = () => {
+    // get all the values from the modal and craft a searchParams object to send to the API
+    const minFollowers = minNum;
+    const maxFollowers = maxNum;
+    setSearchParams({
+      minFollowers,
+      maxFollowers,
+      })
+    refetch();
+  }
+
+  const sortRequest = () => {
+    // let str = "sort="+"hello"
+    // // str.concat((followerSort) ? 'followers:asc' : 'followers:desc');
+    // // str = str + dateSort ? 'createdAt:asc' : 'createdAt:desc';
+    // console.log((followerSort) ? 'followers:asc' : 'followers:desc')
+    // console.log(str)
+    //setSearchParams("sort=followers:asc");
+    setSearchParams("sort="+ (followerSort? "follower:asc":"follower:dsc") + ("," + (dateSort? "createdAt:asc":"createdAt:dsc")))
+    refetch();
+  }
 
   const platforms = [
     "Instagram",
@@ -272,6 +298,7 @@ export const Marketplace = () => {
 
   return (
     <>
+    {console.log(influencer)}
     <Modal
         title={<p className="text-2xl font-bold border-b-2 mb-5 pb-2">Filter</p>}
         footer={
@@ -279,7 +306,7 @@ export const Marketplace = () => {
             <div className="btn btn-sm btn-outline btn-warning">
               Reset Filters
             </div>
-            <div className="btn btn-sm btn-primary">
+            <div onClick={()=>filterRequest()} className="btn btn-sm btn-primary">
               Search
             </div>
           </div>
@@ -531,12 +558,12 @@ export const Marketplace = () => {
               </div>
             ) : (
               isSuccess && (
-                influencer?.data?.map((influencer) => (
+                influencer?.data?.docs?.map((influencer) => (
                   <ListingCard
                     onclick={()=>InfluencerListing(influencer._id)}
                     avatar={influencer.photo}
                     name={influencer.name}
-                    followers={formatter.format(influencer.socialMediaHandles[0].followers)}
+                    followers={formatter.format(influencer.socialMediaHandles[0]?.followers)}
                     banner={influencer.photo}
                     description={influencer.description}
                   />
@@ -550,7 +577,7 @@ export const Marketplace = () => {
         </div>
 
         <div className="flex justify-center p-5">
-          <Pagination count={10} showFirstButton showLastButton />
+          <Pagination count={influencer.data.totalPages} showFirstButton showLastButton />
         </div>
 
       </div>

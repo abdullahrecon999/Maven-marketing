@@ -370,7 +370,7 @@ export function Dashboard({ uid }) {
                       {
                         influencer.map((item, index) => (
                           <SwiperSlide key={index}>
-                            <ListingCard description={item.description} avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0].followers} banner={item.photo} />
+                            <ListingCard description={item.description} avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0]?.followers} banner={item.photo} />
                           </SwiperSlide>
                         ))
                       }

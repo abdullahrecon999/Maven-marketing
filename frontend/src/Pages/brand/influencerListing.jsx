@@ -128,7 +128,7 @@ export const InfluencerListing = () => {
 											<div className="flex gap-3 px-3">
 												<div className="flex-col border rounded-xl p-6 items-center w-full">
 													<p className="text-xs text-[#6c757d] font-medium mb-2">FOLLOWERS</p>
-													<p className="text-2xl font-semibold">{formatter.format(influencer.data?.socialMediaHandles[0].followers)}</p>
+													<p className="text-2xl font-semibold">{formatter.format(influencer.data?.socialMediaHandles[0]?.followers)}</p>
 												</div>
 												<div className="flex-col border rounded-xl p-6 items-center w-full">
 													<p className="text-xs text-[#6c757d] font-medium mb-2">DEMOGRAPHICS</p>

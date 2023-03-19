@@ -60,7 +60,7 @@ router.get("/allinfluencers", async(req, res, next)=>{
 // get influencers and add filter, search and sort and use mongoose-paginate-v2 for pagination for role influencer
 router.get("/influencers", async(req, res, next)=>{
   try{
-    const {page, limit, search, sort, category, country, language, socialMediaHandles} = req.query
+    const {page, limit, search, sort, category, country, language, socialMediaHandles, minFollowers, maxFollowers} = req.query
     const options = {
       page: parseInt(page, 10) || 1,
       limit: parseInt(limit, 10) || 10,
@@ -70,22 +70,30 @@ router.get("/influencers", async(req, res, next)=>{
       }
     }
     if (sort) {
-      const sortingField = sort.split(':')
-      options.sort[sortingField[0]] = sortingField[1] === 'asc' ? 1 : -1
+      const sortingFields = sort.split(',')
+      sortingFields.forEach(field => {
+        const sortingField = field.split(':')
+        if (sortingField[0] === 'followers') {
+          options.sort[`socialMediaHandles.${sortingField[0]}`] = sortingField[1] === 'asc' ? 1 : -1
+        } else {
+          options.sort[sortingField[0]] = sortingField[1] === 'asc' ? 1 : -1
+        }
+      })
     } else {
       options.sort = {
-        registered: -1
+        'socialMediaHandles.follower': -1,
+        createdAt: -1
       }
     }
     const query = {}
     if(search){
-      query.$or = [
-        {name: {$regex: search, $options: 'i'}},
-        {description: {$regex: search, $options: 'i'}},
-        {category: {$in: search.split(',').map(s => s.trim())}},
-        {country: {$regex: search, $options: 'i'}},
-        {language: {$regex: search, $options: 'i'}},
-        {socialMediaHandles: {$regex: search, $options: 'i'}},
+      query.$and = [
+        {
+          $or: [
+            {name: {$regex: search, $options: 'i'}},
+            {description: {$regex: search, $options: 'i'}}
+          ]
+        }
       ]
     }
     if(category){
@@ -108,6 +116,13 @@ router.get("/influencers", async(req, res, next)=>{
           }
         }
       }
+    }
+    if (minFollowers && maxFollowers) {
+      query.socialMediaHandles = {$elemMatch: {followers: {$gte: minFollowers, $lte: maxFollowers}}}
+    } else if (minFollowers) {
+      query.socialMediaHandles = {$elemMatch: {followers: {$gte: minFollowers}}}
+    } else if (maxFollowers) {
+      query.socialMediaHandles = {$elemMatch: {followers: {$lte: maxFollowers}}}
     }
     const data = await User.paginate({role: "influencer", ...query}, options)
     res.status(200).json({
