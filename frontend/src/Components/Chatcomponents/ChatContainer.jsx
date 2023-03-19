@@ -33,6 +33,9 @@ const ContractModel =()=>{
         return axios.get("http://localhost:3000/chats/getcontractdetails/"+Id)
       })
     
+      useEffect(()=>{
+        
+      },[])
 
     useEffect(()=>{
         setData(data?.data?.data)
@@ -47,9 +50,18 @@ const ContractModel =()=>{
         </div >
         
 
-        <div className="px-5">
+        <div className="px-5 flex justify-between">
+            <div>
             <h1 className='text-xl text-gray-900 font-railway'>Contract Details</h1>
             <p className='text-sm text-gray-500 font-railway'>Enter Contract details to set up the contract between the you and influencer</p>
+            
+            </div> 
+            <div>
+                
+                <h1 className='border-green italic text-green'>{(!Data?.accepted && !Data?.rejected)?"Pending":null}</h1>
+                <h1>{(Data?.accepted && !Data?.rejected)?"accepted":null}</h1>
+                <h1>{(!Data?.accepted && Data?.rejected)?"rejected":null}</h1>
+            </div>  
         </div>
         <div className='flex-1 justify-start h-full px-5 mt-4  overflow-y-auto'>
             <div className="space-y-5 mb-3">
@@ -85,7 +97,7 @@ const ContractModel =()=>{
 }
 
 const ChatContainer = () => {
-    const {user} = useContext(AuthContext)
+    const {user, setUser} = useContext(AuthContext)
     const {currentUser, openContract} = useContext(ChatContext)
     const [message, setMessage] = useState("")
     const [fileUpload, setFileUpload] = useState(null)
@@ -99,12 +111,15 @@ const ChatContainer = () => {
         setMessage(e.target.value)
         
     }
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem('user')))
+      },[])
 
-    const handleFileUpload = ()=>{
+    const handleFileUpload = (fileUpload)=>{
+        console.log(fileUpload.name)
         
-        if(fileUpload == null) return;
         const fileRef = ref(storage, `files/${fileUpload.name+ v4()}` )
-        setUpload(false)
+        
         setUploading(true)
         uploadBytes(fileRef,fileUpload).then(()=>{
             console.log("uploading the files in the db")
@@ -112,12 +127,12 @@ const ChatContainer = () => {
             getDownloadURL(fileRef).then((url)=>{
                 alert("file is uploaded")
                 console.log("this is the file reference")
-                console.log(url)
+                
                 setUrl(url)
                 console.log(uploading)
                 setUploading(false)
                 setUpload(true)
-                console.log(Fileurl)
+                console.log("file",Fileurl)
 
             })
             
@@ -144,8 +159,8 @@ const ChatContainer = () => {
         setMessage("")
         if(Object.keys(currentUser).length !== 0){
             console.log("innn")
-            if(fileUpload == null){
-                setFileUpload(null)
+            if(Fileurl === ""){
+                setUrl("")
                 return axios.post("http://localhost:3000/chats/addMessage",
         
         {
@@ -161,19 +176,22 @@ const ChatContainer = () => {
             }else{
                 console.log("here")
                 setdisable(false)
-                setFileUpload(null)
+                
                 setUpload(false)
-                return axios.post("http://localhost:3000/chats/addMessage",
+                const msg = {
+                    text: Fileurl,
+                    users:[
+                        currentUser["_id"],
+                        user["_id"]
+                    ],
+                    sender: user["_id"]
         
-        {
-            text: Fileurl,
-            users:[
-                currentUser["_id"],
-                user["_id"]
-            ],
-            sender: user["_id"]
-
-        }
+                }
+                setUrl("")
+                console.log("ye yaha nhi chal rha hai", Fileurl)
+                return axios.post("http://localhost:3000/chats/addMessage",
+                msg
+        
         )
             }
 
@@ -184,8 +202,8 @@ const ChatContainer = () => {
     <>
     {openContract && <ContractModel></ContractModel>}
     {Object.keys(currentUser).length === 0?<FallBack/>:
-    <div className='flex flex-col flex-1 shadow-inner'>
-    <div className='flex shadow-md w-[100%] px-5 py-4'>
+    <div className='flex flex-col flex-1 shadow-inner my-0'>
+    <div className='flex shadow-md w-[100%] px-5 py-4 '>
         <h1 className='text-xl text-black font-railway'>{currentUser?.name}</h1>
     </div>
     {isLoading?<div className='max-h-[75vh] flex-1'>loading</div>:
@@ -196,7 +214,7 @@ const ChatContainer = () => {
             return (<div className={msg?.fromSelf===true?"flex justify-end my-1":"justify-start my-1"}>
 
               
-            {msg.msgType=== "contract"? <div className={msg?.fromSelf===true?" text-white max-w-[50%] bg-pink-500 rounded-full my-1 px-4 py-1":"text-black max-w-[50%] rounded-full my-2 px-4 py-1"}><Contract id={msg?.id} text={msg.msgType}/></div>:
+            {msg.msgType=== "contract"? <div className={msg?.fromSelf===true?" text-white max-w-[50%] rounded-full my-1 px-4 py-1":"text-black max-w-[50%] rounded-full my-2 px-4 py-1"}><Contract id={msg?.id} text={msg.msgType}/></div>:
              <h1 className={msg?.fromSelf===true?" text-white max-w-[50%] bg-blue rounded-full my-1 px-4 py-1":"text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"}>{msg?.message}</h1>
             }
          </div>)
@@ -205,7 +223,7 @@ const ChatContainer = () => {
     </div>
     }
     <div>
-    <div className='flex items-center border shadow-md px-5 py-8 space-x-2'>
+    <div className='flex items-center shadow-md px-5 py-8 space-x-2'>
         <label htmlFor='fileInput'  className='text-grey hover:bg-gray-300 '>
         <AttachFileIcon/></label>
         <input 
@@ -215,7 +233,8 @@ const ChatContainer = () => {
         onChange={(e)=>{
             setdisable(true)
             setFileUpload(e.target.files[0])
-            handleFileUpload()
+            
+           handleFileUpload(e.target.files[0])
         }} type="file"></input>
         <TextField
         disabled={disable} 
@@ -245,8 +264,8 @@ const ChatContainer = () => {
                                 }}  className='text-grey rounded-full hover:bg-slate-300 p-3'><SendIcon/></button>}
         
     </div>
-    {console.log("is uploaded", isUploaded)}
-        {isUploaded && <p className="text-red-500">File uploaded</p>}
+    
+      
     </div>
     
     

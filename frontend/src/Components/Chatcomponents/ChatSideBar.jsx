@@ -1,12 +1,16 @@
-import React ,  { useContext}from 'react'
+import React ,  { useContext, useEffect}from 'react'
 import { useQuery } from 'react-query'
 import axios from "axios"
 import { AuthContext } from '../../utils/authProvider'
 import { ChatContext } from './ChatProvider'
 const ChatSideBar = ({setCurrent}) => {
-    const {user} = useContext(AuthContext)
+    const {user, setUser} = useContext(AuthContext)
     const {currentUser,setCurrentUser} = useContext(ChatContext)
-    
+
+    useEffect(()=>{
+      setUser(JSON.parse(localStorage.getItem('user')))
+    },[])
+
     const {isLoading, isError, isSuccess, data, status} = useQuery(["getContacts"],()=>{
         return axios.get(`http://localhost:3000/chats/getContacts/${user["_id"]}`,
       {headers: {
@@ -14,14 +18,17 @@ const ChatSideBar = ({setCurrent}) => {
       },
       withCredentials: true,
     })
+    },{
+      refetchInterval:4000
     })
 
     
     if(isLoading){
-        return (<div> loading</div>)
+        return (<div className='h-screen bg-white w-[25%]'> </div>)
     }
   return (
-    <div className='flex flex-col w-[25%] border-r-2 shadow-md '>
+    <React.Fragment>
+      {!isLoading?<div className='flex flex-col w-[25%] border-r-2 shadow-md '>
         <h1 className='font-railway text-2xl mx-3 mt-3 mb-4'> Messages</h1>
         {data?.data?.data[0]?.contacts?.lenght===0? <div className='flex flex-col px-3 py-12'>
           <h1> your contacts appear here</h1>
@@ -29,8 +36,8 @@ const ChatSideBar = ({setCurrent}) => {
             {/* {console.log(data.data.data[0].contacts.map(item =>{
                 return (item.contact.name)
             }))} */}
-            {data?.data?.data[0]?.contacts.map(item=>{
-
+            {data?.data?.data[0]?.contacts.map((item, i)=>{
+              
                 return (<div onClick={()=>{
                     console.log("clicked")
                     setCurrentUser(item.contact)
@@ -41,7 +48,10 @@ const ChatSideBar = ({setCurrent}) => {
             })}
         </div>}
         
-    </div>
+    </div>:
+    <div className='h-screen bg-white w-[25%]'></div>
+    }
+    </React.Fragment>
   )
 }
 
