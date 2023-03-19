@@ -118,6 +118,23 @@ router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Brand) ,
     res.send('Brand Dashboard');
 })
 
+// update profile using id from params and update only chnaged fields from req.body
+router.patch('/update-profile/:id', async (req, res) => {
+  console.log(req.body);
+  try {
+    const data = await User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+    res.status(200).json({
+      status: 'success',
+      data
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err
+    });
+  }
+});
+
 // get all users of brand role
 router.get('/all', async (req, res) => {
   try {

@@ -154,7 +154,7 @@ export function LaunchCampaign() {
 				) : isError ? (
 					<p>Error</p>
 				) : isSuccess ? (
-					<Form layout="vertical" form={form} hideRequiredMark onFinish={onFinish}>
+					<Form layout="vertical" form={form} onFinish={onFinish}>
 						{console.log(campaign.data)}
 					<Row gutter={16}>
 						<Col span={24}>
