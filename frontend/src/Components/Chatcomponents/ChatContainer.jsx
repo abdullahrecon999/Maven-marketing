@@ -101,7 +101,7 @@ const ChatContainer = () => {
     }
 
     const handleFileUpload = ()=>{
-        console.log("file handler")
+        
         if(fileUpload == null) return;
         const fileRef = ref(storage, `files/${fileUpload.name+ v4()}` )
         setUpload(false)

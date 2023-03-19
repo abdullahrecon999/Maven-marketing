@@ -44,7 +44,7 @@ const InfluencerHome = () => {
   return (
     <div className="flex flex-col space-y-6">
       <LineHeader></LineHeader>
-      <Link to='/chat'>chat</Link>
+      
       <div className="flex flex-col flex-1 container mx-12 space-y-7 ">
         <div className="flex justify-between  px-5 flex-wrap ">
         <div>

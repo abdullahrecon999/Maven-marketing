@@ -234,7 +234,7 @@ const Profilecompletion = () => {
                 </div>
                
                 <div className='flex flex-col space-y-2' >
-                    <h1 className='font-railway text-sm md:text-base '>Discription <span className='text-xl text-red-500'>*</span></h1>
+                    <h1 className='font-railway text-sm md:text-base '>Description <span className='text-xl text-red-500'>*</span></h1>
                     {/* <textarea name='discription' id="message" rows="5" class=" resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue focus:border-blue dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter discription about your self......"></textarea> */}
                     <Textarea name="discription"></Textarea>
                 </div>    

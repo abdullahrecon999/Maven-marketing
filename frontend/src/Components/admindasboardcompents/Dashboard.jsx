@@ -2,7 +2,7 @@ import React from 'react'
 import Box from './Box'
 import Users from './Chart'
 import axios from 'axios'
-import {useQuery} from "@tanstack/react-query"
+import {useQuery} from "react-query"
 
 
 const Dashboard = () => {

@@ -1,4 +1,4 @@
-import React , {useContext}from 'react'
+import React , {useContext, useState}from 'react'
 import {Formik, Form} from "formik"
 import { TextField } from '@mui/material'
 import  {useMutation} from "react-query"
@@ -6,10 +6,44 @@ import axios from "axios"
 import CloseIcon from '@mui/icons-material/Close';
 import {AuthContext} from "../../utils/authProvider";
 import { TailSpin } from 'react-loader-spinner'
+
+import { storage } from '../../utils/fireBase/fireBaseInit';
+import {ref, uploadBytes, getDownloadURL} from "firebase/storage"
+import {v4} from "uuid"
+import { async } from '@firebase/util'
+
 const BidModal = ({data, brand, id, influencer, onClose}) => {
-    
+    const  [filename, setFileName] = useState("")
     const {user} = useContext(AuthContext)
+    const [url, setUrl] = useState("")
+    const [reference, setRef] = useState(null)
     console.log(user)
+
+    const onFileChange = (file, formik)=>{
+        console.log(formik)
+        const fileRef = ref(storage, `files/${file.name+ v4()}` )
+        setRef(fileRef)
+
+        uploadBytes(fileRef,file).then(()=>{
+            console.log("uploading the files in the db")
+            
+            getDownloadURL(fileRef).then((url)=>{
+                alert("file is uploaded")
+                console.log("this is the file reference")
+                
+                setUrl(url)
+                setFileName(file.name)
+                return url
+                
+                
+
+            })
+            
+        }).catch((e)=>{
+            console.log(e)
+        })
+    }
+
     const handleSubmit = async (values)=>{
         const val = {
             sender: user["_id"],
@@ -39,7 +73,8 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
             amount: "",
             answer1: "",
             answer2: "",
-            answer3:""
+            answer3:"",
+            file: ""
         }}
 
         onSubmit={(values)=> {
@@ -83,7 +118,10 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                                         formik.setFieldValue(`answer${i+1}`, e.target.value)
                                         console.log(formik.values)
                                     }}></textarea>
+
+                                    
                                 </div>
+                                
                                     })}
                                         {/* <div>
                                             <h1 className='text-base text-black font-railway'>2. {data[1]}</h1>
@@ -99,6 +137,37 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                                             console.log(formik.values)
                                         }}></TextField>
                                         </div> */}
+                                    </div>
+                                    <div className=" flex flex-col space-y-3">
+                                        <div>
+                                        <h1 className="text-xl text-gray-900 font-railway">Attach File</h1>
+                                        <p className='text-base text-gray-500'>Attact your work here to show your skills to brand</p>
+                                        </div>
+                                        <div className='border px-5 py-5'>
+                                            {filename !== ""? <h1>{filename}</h1>:null}
+                                            <div class="max-w-xl">
+                                                <label
+                                                    class="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+                                                    <span class="flex items-center space-x-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                        </svg>
+                                                        <span class="font-medium text-gray-600">
+                                                            
+                                                            <span class="text-blue-600 underline">browse</span>
+                                                        </span>
+                                                    </span>
+                                                    <input onChange={async (e )=>{
+                                                               const url = await onFileChange(e.target.files[0], formik)
+                                                               
+
+
+                                                    }} type="file" name="file_upload" class="hidden"></input>
+                                                </label>
+                                            </div>
+                                            </div>
                                     </div>
                                 </div>
                                 <button type='submit' disabled={isSuccess}  className={`text-white text-xl font-railway text-center px-3 py-2 rounded-full bg-blue hover:bg-indigo-500 ${isSuccess=== true? "hidden":""}`}>
