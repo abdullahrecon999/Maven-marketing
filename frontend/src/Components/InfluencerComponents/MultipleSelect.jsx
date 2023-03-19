@@ -73,7 +73,7 @@ export default function MultipleSelect({setvalue,defaultValue, names,...props}) 
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
           multiple
-          value={personName}
+          
           onChange={handleChange}
           input={<OutlinedInput label="Name" />}
           MenuProps={MenuProps}

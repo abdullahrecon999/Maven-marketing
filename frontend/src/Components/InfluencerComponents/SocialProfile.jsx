@@ -118,6 +118,7 @@ const EditProfile = ({onSave})=>{
     
    
     const handleSubmit = async (values)=>{
+        console.log(values,values)
         onSave()
         return await axios.put(`http://localhost:3000/influencer/updateProfile/${user["_id"]}`, values, {headers: {
             'Content-Type': 'application/json'
@@ -181,7 +182,7 @@ const EditProfile = ({onSave})=>{
                             variant='standard'
                             /> */}
 
-                        <TextField defaultValue={user?.description} name="description"></TextField>
+                        <TextField  defaultValue={user?.description} name="description"></TextField>
                     </div>
 
 
@@ -189,11 +190,11 @@ const EditProfile = ({onSave})=>{
                     <div className='flex flex-col space-y-1'>
                         <div className='px-2 flex flex-col flex-1 space-y-1'>
                             <h1 className='text-blue font-railway text-base'>Country</h1>
-                            <MultipleSelect  name="country" names={countries} defaultValue={user?.language[0]} setvalue={formik.setFieldValue}></MultipleSelect>
+                            <MultipleSelect label={user?.country[0]}  name="country" names={countries} defaultValue={user?.country[0]} setvalue={formik.setFieldValue}></MultipleSelect>
                         </div>
                         <div className='px-2 flex flex-col space-y-1'>
                                 <h1 className='text-blue font-railway text-base'>languages </h1>
-                                <MultipleSelect   name="language" names={languages} setvalue={formik.setFieldValue}  ></MultipleSelect>
+                                <MultipleSelect defaultValue={user?.language[0]}   name="language" names={languages} setvalue={formik.setFieldValue}  ></MultipleSelect>
                         </div>
 
                     </div>
@@ -245,9 +246,9 @@ const SocialProfile = () => {
         {open? <EditProfile onSave={setOpen}/>: <Profile onEdit= {handleEdit}/>}
         <InitialOtherDetails></InitialOtherDetails>
 
-        <div className='flex-[0.75] bg-slate-50 border-l-2 shadow '>
+        {/* <div className='flex-[0.75] bg-slate-50 border-l-2 shadow '>
             <AddConnection></AddConnection>
-        </div>
+        </div> */}
     </div>
   )
 }
