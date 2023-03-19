@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const campaignSchema = new mongoose.Schema({
   brand:{
@@ -59,6 +60,7 @@ const campaignSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+campaignSchema.plugin(mongoosePaginate);
 const Campaign = mongoose.model('Campaign', campaignSchema);
 
 campaignSchema.statics.search = function(searchTerm) {

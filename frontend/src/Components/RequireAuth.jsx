@@ -29,7 +29,9 @@ const RequireAuth = ({ allowedRoles }) => {
 
   // const user = JSON.parse(localStorage.getItem('user') || null);
   
-  console.log("user2 ", localStorage.getItem('user'))
+  //console.log("user2 ", localStorage.getItem('user'))
+
+  console.log("user::::::", user)
 
   return(
     isLoading ? (
@@ -46,7 +48,7 @@ const RequireAuth = ({ allowedRoles }) => {
               <Footer />
             </div>
           )
-        : user 
+        : user
          ? <Navigate to="/unauthorized" state={{ from: location}} replace />
          : <ErrorLogin />)
   )

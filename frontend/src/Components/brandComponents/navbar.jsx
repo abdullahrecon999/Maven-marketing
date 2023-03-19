@@ -18,13 +18,23 @@ export function NavBar({avatar, name, email, role, id, user}) {
     })
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDownInfluncer = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       console.log('do validate')
       console.log(event.target.value)
       // Open new tab with search query marketplace page
       navigate("/marketplace"+"?search="+event.target.value)
+    }
+  }
+
+  const handleKeyDownCampaign = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      console.log('do validate for campaign')
+      console.log(event.target.value)
+      // Open new tab with search query marketplace page
+      navigate("/CampaignMarketPlace"+"?search="+event.target.value)
     }
   }
 
@@ -44,10 +54,10 @@ export function NavBar({avatar, name, email, role, id, user}) {
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
                 </svg>
                 <input
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={role==="brand"? handleKeyDownInfluncer: handleKeyDownCampaign}
                   class="focus:ring-1 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-full py-2 pl-10 ring-1 ring-slate-200 shadow-sm" 
                   type="text" 
-                  placeholder={role==="influencer"?"Search Campaigns ......": "Search Influencers"} />
+                  placeholder={role==="influencer"?"Search Campaigns": "Search Influencers"} />
               </label>
 
               <ul tabIndex={0} className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-full z-50">

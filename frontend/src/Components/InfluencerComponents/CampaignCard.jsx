@@ -16,6 +16,7 @@ const CampaignCard = ({avatar,brandName, title, description, banner, id})=>{
 
   const navigate = useNavigate();
   const openCampaign = ()=>{
+    console.log("HERE AT ONEN CAMPAIGN")
     navigate("/campaigndetails",
     {state:{
       id: id
