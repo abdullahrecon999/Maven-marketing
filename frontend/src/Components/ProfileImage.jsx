@@ -31,8 +31,10 @@ const ProfileImage = ({...props}) => {
             src={uImage} 
             alt={uImage}/>
         </div>
-    
+        <lable htmlFor="profileImage" className=" bg-blue text-white border shadow font-railway px-2 py-1 rounded-lg hover:opacity-95 hover:bg-indigo-500">Upload Image</lable>
         <input 
+        id="profileImage"
+        className='hidden'
         {...feild}
         {...props}
         onChange = {(e)=> imageHandler(e)}
