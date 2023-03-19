@@ -119,7 +119,9 @@ const Bids =()=>{
     const [id, setId] = useState("");
     const {user, setUser} = useContext(AuthContext)
 
-    
+    useEffect(()=>{
+      setUser(JSON.parse(localStorage.getItem('user')))
+    },[])
     const {isLoading, data:bids, isError, isSuccess, status} = useQuery(["getbids"],
     ()=>{
       console.log(user["_id"])
@@ -130,10 +132,10 @@ const Bids =()=>{
       withCredentials: true,
     })
     }
-  )
+    )
 
  
-
+  
   useEffect(()=>{
     console.log(user)
     if(isSuccess){

@@ -238,8 +238,8 @@ const BusinessLogin = () => {
                     </div>
                     <div className='flex flex-col space-y-3 '>
                       
-                    <FormTextField2 name= "email" label= "Email"></FormTextField2>
-                    <FormTextField2 name= "password" label= "Password" ></FormTextField2>
+                    <FormTextField2  name= "email" label= "Email"></FormTextField2>
+                    <FormTextField2 type ="password" name= "password" label= "Password" ></FormTextField2>
                     <p onClick={handleOpen} className='text-sm text-blue font-railway'>Forgot Password?</p>
 
                     <div className='flex flex-col justify-center items-center space-y-2'>

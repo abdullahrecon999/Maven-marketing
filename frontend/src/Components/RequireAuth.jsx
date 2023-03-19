@@ -29,9 +29,7 @@ const RequireAuth = ({ allowedRoles }) => {
 
   // const user = JSON.parse(localStorage.getItem('user') || null);
   
-  //console.log("user2 ", localStorage.getItem('user'))
-
-  console.log("user::::::", user)
+  // console.log("user2 ", localStorage.getItem('user'))
 
   return(
     isLoading ? (

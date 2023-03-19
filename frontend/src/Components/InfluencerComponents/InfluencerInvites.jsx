@@ -146,7 +146,7 @@ const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutatio
         
         <div>
           <h1 className='text-black font-railway text-base'> Compensation</h1>
-          <DetailBox text={bidDetails.data.data.campaignId.compensation}></DetailBox>
+          <DetailBox text={"cash"}></DetailBox>
 
         </div>
         </div>
@@ -158,11 +158,12 @@ const {mutate, isLoading:isAccepting, isSuccess:isAcceptingSuccess} = useMutatio
 
         <hr></hr>
         <div className='flex self-stretchs space-x-3 px-4 my-3'>
-            <button onClick={()=>{
+            <button  onClick={()=>{
               handleInviteAccept()
             }} className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Accept</button>
             <button className='text-center text-white bg-green border shadow-lg font-railway px-2 py-1 rounded-full hover:bg-grey'>Decline</button>
         </div>
+        {isAcceptingSuccess?<p className='text-red-500 text-xl'>invite accepted successfull</p>: null}
         
       </InfluencerGenaricModal>
   )
@@ -172,7 +173,11 @@ const Bids =()=>{
     const [data, setData] = useState({})
     const [close, setClose] = useState(false)
     const [id, setId] = useState("");
-    const {user} = useContext(AuthContext)
+    const {user, setUser} = useContext(AuthContext)
+
+    useEffect(()=>{
+      setUser(JSON.parse(localStorage.getItem('user')))
+    },[])
     const {isLoading, data:bids, isError, isSuccess, status} = useQuery(["getinvites"],
     ()=>{
       return axios.get(`http://localhost:3000/influencer/getInvites/${user["_id"]}`,

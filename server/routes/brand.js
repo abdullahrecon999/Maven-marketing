@@ -52,7 +52,10 @@ router.post('/register', (req, res) => {
                 //res.redirect('/admin/login');
 
                 console.log('Here user: ', user);
-
+                await contacts.create({
+                  user: user["_id"],
+                  contacts: []
+                })
                 // Not working
                 // send email verification link
                 const verifyEmailToken = user.createEmailVerificationToken();
@@ -248,7 +251,7 @@ router.get("/getallbids/:id", async (req, res)=>{
 
 router.get("/inviteinfluencers", async(req,res)=>{
   try{
-    const data= await User.find({role: "influencer"}).limit(5)
+    const data= await User.find({role: "influencer"}).limit(10)
     res.status(200).json({
       status: "success",
       data
