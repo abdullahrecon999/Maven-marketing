@@ -83,6 +83,7 @@ const ContractModel = ({handleClose, id}) => {
                     
                     selected={new Date()}/>
                 </div>
+                {/* {ashshjead} */}
                 </div>
                 <div className='flex h-56 justify-end'>
                     {!isSuccess && <button disable={isSuccess} type='submit'  className='bg-blue btn hover:opacity-60 px-2 py-1 h-[50px] text-white font-railway rounded-full'>create contract {isLoading?<TailSpin
