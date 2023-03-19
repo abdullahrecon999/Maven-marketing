@@ -93,7 +93,7 @@ const SignUpPageBusiness = () => {
         <Navbar></Navbar>
         <section className='container mx-auto'>
             {console.log(formik)}
-            <div className='px-4 pt-2  mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-1'>
+            <div className='px-4 h-96 pt-2 mb-6 space-x-8 sm:flex flex-col-reverse md:flex-row md:pt-1'>
                 <div className='flex flex-col justify-center  px-10 space-y-6 md:w-[50%] '>
                     
                     <div>

@@ -43,6 +43,7 @@ import SocialProfile from './Components/InfluencerComponents/SocialProfile';
 import { BrandProfile } from './Pages/brand/brandProfile';
 import { LinkedInCallback } from 'react-linkedin-login-oauth2';
 import AccountNotVerified from './Pages/AccountNotVerified';
+import Wrapper from './Components/wrapper';
 
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -72,15 +73,17 @@ function App() {
           <Suspense fallback={<div>loading</div>}>
             <Routes>
              {/* Public Routes */}
-            <Route path='/' element={<Home/>} ></Route>
-            <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
-            <Route path='/businesslogin' element={<BusinessLogin/>}></Route>
-            <Route path='/adminLogin' element={<AdminLogin/>}></Route>
-            <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
-            <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
-            <Route path='/aboutus' element={<Aboutus/>} ></Route>
-            <Route path='/services' element={<Services/>} ></Route>
-            <Route path='/whyus' element={<Whyus/>} ></Route>
+             <Route element={<Wrapper />} >
+              <Route path='/' element={<Home/>} ></Route>
+              <Route path='/influencerlogin' element={<InfluencerLogin/>}></Route>
+              <Route path='/businesslogin' element={<BusinessLogin/>}></Route>
+              <Route path='/adminLogin' element={<AdminLogin/>}></Route>
+              <Route path='/BusinessSignup' element={<SignUpPageBusiness/>} ></Route>
+              <Route path='/InfluencerSignup' element={<SignUpPageInfluencer/>} ></Route>
+              <Route path='/aboutus' element={<Aboutus/>} ></Route>
+              <Route path='/services' element={<Services/>} ></Route>
+              <Route path='/whyus' element={<Whyus/>} ></Route>
+            </Route>
             
             {/* Admin Protected Routes */}
             <Route element={<RequireAuth allowedRoles={['admin']} />} >
