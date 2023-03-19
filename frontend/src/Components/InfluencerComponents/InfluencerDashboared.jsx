@@ -177,7 +177,9 @@ const InfluencerDashboared = ({onCampaignViewClick}) => {
         
         )
       })}
-      </> : <></>}
+      </> : <div className=" flex h-[70%] py-16  justify-center item-center">
+        <h1 className="text-4xl text-gray-300"> You have no current campaigns</h1>  
+      </div>}
 
   </div>
   )
