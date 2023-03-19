@@ -20,8 +20,6 @@ const CampaignCard = ({avatar,brandName, title, description, banner, id})=>{
     {state:{
       id: id
     }})
-
-
   }
 
   return (

@@ -15,9 +15,13 @@ import { useQuery } from "react-query";
 import {v4} from "uuid"
 import { storage } from '../../utils/fireBase/fireBaseInit';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 const { Dragger } = Upload;
+
+const InfluencerListing = (id) => {
+  window.open('/influencerlisting/'+id,'_blank')
+}
 
 const props = {
   name: 'file',
@@ -70,6 +74,7 @@ const getInfluencers = async () => {
 }
 
 export function Dashboard({ uid }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
@@ -257,7 +262,7 @@ export function Dashboard({ uid }) {
 
         <div className="flex justify-between py-10 flex-wrap gap-5">
 
-          <a href="#">
+          <a onClick={showDrawer}>
             <div className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl" data-theme="corporate">
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
@@ -277,13 +282,13 @@ export function Dashboard({ uid }) {
               </div>
             </div>
           </a>
-          <a href="#">
+          <a onClick={() => navigate("/marketplace")}>
             <div className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl" data-theme="corporate">
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
                   <h2 className="card-title">Find Influencers</h2>
                   <p className="py-2 text-sm">Visit the Marketplace of your favourite Influencers to hire</p>
-                  <a className="link link-primary">Create Campaign</a>
+                  <a className="link link-primary">Marketplace</a>
                 </div>
                 <div className="flex-col w-20">
                   <div className="h-20 w-20">
@@ -370,7 +375,7 @@ export function Dashboard({ uid }) {
                       {
                         influencer.map((item, index) => (
                           <SwiperSlide key={index}>
-                            <ListingCard description={item.description} avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0]?.followers} banner={item.photo} />
+                            <ListingCard onclick={()=>InfluencerListing(item._id)} description={item.description} avatar={item.photo} name={item.name} followers={item.socialMediaHandles[0]?.followers} banner={item.photo} />
                           </SwiperSlide>
                         ))
                       }

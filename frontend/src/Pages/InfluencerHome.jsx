@@ -10,19 +10,20 @@ import { ListingCard } from "../Components/brandComponents/listingCard"
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CampaignCard from '../Components/InfluencerComponents/CampaignCard';
 import { useQuery } from 'react-query';
+
 const InfluencerHome = () => {
   const {user,setUser} = useContext(AuthContext);
   const verified = 0;
   const navigate = useNavigate();
 
-  useEffect(()=>{
+  // useEffect(()=>{
     
-    const userdata = JSON.parse(localStorage.getItem("user"))
-    setUser(userdata)
+  //   const userdata = JSON.parse(localStorage.getItem("user"))
+  //   setUser(userdata)
     
     
 
-  })
+  // })
   const logout = async () => {
     // do axios get to backend for logout
     // then redirect to home page

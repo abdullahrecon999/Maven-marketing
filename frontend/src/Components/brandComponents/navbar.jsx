@@ -5,21 +5,18 @@ import logo from "../../assets/AppLogo.png";
 import axios from "axios";
 import { useNavigate, Link } from 'react-router-dom';
 
-const logout = async () => {
-  // const navigate = useNavigate();
-  localStorage.removeItem('user')
-  // navigate("/")
-
-  // await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
-  //   localStorage.removeItem('user')
-  //   navigate("/")
-  // }).catch(err => {
-  //   console.log(err)
-  // })
-}
-
 export function NavBar({avatar, name, email, role, id, user}) {
   const navigate = useNavigate();
+
+  const logout = async () => {
+    // const navigate = useNavigate();
+    await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
+      localStorage.removeItem('user')
+      navigate("/")
+    }).catch(err => {
+      console.log(err)
+    })
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {

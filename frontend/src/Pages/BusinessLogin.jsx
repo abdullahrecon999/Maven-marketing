@@ -200,7 +200,7 @@ const BusinessLogin = () => {
             console.log(res.data.success)
             if(res.data.success === true){
                 localStorage.setItem('user', JSON.stringify(res.data.user))
-                navigate("/businesshome")
+                navigate("/brandhome")
             }
             else{
                 console.log("error: ",res.data)

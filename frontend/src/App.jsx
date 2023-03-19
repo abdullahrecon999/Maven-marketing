@@ -102,11 +102,11 @@ function App() {
               <Route path='/marketplace/' element={<Marketplace />} ></Route>
               <Route path='/influencerlisting/:id' element={<InfluencerListing />} ></Route>
               <Route path='/influencerprofile/:id' element={<InfluencerProfile />} ></Route>
-              <Route path='/campaigndetails/' element={<CampaignDetailInfluencer/>} ></Route>
               <Route path='/brandchat' element={<Chat/>}></Route>
               <Route path='/brandprofile' element={<BrandProfile/>}></Route>
               <Route path='/brand/linkedin' element={<LinkedInCallback />}></Route>
             </Route>
+              <Route path='/campaigndetails' element={<CampaignDetailInfluencer/>} ></Route>
 
             {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>
             <Route path='/campaigns' element={<Campaign/>} ></Route>
