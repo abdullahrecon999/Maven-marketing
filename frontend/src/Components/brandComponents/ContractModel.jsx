@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {useQuery, useMutation} from "react-query"
 import axios from "axios"
 import DatePicker ,{CalendarContainer}from "react-datepicker"
-
+import { TailSpin } from 'react-loader-spinner';
 const MyContainer = ({ className, children }) => {
     return (
       <div style={{ padding: "16px", background: "#216ba5", color: "#fff" }}>
@@ -25,7 +25,7 @@ const ContractModel = ({handleClose, id}) => {
         return axios.get(`http://localhost:3000/brand/getbiddetails/${id}`)
     })
 
-    const {mutate} = useMutation(()=>{
+    const {mutate, isLoading, isSuccess} = useMutation(()=>{
         if(Object.keys(bidData).length !==0){
             const val = {
                 campaignId: bidData?.campaignId["_id"] ,
@@ -66,23 +66,37 @@ const ContractModel = ({handleClose, id}) => {
                 <h1 className='text-2xl font-railway '>Influencer Information</h1>
                 <h1 className='text-xl text-gray-600'>{bidData?.sender?.name}</h1>
             </div>
-            <form className='flex flex-col '>
-                <div className='flex'>
+            <form className='flex flex-col ' onSubmit={(e)=>{
+                  e.preventDefault()
+                  mutate()
+            }}>
+                <div className='flex mt-7 w-[60%] justify-between'>
                 <div>
-                    <h1 className='text-xl font-railway'>Contract Amount</h1>
+                    <h1 className='text-xl font-railway'>Contract Amount <span className="text-red-500">*</span></h1>
                     <input required className="bg-slate-100 rounded-full px-2" onChange={(e)=>{
                         setAmount(e.target.value)
                     }} type="number"placeholder='Enter amount'></input>
                 </div>
                 <div>
-                    <h1 className='text-xl font-railway'>End Date</h1>
+                    <h1 className='text-xl font-railway'>End Date <span className="text-red-500">*</span></h1>
                     <DatePicker required className="bg-slate-100 rounded-full px-2" onChange={(date) => setStartDate(date)}
                     
                     selected={new Date()}/>
                 </div>
                 </div>
                 <div className='flex h-56 justify-end'>
-                    <button type='submit' onClick={mutate} className='bg-blue px-2 py-1 h-[50px] text-white font-railway rounded-full'>create contract</button>  
+                    {!isSuccess && <button disable={isSuccess} type='submit'  className='bg-blue btn hover:opacity-60 px-2 py-1 h-[50px] text-white font-railway rounded-full'>create contract {isLoading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />:null}</button>  }
+
+                    {isSuccess&& <h1 className="text-green italic border border-green h-[30px] btn text-white font-railway bg-green  text-center">Contract sent</h1>}
                 </div>
             </form>
             

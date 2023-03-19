@@ -365,7 +365,8 @@ router.get("/getacceptedbids/:id", async (req, res)=>{
   const id = req.params.id
   try{
     const data = await Bids.find({campaignId:id, accepted:true}).populate("campaignId", "title").populate("sender", ["name", "photo"])
-    console.log(data)
+    
+    
     res.status(200).json({
       status: "success",
       data
