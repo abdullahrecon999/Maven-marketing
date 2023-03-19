@@ -50,7 +50,7 @@ export function LaunchCampaign() {
 	const [open, setOpen] = useState(false);
 	const [form] = Form.useForm();
 
-	const [items, setItems] = useState(campaign.data?.tags || ['All']);
+	const [items, setItems] = useState(campaign?.data?.tags || ['All']);
 	const [questItems, setQuestItems] = useState(['None']);
 	const [question, setQuestion] = useState('');
 	const [name, setName] = useState('');

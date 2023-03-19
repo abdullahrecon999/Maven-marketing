@@ -676,10 +676,10 @@ router.get("/bidDetails/:id", async(req, res, next)=>{
 
 router.post("/bidCampaign/:id", async (req, res, next) => {
   const {campaignId, sender} = req.body
-  
+  console.log(campaignId)
   try{
 
-    const data = bids.find({campaignId:campaignId, sender: sender})
+    const data = await bids.find({campaignId:campaignId, sender:sender})
     console.log("this is the damsn",data)
     if(data.length !== 0){
       res.status(409).json({
@@ -821,10 +821,11 @@ router.post("/invite/accept/:id", async(req, res, next)=>{
     ],
     sender: data["to"]
   }
-    await Message.create(msg)
+    
       
      const hasUser= await contacts.find({user:data["to"], "contacts.contact":data["sender"]})
      if(hasUser?.length){
+      await Message.create(msg)
       console.log("hase user", hasUser)
       res.status(200).json({
         status: "success",
@@ -833,6 +834,7 @@ router.post("/invite/accept/:id", async(req, res, next)=>{
       })
      }
      else{
+      await Message.create(msg)
       await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
       await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
       res.status(200).json({

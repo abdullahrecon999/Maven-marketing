@@ -1,4 +1,4 @@
-import React , {useContext, useState}from 'react'
+import React , {useContext, useState, useEffect}from 'react'
 import {Formik, Form} from "formik"
 import { TextField } from '@mui/material'
 import  {useMutation} from "react-query"
@@ -14,10 +14,15 @@ import { async } from '@firebase/util'
 
 const BidModal = ({data, brand, id, influencer, onClose}) => {
     const  [filename, setFileName] = useState("")
-    const {user} = useContext(AuthContext)
+    const {user, setUser} = useContext(AuthContext)
     const [url, setUrl] = useState("")
     const [reference, setRef] = useState(null)
-    console.log(user)
+    const [loading, setLoading] = useState(false)
+    
+    useEffect(()=>{
+        const user = JSON.parse(localStorage.getItem("user"))
+        setUser(user)
+    },[])
 
     const onFileChange = (file, formik)=>{
         console.log(formik)
@@ -94,26 +99,26 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                                 <h1 className='text-2xl text-black font-railway mb-1'>Enter Proposal Details</h1>
                                 <hr></hr>
                                 <div className='space-y-1'>
-                                    <h1 className='text-xl text-black font-railway'>Cover Letter</h1>
+                                    <h1 className='text-xl text-black font-railway'>Cover Letter <span className='text-xl text-red-500'>*</span></h1>
                                     <textarea rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add your cover letter here" required onChange={(e)=> {
                                         formik.setFieldValue("discription", e.target.value)
                                         console.log(formik.values)
                                     }}></textarea>
                                 </div>
                                 <div>
-                                    <h1 className='text-xl text-black font-railway'>Amount</h1>
+                                    <h1 className='text-xl text-black font-railway'>Amount <span className='text-xl text-red-500'>*</span></h1>
                                     <input type="number" className='block p-2 text-gray-900 bg-gray-50 border rounded-lg border-gray-300 '  required onChange={(e)=> {
                                         formik.setFieldValue("amount", e.target.value)
                                         console.log(formik.values)
                                     }}></input>
                                 </div>
                                 <div>
-                                    <h1 className='text-xl text-black font-railway'>Questions</h1>
+                                    <h1 className='text-xl text-black font-railway'>Questions <span className='text-xl text-red-500'>*</span></h1>
                                     <p className="text-base text-grey">Please answer the following questions. These questions allow Brands to better look at your proposal</p>
                                     <div className='flex flex-col px-3 py-4 border rounded-md shadow-md my-4'>
                                     {data.map((item, i)=>{
                                         return <div>
-                                        <h1 className='text-base text-black font-railway mb-3'>{i+1} {item}</h1>
+                                        <h1 className='text-base text-black font-railway mb-3'>{i+1} {item} <span className='text-xl text-red-500'>*</span></h1>
                                         <textarea className='block mb-4 p-2 w-full text-gray-900 bg-gray-50 border rounded-lg border-gray-300 '  required onChange={(e)=> {
                                         formik.setFieldValue(`answer${i+1}`, e.target.value)
                                         console.log(formik.values)
@@ -170,7 +175,7 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                                             </div>
                                     </div>
                                 </div>
-                                <button type='submit' disabled={isSuccess}  className={`text-white text-xl font-railway text-center px-3 py-2 rounded-full bg-blue hover:bg-indigo-500 ${isSuccess=== true? "hidden":""}`}>
+                                <button type='submit' disabled={isSuccess}  className={`text-white btn text-xl font-railway text-center px-3 py-2 rounded-full bg-blue hover:bg-indigo-500 ${isSuccess=== true? "hidden":""}`}>
                                   {isLoading?<TailSpin
                                 height="20"
                                 width="20"
@@ -179,9 +184,11 @@ const BidModal = ({data, brand, id, influencer, onClose}) => {
                                 radius="1"
                                 wrapperStyle={{}}
                                 wrapperClass=""
-                                visible={true}
+                                visible={!isSuccess}
                                 />: "Submit"} 
                                 </button>
+
+                                {isSuccess? <p className='text-red-500'>Bid sumitted successfully</p>:null}
                         </div>
                         </div>
                     </div>

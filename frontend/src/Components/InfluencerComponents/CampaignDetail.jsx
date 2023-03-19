@@ -160,7 +160,7 @@ const CampaignDetailInfluencer = () => {
   const {state} = useLocation()
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState({})
-  const [bidsdata, setData] = useState({})
+  const [bidsdata, setData] = useState([])
   const [close, setClose] = useState(false)
   const [id, setId] = useState("");
   const [contract, setOpenContract] = useState(false)
@@ -348,7 +348,7 @@ const CampaignDetailInfluencer = () => {
 
             <div className="dropdown dropdown-bottom dropdown-end relative bg-cyan-100 h-[10%] w-full">
             <label tabIndex={0} className="btn m-1 bg-blue">Invite Influencer</label>
-            <ul tabIndex={0} className=" dropdown-content absolute menu p-2 shadow bg-base-100 rounded-box w-[400px]">
+            <ul tabIndex={0} className=" dropdown-content absolute menu p-2 shadow bg-base-100 rounded-box w-[400px] h-[400px] overflow-x-auto">
               {inviteInfluencer?.data?.data?.map(item=>{
                 return <li>
                   <div className="flex justify-between px-2 py-1 mb-2 border">
