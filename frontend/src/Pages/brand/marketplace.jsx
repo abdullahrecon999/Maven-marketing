@@ -577,7 +577,7 @@ export const Marketplace = () => {
         </div>
 
         <div className="flex justify-center p-5">
-          <Pagination count={influencer?.data.totalPages} showFirstButton showLastButton />
+          <Pagination count={influencer?.data?.totalPages} showFirstButton showLastButton />
         </div>
 
       </div>

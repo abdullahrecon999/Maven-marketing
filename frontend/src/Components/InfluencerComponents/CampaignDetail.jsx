@@ -165,7 +165,7 @@ const CampaignDetailInfluencer = () => {
   const [id, setId] = useState("");
   const [contract, setOpenContract] = useState(false)
   const [bidId, setBidId] = useState("")
-
+ 
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem("user"))
     setUser(user)
@@ -232,7 +232,13 @@ const CampaignDetailInfluencer = () => {
     }
   )
 
+  const {data:inviteInfluencer} = useQuery(["getInviteInfluencer"], ()=>{
+    return axios.get("http://localhost:3000/brand/inviteinfluencers")
+  })
 
+  const {mutate, isSuccess:isinviteSuccess} = useMutation((val)=>{
+    return axios.post("http://localhost:3000/brand/sendinvite", val)
+  })
   useEffect(()=>{
     console.log(user)
     if(isSuccess){
@@ -253,7 +259,7 @@ const CampaignDetailInfluencer = () => {
     }
   },[bids?.data?.data])
   
-
+ 
   
   if(isLoading){
     return(<div className='h-screen flex justify-center items-center'>
@@ -338,12 +344,47 @@ const CampaignDetailInfluencer = () => {
               </div>
             </div>
 
-            <div className='hidden md:flex flex-[0.1]    mr-2'>
+  {user?.role === "brand"?<div className="flex flex-[0.1] w-[30%]">
+
+            <div className="dropdown dropdown-bottom dropdown-end relative bg-cyan-100 h-[10%] w-full">
+            <label tabIndex={0} className="btn m-1 bg-blue">Invite Influencer</label>
+            <ul tabIndex={0} className=" dropdown-content absolute menu p-2 shadow bg-base-100 rounded-box w-[400px]">
+              {inviteInfluencer?.data?.data?.map(item=>{
+                return <li>
+                  <div className="flex justify-between px-2 py-1 mb-2 border">
+                    <div className="flex space-x-2">
+                        <img className='w-[50px] h-[50px] rounded-full shadow-sm' src={item?.photo} alt=""></img>
+                        <h1>{item?.name}</h1>
+                        
+                    </div>
+                    <div>
+                      <button onClick={
+                        ()=>{
+                          const val = {
+                            campaignId: data?.data?.data["_id"],
+                            to: item["_id"],
+                            sender: data?.data?.data?.brand["_id"],
+                          }
+                          console.log(val)
+                          mutate(val)
+                        }
+                      } className="px-1 py-1 rounded-full bg-green text-white text-sm">invite</button>
+                    </div>
+                  </div>
+                </li>
+              })}
+              
+            </ul>
+          </div>
+                     
+  </div>:
+  
+  <div className='hidden md:flex flex-[0.1]    mr-2'>
               <div className='flex flex-col items-center  px-4 py-6 w-[300px] h-[160px] border shadow rounded-lg space-y-3'>
                 <p className='text-grey text-base text-center '>If this campaign interests you then submit a bid to collaborate</p>
                 <button onClick={()=> handleOpen()}  className='bg-blue text-center text-white font-railway py-2 px-3 rounded-full shadow hover:bg-indigo-600'>I'd like to submit a pitch</button>
               </div>
-            </div>
+            </div>}
 
           </div>
           <button onClick={()=> handleOpen()}  className='bg-blue text-center text-white font-railway py-2 px-3 rounded-full shadow hover:bg-indigo-600 md:hidden'> Submit a Bid</button>
