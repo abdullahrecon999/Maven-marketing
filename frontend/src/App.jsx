@@ -91,6 +91,7 @@ function App() {
               <Route path='/admin/home/influencer/:id' element={<InfluencerDetails/>}></Route>
               <Route path='/admin/users' element={<Users/>}></Route>
               <Route path='/admin/users/influencer/:id' element={<InfluencerDetails></InfluencerDetails>}></Route>
+              <Route path='/admin/bUsers/influencer/:id' element={<InfluencerDetails></InfluencerDetails>}></Route>
               <Route path='/admin/bUsers' element={<BrandUsers/>}></Route>
               <Route path='/admin/activationRequests' element={<ActivationRequests/>}></Route>
             </Route>

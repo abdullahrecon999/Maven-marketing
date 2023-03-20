@@ -37,14 +37,15 @@ const categories = [
 	"Travel"
 ]
 
-const Profile = ({ onEdit }) => {
-	const { state } = useLocation();
-	const { user } = state;
 
-	const { data, isLoading } = useQuery(["getProfile"], () => {
-		console.log("USER: ",user)
-		return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
-	})
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("user")))
+    },[])
+
+    
+    const {data, isLoading}= useQuery(["getProfile"],()=>{
+        return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
+    })
 
 
 	return (
@@ -162,39 +163,38 @@ const EditProfile = ({ onSave }) => {
 						{/* <label className='absolute top-0 right-20 p-1 text-xs text-grey border rounded-full hover:shadow-md' for="image"> <EditIcon></EditIcon></label>
                 <input className='hidden' type="file" id="image"></input>
                 <img src={image} alt={image} className="w-[150px] h-[150px] rounded-full"/> */}
-						<div >
-							<ProfileImage image={user?.photo} name="photo" setvalue={formik.setFieldValue} ></ProfileImage>
-						</div>
+                
+                <div >
+                <ProfileImage image={user?.photo} name = "photo" setvalue = {formik.setFieldValue} ></ProfileImage>
+                </div>
+               
+                <div className='flex flex-col flex-1 space-y-0 items-center'>
+                    <h1 className='text-black font-railway text-xl'>{user?.name}</h1>
+                    <p className='text-gray-700 font-railway text-xs'>{user?.description.slice(0,4)+"......."}</p>
+                </div>
+                <div className='flex flex-col space-y-5 w-[100%]'>
+                <hr ></hr>
 
-						<div className='flex flex-col space-y-0 items-center'>
-							<h1 className='text-black font-railway text-xl'>{user?.name}</h1>
-							<p className='text-gray-700 font-railway text-xs'>{user?.description.slice(0, 4) + "......."}</p>
-						</div>
-						<div className='flex flex-col space-y-5 w-[100%]'>
-							<hr ></hr>
+                    <div className='flex flex-col w-[100%] px-2 '>
+                        <h1 className='text-blue font-railway text-base'>About </h1>
+                        
 
-							<div className='flex flex-col w-[100%] px-2 space-y-9'>
-								<h1 className='text-blue font-railway text-base'>About </h1>
-								{/* <TextField
-                            id="outlined-multiline-static"
+                        <div>
+                        <TextField rows={9} className="w-full resize-none" defaultValue={user?.description} name="description"></TextField>
+                        </div>
+                    </div>
 
-                            multiline
-                            rows={5}
-                            defaultValue="Default Value"
-                            variant='standard'
-                            /> */}
 
-								<TextField defaultValue={user?.description} name="description"></TextField>
-							</div>
-							<div className='flex flex-col space-y-1'>
-								<div className='px-2 flex flex-col flex-1 space-y-1'>
-									<h1 className='text-blue font-railway text-base'>Country</h1>
-									<MultipleSelect label={user?.country[0]} name="country" names={countries} defaultValue={user?.country[0]} setvalue={formik.setFieldValue}></MultipleSelect>
-								</div>
-								<div className='px-2 flex flex-col space-y-1'>
-									<h1 className='text-blue font-railway text-base'>languages </h1>
-									<MultipleSelect defaultValue={user?.language[0]} name="language" names={languages} setvalue={formik.setFieldValue}  ></MultipleSelect>
-								</div>
+
+                    <div className='flex flex-col space-y-1'>
+                        <div className='px-2 flex flex-col flex-1 space-y-1'>
+                            <h1 className='text-blue font-railway text-base'>Country</h1>
+                            <MultipleSelect label={user?.country[0]}  name="country" names={countries} defaultValue={user?.country[0]} setvalue={formik.setFieldValue}></MultipleSelect>
+                        </div>
+                        <div className='px-2 flex flex-col space-y-1'>
+                                <h1 className='text-blue font-railway text-base'>languages </h1>
+                                <MultipleSelect defaultValue={user?.language[0]}   name="language" names={languages} setvalue={formik.setFieldValue}  ></MultipleSelect>
+                        </div>
 
 							</div>
 							<hr ></hr>

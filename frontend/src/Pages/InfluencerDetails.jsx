@@ -9,6 +9,7 @@ import axios from 'axios'
 import { useQuery } from "react-query"
 import DetailBox from '../Components/DetailBox'
 
+
 const Profile = ({ id }) => {
 
 	const [state, setState] = useState(true)
@@ -50,18 +51,20 @@ const Profile = ({ id }) => {
 		) : (
 			isSuccess && (
 				<div className='w-[900px] px-12 py-8'>
-					{console.log("Data: ", data)}
+					
+					{data?.data?.data?.role === "influencer"?<>
 					<div className='flex flex-col space-y-3'>
 						<h1 className="text-blue font-andika text-4xl">Influencer details page</h1>
 						<h1 className='text-green font-railway text-xl'>Personal Details</h1>
 						<div>
+							{console.log(data.data.data)}
 							<img
-								className=' border rounded-full max-h-[80px] max-w-[80px] md:max-h-[130px] md:max-w-[130px]'
+								className=' border rounded-full max-h-[80px] max-w-[80px] md:h-[270px] md:w-[270px]'
 								src={data.data.data?.photo}
-								alt="hot potato" />
+								alt={uImage} />
 						</div>
 						<h1 className='text-black font font-railway text-base'> Name: <span className='font-bold text-grey'>{data.data.data?.name}</span></h1>
-						<div className='flex  flex-col '>
+						<div className='flex  flex-col space-y-5 '>
 							<div className='flex flex-col space-y-3'>
 								<h1 className='font-railway text-lg'>
 									Country
@@ -84,12 +87,12 @@ const Profile = ({ id }) => {
 						</div>
 						<div className='space-y-2'>
 							<h1 className='font-railway text-lg'>Description</h1>
-							<p className='font-Andika text-sm text-grey'>{data?.data?.data?.discription}</p>
+							<p className='font-Andika text-sm text-grey'>{data?.data?.data?.description}</p>
 
 						</div>
 						<div>
 							<h1 className='font-railway text-lg'>Profile Status</h1>
-							<p className='font-railway text-base text-blue'>Pending</p>
+							<p className='font-railway text-base text-blue'>{data?.data?.data?.profileActive===0?"Active": "Not Active"}</p>
 						</div>
 					</div>
 					<h1 className='text-green font-railway text-xl mt-3'>plateform Details</h1>
@@ -98,19 +101,17 @@ const Profile = ({ id }) => {
 							<h1 className='font-railway text-lg'>
 								Platforms
 							</h1>
-							<h1 className='font-railway text-base text-grey'>twitter</h1>
+							{data?.data?.data?.platforms.map(items => {
+										return <DetailBox data={items} />
+									})}
 						</div>
-						<div>
-							<h1 className='font-railway text-lg'>
-								links
-							</h1>
-							<h1 className='font-railway text-base text-grey' >twitter</h1>
-						</div>
+						
 					</div>
 					<div className='mt-3'>
 						{!state && <Button onClick={handleClickdeactivate} className='bg-blue' variant='contained' >Deactivate profile</Button>}
 						{state && <Button onClick={handleClickActivate} className='bg-blue' variant='contained' >Activate profile</Button>}
 					</div>
+					</>:null}
 
 				</div>
 			)

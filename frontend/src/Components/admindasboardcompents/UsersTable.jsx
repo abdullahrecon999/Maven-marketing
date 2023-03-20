@@ -95,8 +95,9 @@ const UsersTable = ({type, data}) => {
       
       <Box sx={{ height: 400, width: '100%' }}>
       <DataGrid
-        onRowClick={(params)=>{
-          navigate(`influencer/${params.row.id}`,{id: params.row.id})
+        onRowClick={(param)=>{
+          console.log(param.row["_id"])
+          navigate(`influencer/${param.row["_id"]}`,{id: param.row["_id"]})
         }}
         rows={data}
         getRowId ={(row) => row._id}

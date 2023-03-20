@@ -220,14 +220,25 @@ router.post('/campaigns', (req, res) => {
   })
 })
 
+router.post('/campaigns/:id', (req, res) => {
+  
+  Campaign.find({_id:id, status: "live"}).then(campaigns => {
+    res.send(campaigns);
+  }).catch(err => {
+    res.send("not Found");
+  })
+})
+
 router.post("/createContract", async (req, res)=>{
     const data= req.body
 
     try{
 
     const contract =  await Contract.create(req.body)
+    const campaign = await Campaign.findOne({_id:contract["campaignId"]}).populate("brand", "name")
+    console.log(campaign)
      const msg = {
-      text: "Contract available",
+      text: `Contract Available for ${campaign["title"]} by ${campaign?.brand.name}`,
       users:[
         data["sender"].toString(),
         data["to"].toString()
@@ -236,8 +247,9 @@ router.post("/createContract", async (req, res)=>{
       msgType: "contract",
       contract: contract["_id"]
     }
-    await Message.create(msg)
     console.log(msg)
+    await Message.create(msg)
+    
       res.status(200).json({
         status: "success"
       })
@@ -322,9 +334,9 @@ router.post("/bid/accept/:id", async(req, res, next)=>{
     if(Object.keys(data).length !==0){
 
       await Bids.updateOne({_id: id}, val)
-
+      const campaign = await Campaign.findOne({_id: data["campaignId"]}).populate("brand", "name")
     const msg = {
-    text: "Accepting the bid",
+    text: `Accepting the Proposal  for ${campaign["title"]} by ${campaign?.brand.name}`,
     users:[
       data["sender"].toString(),
       data["to"].toString()

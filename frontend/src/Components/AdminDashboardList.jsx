@@ -53,12 +53,7 @@ export default function NestedList() {
         </ListItemIcon>
         <ListItemText   primary={<Texts name="home" title= "Dashboard"></Texts>} />
       </ListItemButton>
-      <ListItemButton  onClick={()=>navigate("/admin/notification")} name="notification">
-        <ListItemIcon>
-          <NotificationsIcon className='text-white'/>
-        </ListItemIcon>
-        <ListItemText primary={<Texts  title= "Notifications"></Texts>} />
-      </ListItemButton>
+      
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
           <GroupIcon className='text-white' />
