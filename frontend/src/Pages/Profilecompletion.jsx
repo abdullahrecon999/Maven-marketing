@@ -25,26 +25,42 @@ const style = {
 const countries = [
     "pakistan",
     "China",
-    "India"
+    "India",
+    "USA",
+    "England",
+    "Russia"
 ]
+
+
 
 const languages = [
     "Urdu",
     "English",
     "Hindi",
-    "Chinese"
-]
+    "Chinese",
+    "Russian"
 
+]
 const platforms = [
-    "twitter",
-    "instagram"
-]
+    "Instagram",
+    "Youtube",
+    "Tiktok",
+    "Facebook",
+    "Twitter",
+    "Snapchat",
+    "Linkedin",
+    "Pinterest"
+  ]
 
-const categories =[
-    "Food",
-    "Techs and gadgets",
-    "Travel"
-]
+
+  const categories = [
+    "Influencer Marketing",
+    "Email Marketing",
+    "Blog Writing",
+    "Photography",
+    "Design",
+    "Audio"
+  ]
 const Profilecompletion = () => {
     
     const navigate = useNavigate();
