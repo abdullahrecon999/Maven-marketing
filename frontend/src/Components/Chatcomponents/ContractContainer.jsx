@@ -11,7 +11,7 @@ const Contract= ({text, id}) => {
              <div className="flex flex-col justify-center  w-[100%] ">
               <h1 className='text-base text-black font-railway self px-2 mb-3'>Contract</h1>
                 <div className="space-y-3 border-2 px-4 py-3 w-[100%] bg-slate-50 rounded-md">
-                   <h1 className='text-xl font-railway'>You have new contract available</h1>
+                   <h1 className='text-xl text-black font-railway'>You have new contract available</h1>
                  
                  
                  <button onClick={()=>{

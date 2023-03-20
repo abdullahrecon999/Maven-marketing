@@ -14,6 +14,8 @@ import messageImage from "../../images/Messaging-rafiki.png"
 import Contract from './ContractContainer';
 import InfluencerGenaricModel from "../InfluencerComponents/InfluencerGenaricModal"
 import CloseIcon from '@mui/icons-material/Close';
+
+
 const FallBack=()=>{
     return(<div className="h-screen flex flex-col flex-1 justify-center items-center px-4 py-4 bg-slate-50">
         <div className='flex flex-col border border-blue px-12 py-10 rounded-lg shadow-2xl w-[70%] h-[70vh] justify-center items-center'>
@@ -29,17 +31,24 @@ const FallBack=()=>{
 const ContractModel =()=>{
     const [Data, setData] = useState({})
     const {openContract, setOpenContract, Id} = useContext(ChatContext)
+
+    const {user, setUser} = useContext(AuthContext)
     const {data, isLoading} = useQuery(["getContractdetails"],()=>{
         return axios.get("http://localhost:3000/chats/getcontractdetails/"+Id)
       })
     
-      useEffect(()=>{
-        
-      },[])
+      useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"))
+        setUser(user)
+      }, [])
 
     useEffect(()=>{
         setData(data?.data?.data)
     },[data])
+
+    const {mutate, isLoading:isAcceptLoading, isSuccess} = useMutation(()=>{
+        return axios.post("http://localhost:3000/influencer/acceptcontract/"+Data["_id"])
+    })
     return <InfluencerGenaricModel>
   <div className="h-full flex flex-col justify-start ">
         <div className='flex justify-end bg-slate-200 '>
@@ -59,8 +68,8 @@ const ContractModel =()=>{
             <div>
                 
                 <h1 className='border-green italic text-green'>{(!Data?.accepted && !Data?.rejected)?"Pending":null}</h1>
-                <h1>{(Data?.accepted && !Data?.rejected)?"accepted":null}</h1>
-                <h1>{(!Data?.accepted && Data?.rejected)?"rejected":null}</h1>
+                <h1 className='border-green italic text-green'>{(Data?.accepted && !Data?.rejected)?"accepted":null}</h1>
+                <h1 className='border-green italic text-green'>{(!Data?.accepted && Data?.rejected)?"rejected":null}</h1>
             </div>  
         </div>
         <div className='flex-1 justify-start h-full px-5 mt-4  overflow-y-auto'>
@@ -72,7 +81,11 @@ const ContractModel =()=>{
                 <h1 className='text-2xl font-railway '>Brand Information</h1>
                 <h1 className='text-xl text-gray-600'>{Data?.sender?.name}</h1>
             </div>
-            <form className='flex flex-col  space-y-3'>
+            <form onSubmit={(e)=>{
+                e.preventDefault()
+                mutate()
+
+            }} className='flex flex-col  space-y-3'>
                 <div className='flex justify-between w-[50%]'>
                 <div>
                     <h1 className='text-xl font-railway'>Contract Amount</h1>
@@ -86,7 +99,19 @@ const ContractModel =()=>{
                 </div>
                 </div>
                 <div className='flex h-56 '>
-                    <button type='submit' className='bg-blue px-2 py-1 hover:opacity-80 shadow-lg h-[50px] text-white font-railway rounded-full'>Accept Contract</button>  
+                {user?.role ==='brand'? null:<button type='submit' className='bg-blue px-2 py-1 hover:opacity-80 shadow-lg h-[50px] text-white font-railway rounded-full'>Accept Contract 
+                
+                {isAcceptLoading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />:null}</button>  
+ }                
                 </div>
             </form>
             
