@@ -143,13 +143,13 @@ const BusinessLogin = () => {
 		//window.open("http://localhost:3000/users/auth/google", "_self");
 
 		var new_window = window.open('http://localhost:3000/users/auth/google', 'sharer' ,'toolbar=0,status=0,width=548,height=325');
-		var timer = setInterval(function() { 
-			if(new_window.closed) {
-					clearInterval(timer);
-					// window.open("http://localhost:5173/brandhome", "_self");
-					console.log("closed")
-			}
-		}, 1000);
+		// var timer = setInterval(function() { 
+		// 	if(new_window.closed) {
+		// 			clearInterval(timer);
+		// 			// window.open("http://localhost:5173/brandhome", "_self");
+		// 			console.log("closed")
+		// 	}
+		// }, 1000);
 
 		// axios.get("http://localhost:3000/users/auth/google", {
 		// 	headers: {

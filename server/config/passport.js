@@ -15,10 +15,11 @@ module.exports = function(passport) {
     clientID : process.env.GOOGLE_SSO_CLIENT_ID,
     clientSecret : process.env.GOOGLE_SSO_CLIENT_SECRET,
     callbackURL : 'http://localhost:3000/users/auth/google/callback',
-    passReqToCallback : true
+    passReqToCallback: true
   },
   function(request, accessToken, refreshToken, profile, done) {
     // User.findOne won't fire until we have all our data back from Google
+    //done(null, profile);
     process.nextTick(function() {
 
       console.log(profile)
@@ -29,8 +30,8 @@ module.exports = function(passport) {
                 // if a user is found, log them in
                 user.email_verified = true;
                 await user.save({ validateBeforeSave: false });
-
-                return done(null, user, { message: 'Logged In success', status: 200 });
+                
+                return done(null, user, { message: 'Login successful', status: 200 });
             } else {
                 // if the user isnt in our database, redirect them to register page
                 return done(null, false, { message: 'Email not registered', status: 401 });

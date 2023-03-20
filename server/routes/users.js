@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const passport = require('passport');
 const axios = require('axios');
+const CLIENT_URL = "http://localhost:5173/brandhome"
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -21,24 +22,51 @@ router.get('/user', function(req, res, next) {
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 
 // the callback after google has authenticated the user
+// router.get(
+//   '/google/callback',  
+//   passport.authenticate("google", {
+//   successRedirect: "http://localhost:5173/brandhome",
+//   failureRedirect: "/auth/login/failed"
+//  })); 
+
+// router.get('/google/callback', 
+//   passport.authenticate("google", { failureRedirect: "/auth/login/failed"}),
+//   function(req, res) {
+    
+//     // Successful authentication, redirect home.
+//     res.redirect('http://localhost:5173/brandhome');
+//   }
+//  ); 
+
 router.get(
-  '/google/callback',  
-  passport.authenticate("google", {
-  successRedirect: "http://localhost:5173/brandhome",
-  failureRedirect: "/auth/login/failed"
- })); 
+    "/google/callback", 
+    passport.authenticate("google",{
+    successRedirect: CLIENT_URL,
+    failureRedirect: "/auth/login/failed"
+  })
+);
+
+// router.get(
+//   "/google/callback", 
+//   passport.authenticate('google'),
+//   (req, res) => {
+//     res.redirect('/')
+//   }
+// );
 
 // router.get('/auth/google/callback',function(req, res, next) {
-
-//   // generate the authenticate method (the anonymous method) and
-//   //     associate it with the 'local' strategy
 //   passport.authenticate('google', function(err, user, info) {
+//     console.log('--------------------user---------------------\n', user)
 //     if (err) { return next(err); }
 //     // res.redirect('http://localhost:5173');
 //     if (!user) { return res.redirect('/'); }
-    
-//     return res.redirect('http://localhost:5173/brandhome');
+//     console.log('-----------------res-----------------\n', res)
+
+//     // Redirect the client to a different URL
+//     return res.send(user);
 //   })(req, res, next);
+
+//   console.log('-----------------req-----------------\n', req)
 // });
 
 // call flask api to verify account
