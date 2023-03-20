@@ -7,19 +7,19 @@ const ProfileImage = ({...props}) => {
     const [uImage, setImage] = useState(image)
     const imageHandler = async (e)=> {
         
-        console.log(feild.value)
         
         
-        const reader = new FileReader();
-        reader.onload = () => {
-            if(reader.readyState === 2 ){
-                setImage(reader.result)
-            }
-        }
-        reader.readAsDataURL(e.target.files[0])
-        const image = await convertToBase64(e.target.files[0])
-        props.setvalue("uImage",image)
-        console.log(image)
+        
+        // const reader = new FileReader();
+        // reader.onload = () => {
+        //     if(reader.readyState === 2 ){
+        //         setImage(reader.result)
+        //     }
+        // }
+        // reader.readAsDataURL(e.target.files[0])
+        // const image = await convertToBase64(e.target.files[0])
+        // props.setvalue("uImage",image)
+        // console.log(image)
     }
   return (
     <div className='space-y-3'>
