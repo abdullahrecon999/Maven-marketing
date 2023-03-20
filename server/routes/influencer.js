@@ -812,11 +812,12 @@ router.post("/invite/accept/:id", async(req, res, next)=>{
       accepted: true
     }
     if(Object.keys(data).length !==0){
-
+      const campaign = await Campaings.findOne({_id: data["campaignId"]}).populate("brand", "name")
       await invites.updateOne({_id: id}, val)
+      
 
     const msg = {
-    text: "Accepting the invite",
+    text: `Accepting the Invite for ${campaign["title"]} by ${campaign?.brand.name}`,
     users:[
       data["sender"].toString(),
       data["to"].toString()
@@ -918,15 +919,18 @@ router.post("/acceptcontract/:id", async (req, res) => {
   try{
     const data = await contracts.findOne({_id: id})
     console.log("data in the contract", data)
+    const campaign = await Campaings.findOne({_id: data["campaignId"]}).populate("brand", "name")
     await contracts.updateOne({_id:id}, {accepted:true})
+    console.log(campaign)
     const msg = {
-      text: "Contract accepted",
+      text: `Accepting the contract for ${campaign["title"]} by ${campaign?.brand.name}`,
       users:[
         data["sender"].toString(),
         data["to"].toString()
       ],
       sender: data["to"]
     }
+    console.log("message is ", msg)
     await Message.create(msg)
     res.status(200).json({
       status: "success",
