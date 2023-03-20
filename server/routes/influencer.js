@@ -64,7 +64,7 @@ router.get("/influencers", async(req, res, next)=>{
     const {page, limit, search, sort, category, country, language, socialMediaHandles, minFollowers, maxFollowers} = req.query
     const options = {
       page: parseInt(page, 10) || 1,
-      limit: parseInt(limit, 10) || 10,
+      limit: parseInt(limit, 12) || 12,
       sort: {},
       collation: {
         locale: 'en'

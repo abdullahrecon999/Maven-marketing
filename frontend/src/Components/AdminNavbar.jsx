@@ -9,13 +9,10 @@ const AdminNavbar = ({authenticated}) => {
   const navigate = useNavigate();
 
   const logout = async () => {
-    // do axios get to backend for logout
-    // then redirect to home page
     await axios.get("http://localhost:3000/admin/logout", { withCredentials: true }).then(res => {
-      console.log(res)
-      setUser(null)
       localStorage.removeItem('user')
-      navigate("/")
+      // redirect to login page without navigate
+      window.location.href = "/"
     }).catch(err => {
       console.log(err)
     })

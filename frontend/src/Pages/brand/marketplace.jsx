@@ -9,22 +9,35 @@ import { useSearchParams } from "react-router-dom";
 let formatter = Intl.NumberFormat('en', { notation: 'compact' });
 
 const InfluencerListing = (id) => {
-  window.open('/influencerlisting/'+id,'_blank')
+  window.open('/influencerlisting/' + id, '_blank')
 }
 
 export const Marketplace = () => {
+  const [minNum, setMinNum] = useState(1000);
+  const [maxNum, setMaxNum] = useState(10000);
+  const [dateSort, setDateSort] = useState(true);
+  const [priceSort, setPriceSort] = useState(true);
+  const [followerSort, setFollowerSort] = useState(true);
+  const [page, setPage] = useState(1);
+
   const [searchParams, setSearchParams] = useSearchParams();
-  let search = searchParams.get('search')
+  let search = searchParams.get('search') || "";
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchInfluencers = async () => {
-    const res = await fetch('http://localhost:3000/influencer/influencers?'+decodeURIComponent(searchParams));
+    let queryParams = "search=" + search + "&sort=" + (followerSort ? "follower:asc" : "follower:dsc") + ("," + (dateSort ? "createdAt:asc" : "createdAt:dsc")) + "&page=" + page
+    console.log("QUERY:", queryParams)
+    const res = await fetch('http://localhost:3000/influencer/influencers?' + decodeURIComponent(queryParams));
     return res.json();
   };
 
   const [influencersData, setInfluencersData] = useState([]);
-  const { data:influencer, isLoading, isSuccess, refetch } = useQuery(['influencer',search], fetchInfluencers, {onCompleted: setInfluencersData});
+  const { data: influencer, isLoading, isSuccess, refetch } = useQuery(['influencer', page, search, dateSort, followerSort], fetchInfluencers, { onCompleted: setInfluencersData });
 
+  const handleChange = (event, value) => {
+    setPage(value);
+    refetch();
+  };
 
   useEffect(() => {
     setInfluencersData(influencer?.data ?? []);
@@ -40,8 +53,6 @@ export const Marketplace = () => {
     setIsModalOpen(false);
   };
 
-  const [minNum, setMinNum] = useState(1000);
-  const [maxNum, setMaxNum] = useState(10000);
   const [inputValue, setInputValue] = useState([1000, 10000]);
 
   const [minNumPrice, setMinNumPrice] = useState(200);
@@ -99,24 +110,20 @@ export const Marketplace = () => {
     { label: "Dominican Republic", value: "Dominican Republic" }
   ];
 
-  const [dateSort, setDateSort] = useState(true);
-  const [priceSort, setPriceSort] = useState(true);
-  const [followerSort, setFollowerSort] = useState(true);
-
   const items = [
     {
-      label: (<div onClick={()=>setDateSort(!dateSort)}>
+      label: (<div onClick={() => setDateSort(!dateSort)}>
         <div className="flex justify-between">
           <p className="select-none">Date</p>
           <div className="flex gap-1">
-            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(!dateSort)? 'bg-yellow-200' : 'bg-white'} `}>
+            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(!dateSort) ? 'bg-yellow-200' : 'bg-white'} `}>
               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="15" height="15"
                 viewBox="0 0 30 30">
                 <path d="M15,8c0.256,0,0.512,0.098,0.707,0.293l10,10c0.286,0.286,0.372,0.716,0.217,1.09C25.77,19.757,25.404,20,25,20H5 c-0.404,0-0.77-0.243-0.924-0.617c-0.155-0.374-0.069-0.804,0.217-1.09l10-10C14.488,8.098,14.744,8,15,8z"></path>
               </svg>
             </div>
-            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(dateSort)? 'bg-yellow-200' : 'bg-white'} `}>
+            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(dateSort) ? 'bg-yellow-200' : 'bg-white'} `}>
               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="15" height="15"
                 viewBox="0 0 30 30">
@@ -129,18 +136,18 @@ export const Marketplace = () => {
       key: '0',
     },
     {
-      label: (<div onClick={()=>setPriceSort(!priceSort)}>
-        <div className="flex justify-between">
-          <p className="select-none">Price</p>
+      label: (<div onClick={() => setFollowerSort(!followerSort)}>
+        <div className="flex justify-between w-40">
+          <p className="select-none">Followers</p>
           <div className="flex gap-1">
-            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(!priceSort)? 'bg-yellow-200' : 'bg-white'} `}>
+            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(!followerSort) ? 'bg-yellow-200' : 'bg-white'} `}>
               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="15" height="15"
                 viewBox="0 0 30 30">
                 <path d="M15,8c0.256,0,0.512,0.098,0.707,0.293l10,10c0.286,0.286,0.372,0.716,0.217,1.09C25.77,19.757,25.404,20,25,20H5 c-0.404,0-0.77-0.243-0.924-0.617c-0.155-0.374-0.069-0.804,0.217-1.09l10-10C14.488,8.098,14.744,8,15,8z"></path>
               </svg>
             </div>
-            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(priceSort)? 'bg-yellow-200' : 'bg-white'} `}>
+            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(followerSort) ? 'bg-yellow-200' : 'bg-white'} `}>
               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="15" height="15"
                 viewBox="0 0 30 30">
@@ -153,40 +160,16 @@ export const Marketplace = () => {
       key: '1',
     },
     {
-      label: (<div onClick={()=>setFollowerSort(!followerSort)}>
-        <div className="flex justify-between w-40">
-          <p className="select-none">Followers</p>
-          <div className="flex gap-1">
-            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(!followerSort)? 'bg-yellow-200' : 'bg-white'} `}>
-              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                width="15" height="15"
-                viewBox="0 0 30 30">
-                <path d="M15,8c0.256,0,0.512,0.098,0.707,0.293l10,10c0.286,0.286,0.372,0.716,0.217,1.09C25.77,19.757,25.404,20,25,20H5 c-0.404,0-0.77-0.243-0.924-0.617c-0.155-0.374-0.069-0.804,0.217-1.09l10-10C14.488,8.098,14.744,8,15,8z"></path>
-              </svg>
-            </div>
-            <div className={`flex items-center justify-center rounded-sm border h-5 w-5 ${(followerSort)? 'bg-yellow-200' : 'bg-white'} `}>
-              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                width="15" height="15"
-                viewBox="0 0 30 30">
-                <path d="M15,23c-0.256,0-0.512-0.098-0.707-0.293l-10-10c-0.286-0.286-0.372-0.716-0.217-1.09C4.23,11.243,4.596,11,5,11h20 c0.404,0,0.77,0.243,0.924,0.617c0.155,0.374,0.069,0.804-0.217,1.09l-10,10C15.512,22.902,15.256,23,15,23z"></path>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>),
-      key: '2',
-    },
-    {
       type: 'divider',
     },
-    {
-      label: (
-        <div className="flex justify-between">
-          <button className="btn btn-xs rounded-md px-2 py-1 btn-error">Clear</button>
-          <button onClick={() => sortRequest()} className="btn btn-xs rounded-md px-2 py-1 btn-success">Apply</button>
-        </div>
-      ),
-    },
+    // {
+    //   label: (
+    //     <div className="flex justify-between">
+    //       <button className="btn btn-xs rounded-md px-2 py-1 btn-error">Clear</button>
+    //       <button onClick={() => sortRequest()} className="btn btn-xs rounded-md px-2 py-1 btn-success">Apply</button>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleChangeCountry = (value) => {
@@ -222,23 +205,17 @@ export const Marketplace = () => {
 
   const filterRequest = () => {
     // get all the values from the modal and craft a searchParams object to send to the API
-    const minFollowers = minNum;
+    const minFollowers = (minNum === 1000) ? '' : minNum;
     const maxFollowers = maxNum;
     setSearchParams({
       minFollowers,
       maxFollowers,
-      })
+    })
     refetch();
   }
 
   const sortRequest = () => {
-    // let str = "sort="+"hello"
-    // // str.concat((followerSort) ? 'followers:asc' : 'followers:desc');
-    // // str = str + dateSort ? 'createdAt:asc' : 'createdAt:desc';
-    // console.log((followerSort) ? 'followers:asc' : 'followers:desc')
-    // console.log(str)
-    //setSearchParams("sort=followers:asc");
-    setSearchParams("sort="+ (followerSort? "follower:asc":"follower:dsc") + ("," + (dateSort? "createdAt:asc":"createdAt:dsc")))
+    setSearchParams("sort=" + (followerSort ? "follower:asc" : "follower:dsc") + ("," + (dateSort ? "createdAt:asc" : "createdAt:dsc")))
     refetch();
   }
 
@@ -298,15 +275,15 @@ export const Marketplace = () => {
 
   return (
     <>
-    {console.log(influencer)}
-    <Modal
+      {console.log(influencer)}
+      <Modal
         title={<p className="text-2xl font-bold border-b-2 mb-5 pb-2">Filter</p>}
         footer={
           <div className="flex justify-between">
             <div className="btn btn-sm btn-outline btn-warning">
               Reset Filters
             </div>
-            <div onClick={()=>filterRequest()} className="btn btn-sm btn-primary">
+            <div onClick={() => filterRequest()} className="btn btn-sm btn-primary">
               Search
             </div>
           </div>
@@ -316,7 +293,7 @@ export const Marketplace = () => {
 
         <div className="flex-col overflow-y-auto h-96 p-1">
           <div>
-            <h1 className="text-xl font-bold">Folower Count</h1>
+            {/* <h1 className="text-xl font-bold">Folower Count</h1>
             <Slider
               range={{ draggableTrack: true }}
               defaultValue={[1000, 8000]}
@@ -361,52 +338,7 @@ export const Marketplace = () => {
               />
             </div>
 
-            <div className="divider divider-vertical "></div>
-
-            <h1 className="text-xl font-bold">Price Range</h1>
-            <Slider
-              range={{ draggableTrack: true }}
-              defaultValue={[200, 1000]}
-              min={50}
-              max={5000}
-              step={50}
-              onChange={onChangePrice}
-              value={inputValuePrice}
-              handleStyle={[{ backgroundColor: "#f5f5f5", borderColor: "#d9d9d9" }, { backgroundColor: "#f5f5f5", borderColor: "#d9d9d9" }]}
-            />
-            <div className="lg:flex gap-3 justify-between items-center">
-              <InputNumber
-                min={50}
-                max={5000}
-                disabled={inputValuePrice[0] <= 50}
-                addonBefore={<span>Min</span>}
-                style={{
-                  margin: '0 16px',
-                  width: '100%',
-                }}
-                value={(inputValuePrice[0] <= 50) ? "<=50" : inputValuePrice[0]}
-                onChange={(value) => {
-                  setMinNumPrice(value);
-                  onChangePrice([value, inputValuePrice[1]])
-                }}
-              />
-              <divider className="lg:divider lg:divider-vertical lg:w-20" />
-              <InputNumber
-                min={50}
-                max={5000}
-                disabled={inputValuePrice[1] >= 5000}
-                addonAfter={<span>Max</span>}
-                style={{
-                  margin: '0 16px',
-                  width: '100%',
-                }}
-                value={(inputValuePrice[1] >= 5000) ? "5000+" : inputValuePrice[1]}
-                onChange={(value) => {
-                  setMaxNumPrice(value);
-                  onChangePrice([inputValuePrice[0], value])
-                }}
-              />
-            </div>
+            <div className="divider divider-vertical "></div> */}
 
             <div className="divider divider-vertical "></div>
 
@@ -498,6 +430,14 @@ export const Marketplace = () => {
 
         <div className="flex bg-[#fcfcf8] h-16 sticky top-16 z-[12] mb-3 align items-center shadow-[0_10px_10px_5px_rgba(255,255,255,0.9)]">
           <div className="flex justify-space-between items-center gap-2">
+            <div onClick={() => refetch()} className="flex gap-2 items-center border border-slate-200 hover:shadow-lg btn btn-ghost btn-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                width="15" height="15"
+                viewBox="0 0 24 24">
+                <path d="M 12 3 C 9.263544 3 6.8151574 4.2316704 5.1660156 6.1660156 L 3 4 L 3 10 L 9 10 L 6.5917969 7.5917969 C 7.8747922 6.0167955 9.8149031 5 12 5 C 15.859 5 19 8.14 19 12 L 21 12 C 21 7.038 16.963 3 12 3 z M 3 12 C 3 16.963 7.037 21 12 21 C 14.736456 21 17.184843 19.76833 18.833984 17.833984 L 21 20 L 21 14 L 15 14 L 17.408203 16.408203 C 16.125208 17.983204 14.185097 19 12 19 C 8.141 19 5 15.859 5 12 L 3 12 z"></path>
+              </svg>
+              <p className="text-sm">Refresh</p>
+            </div>
             <div onClick={showModal} className="flex gap-2 items-center border border-slate-200 hover:shadow-lg btn btn-ghost btn-sm">
               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="15" height="15"
@@ -550,7 +490,7 @@ export const Marketplace = () => {
           <h1 className="font-bold">All Influencers</h1>
         </div>
 
-        <div className="flex flex-wrap justify-between gap-3">
+        <div className="flex flex-wrap justify-around gap-3">
           {
             isLoading ? (
               <div className="flex justify-center items-center">
@@ -560,7 +500,7 @@ export const Marketplace = () => {
               isSuccess && (
                 influencer?.data?.docs?.map((influencer) => (
                   <ListingCard
-                    onclick={()=>InfluencerListing(influencer._id)}
+                    onclick={() => InfluencerListing(influencer._id)}
                     avatar={influencer.photo}
                     name={influencer.name}
                     followers={formatter.format(influencer.socialMediaHandles[0]?.followers)}
@@ -571,13 +511,13 @@ export const Marketplace = () => {
               )
             )
           }
-          
+
           {/* <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
           <ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" /> */}
         </div>
 
         <div className="flex justify-center p-5">
-          <Pagination count={influencer?.data?.totalPages} showFirstButton showLastButton />
+          <Pagination page={page} onChange={handleChange} count={influencer?.data?.totalPages} showFirstButton showLastButton />
         </div>
 
       </div>

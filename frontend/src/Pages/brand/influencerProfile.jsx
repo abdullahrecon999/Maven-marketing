@@ -48,7 +48,7 @@ export const InfluencerProfile = () => {
 										</div>
 									</div>
 									<p className="text-2xl font-bold">{influencer.data?.name}</p>
-									<p className="text-sm text-stone-500">{formatter.format(influencer.data?.socialMediaHandles[0].followers)}</p>
+									<p className="text-sm text-stone-500">{formatter.format(influencer.data?.socialMediaHandles[0]?.followers)}</p>
 									<div className="flex p-1 gap-2 justify-center">
 										<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 											width="24" height="24"
@@ -87,14 +87,14 @@ export const InfluencerProfile = () => {
 									<div className="flex gap-3 px-3">
 										<div className="flex-col border rounded-xl p-6 items-center w-full">
 											<p className="text-xs text-[#6c757d] font-medium mb-2">FOLLOWERS</p>
-											<p className="text-2xl font-semibold">{formatter.format(influencer.data?.socialMediaHandles[0].followers)}</p>
+											<p className="text-2xl font-semibold">{formatter.format(influencer.data?.socialMediaHandles[0]?.followers)}</p>
 										</div>
 										<div className="flex-col border rounded-xl p-6 items-center w-full">
 											<p className="text-xs text-[#6c757d] font-medium mb-2">DEMOGRAPHICS</p>
 											<p className="text-2xl font-semibold">1.2M</p>
 										</div>
 										<div className="flex-col border rounded-xl p-6 items-center w-full">
-											<p className="text-xs text-[#6c757d] font-medium mb-2">FOLLOWERS</p>
+											<p className="text-xs text-[#6c757d] font-medium mb-2">VIEWS</p>
 											<p className="text-2xl font-semibold">1.2M</p>
 										</div>
 									</div>
