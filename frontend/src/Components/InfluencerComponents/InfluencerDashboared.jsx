@@ -5,7 +5,7 @@ import CampaignCard from "./CampaignCard"
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import image from "../../images/mobile.jpg" 
+import image from "../../images/mobile.jpg"
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button"
 import CampaignIcon from '@mui/icons-material/Campaign';
@@ -29,7 +29,7 @@ function DashboardCard ({title, subtitle, buttonText}){
           </Typography>
           <Button>{buttonText}</Button>
         </CardContent>
-        
+
       </Box>
       <CardMedia
         component="img"
@@ -59,7 +59,7 @@ function PayoutCard ({title, subtitle, buttonText, amount}){
           </Typography>
           <Button>{buttonText}</Button>
         </CardContent>
-        
+
       </Box>
       <CardMedia
         component="img"
@@ -74,7 +74,7 @@ function PayoutCard ({title, subtitle, buttonText, amount}){
 const CardDate = ()=> {
   return (
     <div className='flex border rounded-xl space-x-2 px-2 py-1 '>
-      
+
       <h2 className='text-xs font-railway text-grey'><CalendarMonthIcon></CalendarMonthIcon>11/11/11</h2>
     </div>
   )
@@ -82,7 +82,7 @@ const CardDate = ()=> {
 
 // const CampaignCard = ()=>{
 //     return(<div className="flex flex-col border rounded-xl w-[100%] mt-2 h-[95%] md:w-[230px] shadow-xl hover:translate-y-1 hover:shadow-2xl">
- 
+
 //               <div className='flex p-3   space-x-4'>
 //                 <CampaignIcon className=' text-4xl text-green'/>
 //                 <div className='flex flex-col '>
@@ -95,68 +95,71 @@ const CardDate = ()=> {
 //                 <h4 className='text-xxs font-railway text-grey'>Category</h4>
 //                 <h1 className='font-Andika text-white px-2 py-1 mr-1 mb-2 rounded-full text-xs w-[80px] bg-green text-center'>twitter</h1>
 //               </div> */}
-              
+
 //               <div className='flex-start flex justify-between mx-3 pt-3 '>
-                  
+
 //                   <CardDate></CardDate>
 //                   <AttachMoneyIcon className= "text-lg text-green"></AttachMoneyIcon>
 //               </div>
-              
+
 //      </div>)
 // }
 
 const CampaignCarasoul = ()=>{
   return (<div className=' overflow-x-auto flex flex-1 space-x-4 bg-orange-500 w-[100%] '>
-      
+
 
   </div>)
 }
 
 const InfluencerDashboaredCampaign = ({onViewClick})=>{
   return(
-    
+
      <div className= "flex flex-col  border mx-4 my-2 rounded-xl">
       <div className='flex justify-between p-4'>
         <h1 className='text-black font-railway'>Campaigns You Might Be Interested In</h1>
         <Button variant="outlined" onClick={()=> onViewClick(1)}> View All</Button>
-        
+
       </div>
       <hr></hr>
-      
 
-     </div>       
-           
+
+     </div>
+
   )
 }
 
 const InfluencerDashboared = ({onCampaignViewClick}) => {
 
   const [data, setdata] = React.useState({})
-
+  
   React.useEffect(()=>{
     async function getData(){
       const user = JSON.parse(localStorage.getItem("user"))
-      
+
       const data = await axios.get("http://localhost:3000/influencer/getmyContracts/"+user["_id"])
       setdata(data.data.data)
-      
+
     }
     getData()
-    
+
   },[])
   // const {data, isLoading, isError, isSuccess} = useQuery(["getMyContracts"], ()=>{
 
   //   return axios.get("http://localhost:3000/influencer/getmyContracts/")
   // })
-  
+
   return (
+  <>
+
+
   <div className='overflow-y-auto h-96 p-10 rounded-xl  bg-slate-50 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'>
     <h1 className='font-bold mb-2'>Campaing that you have open contracts</h1>
-    
+
     {Object.keys(data).length !== 0?<>
       {data.map(item=>{
         return (<>
-        <div className="border w-full rounded-xl h-20 p-2 bg-white flex items-center hover:shadow-lg">
+        <div className="border w-full rounded-xl h-20 p-2 bg-white flex items-center ">
 			<div className="avatar">
 				<div className="w-14 rounded">
 					<img src={item.campaignId.bannerImg}  alt="src"/>
@@ -169,19 +172,20 @@ const InfluencerDashboared = ({onCampaignViewClick}) => {
 				</div>
 			</div>
 			<div className="ml-auto">
-				
-				<div className="badge badge-accent">open</div>
+
+				<label htmlFor='campaignModal' className="badge badge-accent text-white btn hover:bg-green">View</label>
 			</div>
 		</div>
     </>
-        
+
         )
       })}
       </> : <div className=" flex h-[70%] py-16  justify-center item-center">
-        <h1 className="text-4xl text-gray-300"> You have no current campaigns</h1>  
+        <h1 className="text-4xl text-gray-300"> You have no current campaigns</h1>
       </div>}
 
   </div>
+  </>
   )
 }
 

@@ -45,16 +45,16 @@ const InfluencerHome = () => {
     <div className="flex flex-col space-y-6">
       <LineHeader></LineHeader>
       
-      <div className="flex flex-col flex-1 container mx-12 space-y-7 ">
-        <div className="flex justify-between  px-5 flex-wrap ">
+      <div className="flex flex-col flex-1 container mx-12  ">
+        <div className="flex space-y-6 space-x-0 md:space-x-6 md:space-y-0 px-5 flex-wrap ">
         <div>
-        <a href="#">
+        <div>
             <div className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl" data-theme="corporate">
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
                   <h2 className="card-title">Bid on Campaigns</h2>
                   <p className="py-2 text-sm"> put yourself out there to collaborate with the brands</p>
-                  <a className="link link-primary">View Campaigns</a>
+                  <Link to="/CampaignMarketPlace" className="link link-primary">View Campaigns</Link>
                 </div>
                 <div className="flex-col w-20">
                   <div className="h-20 w-20">
@@ -67,11 +67,11 @@ const InfluencerHome = () => {
                 </div>
               </div>
             </div>
-          </a>
-        </div>
+          </div>
+      </div>
 
-        <div>
-        <a href="#">
+        {/* <div>
+        <div href="#">
             <div className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl" data-theme="corporate">
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
@@ -90,11 +90,11 @@ const InfluencerHome = () => {
                 </div>
               </div>
             </div>
-          </a>
-        </div>
+          </div>
+        </div> */}
 
         <div>
-        <a href="#">
+        <div href="#">
             <div className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl" data-theme="corporate">
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
@@ -113,11 +113,11 @@ const InfluencerHome = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </div>
         </div>
 
         <div>
-        <a href="#">
+        <div href="#">
             <div className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl" data-theme="corporate">
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
@@ -136,7 +136,7 @@ const InfluencerHome = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         
         </div>

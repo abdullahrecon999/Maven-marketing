@@ -67,7 +67,7 @@ export default function BasicTabs() {
           
           <Tab label="Bids and Proposals" {...a11yProps(1)} />
           <Tab label="Campaign invites" {...a11yProps(2)} />
-          <Tab label="Social" {...a11yProps(3)} />
+          
           
         </Tabs>
       </Box>

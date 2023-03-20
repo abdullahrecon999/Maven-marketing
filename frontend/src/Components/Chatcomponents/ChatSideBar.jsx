@@ -24,7 +24,12 @@ const ChatSideBar = ({setCurrent}) => {
 
     
     if(isLoading){
-        return (<div className='h-screen bg-white w-[25%]'> </div>)
+        return (<div className='h-screen border-r-2 w-[25%] flex flex-col '> 
+            <h1 className='font-railway text-2xl mx-3 mt-3 mb-4'> Messages</h1>
+            <div className='flex flex-col px-3 py-12'>
+            <h1 className='text-center text-2xl font-railway text-gray-600'> your contacts appear here</h1>
+            </div>
+        </div>)
     }
   return (
     <React.Fragment>
