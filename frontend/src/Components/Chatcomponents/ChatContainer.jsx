@@ -17,10 +17,10 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 const FallBack=()=>{
-    return(<div className="h-screen flex flex-col flex-1 justify-center items-center px-4 py-4 bg-slate-50">
-        <div className='flex flex-col border border-blue px-12 py-10 rounded-lg shadow-2xl w-[70%] h-[70vh] justify-center items-center'>
-            <img src={messageImage} alt={messageImage} className="w-[80%] h-[80%]"/>
-            <h1 className="text-4xl text-blue font-railway">Chat here</h1>
+    return(<div className="h-screen flex flex-col flex-1 mt-10 items-center px-4 py-2 bg-slate-50">
+        <div className='flex flex-col border-gray-400 border-2 shadow-inner  px-12 py-6 rounded-lg  w-[70%] h-[50vh] justify-center items-center'>
+            
+            <h1 className="text-4xl text-gray-600 font-railway">Chat here</h1>
             <p className='text-xl text-grey font-railway'>your chats appear here</p>
         </div>
         

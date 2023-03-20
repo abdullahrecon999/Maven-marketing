@@ -15,7 +15,7 @@ const Home = () => {
     <>
     <Navbar></Navbar>
     <section className='container mx-auto'>
-        <div className='flex flex-col-reverse items-center justify-between px-10 pt-10 mx-auto space-x-2 space-y-0 md:flex-row '>
+        <div className='flex flex-col-reverse h-screen items-center justify-between px-10 pt-10 mx-auto space-x-2 space-y-0 md:flex-row '>
             <div className='flex flex-col justify-start mb-10 space-y-8 sm:justify-start '>
               <div className= "flex flex-col space-y-1">
                 <h1 className='text-xs font-bold text-blue font-Andika'> A trusted influencer Marketing<br/> platform</h1>

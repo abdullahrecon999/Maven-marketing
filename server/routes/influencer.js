@@ -751,7 +751,7 @@ router.get("/allContracts", async(req, res, next)=>{
 router.get("/contractDetails/:id", async (req, res)=>{
   try{
     const id = req.params.id
-    const data = contracts.findOne({_id: id})
+    const data = await contracts.findOne({_id: id})
     .populate("CampaignId")
     .populate("sender")
 
@@ -772,7 +772,8 @@ router.get("/contractDetails/:id", async (req, res)=>{
 
 
   }catch(e){
-    res.status(404).json({
+    console.log(e)
+    res.status(500).json({
       status: "error", 
     })
   }
