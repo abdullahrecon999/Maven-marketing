@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { Image, List } from 'antd';
+import { Image, List, Modal, Select, message } from 'antd';
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 let formatter = Intl.NumberFormat('en', { notation: 'compact' });
 
 export const InfluencerListing = () => {
 
-	const [value, setValue] = useState(1);
+	const [value, setValue] = useState('');
+	const [sent, setSent] = useState(false);
 	let { id } = useParams();
-
-	const onChange = (e) => {
-		console.log('radio checked', e);
-		setValue(e);
-	};
+	const userId = JSON.parse(localStorage.getItem("user"))._id;
+	console.log(userId);
 
 	const fetchProfile = async () => {
 		return await fetch("http://localhost:3000/influencer/influencer/" + id, {
@@ -23,13 +23,53 @@ export const InfluencerListing = () => {
 				"Content-Type": "application/json",
 			}
 		})
-		.then((response) => {
-			if (!response.ok) throw new Error(response);
-			else return response.json();
-		})
+			.then((response) => {
+				if (!response.ok) throw new Error(response);
+				else return response.json();
+			})
 	};
 
+	const getCampaigns = async () => {
+		const response = await fetch("http://localhost:3000/campaign/campaigns/brand/"+userId);
+		const data = await response.json();
+		console.log(data)
+		return data.data;
+	}
+
 	const { data: influencer, isLoading, isError, isSuccess } = useQuery("influencer", fetchProfile);
+	const { data: campaigns, isSuccess: camSuccess, isLoading: camLoading } = useQuery("campaign", getCampaigns);
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const showModal = () => {
+		setIsModalOpen(true);
+	};
+	const handleOk = async () => {
+		setIsModalOpen(false);
+		console.log('Campaign Selected:::', value);
+
+		let valObj = {
+			campaignId: value,
+			to: id,
+			sender: userId,
+		}
+
+		const response = await axios.post("http://localhost:3000/brand/sendinvite", valObj)
+		if (response.status === 200) {
+			console.log("Invite Sent");
+			message.success('Invite Sent');
+			setIsModalOpen(false)
+			setSent(true);
+		} else {
+			console.log("Invite Not Sent");
+		}
+	};
+	const handleCancel = () => {
+		setIsModalOpen(false);
+	};
+	const onChange = (e) => {
+		console.log('Campaign Selected', e);
+		setValue(e);
+	};
 
 	return (
 
@@ -62,6 +102,53 @@ export const InfluencerListing = () => {
 					) : (
 						isSuccess && (
 							<>
+								<Modal 
+									title="Send Invite" 
+									open={isModalOpen} 
+									onCancel={handleCancel}
+									footer={
+									<div className="flex gap-2 justify-end">
+										<button className="btn btn-sm btn-outline" onClick={handleCancel}>Cancel</button>
+										<button className="btn btn-sm btn-success" onClick={handleOk}>Send</button>
+									</div>
+									}
+								>
+									<div className="flex flex-col justify-start p-3">
+										<p className="text-slate-800 font-medium">Select Campaign</p>
+										{
+											camLoading? (
+												<div className="flex justify-center items-center h-screen">
+													<div className="flex flex-col justify-center items-center">
+														<div className="flex justify-center items-center">
+															<svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+																<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+																<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+															</svg>
+															<h1 className="text-white">Loading...</h1>
+														</div>
+													</div>
+												</div>
+											) : (
+												<Select
+													showSearch
+													style={{ width: 200 }}
+													placeholder="Select a campaign"
+													optionFilterProp="children"
+													onChange={onChange}
+													filterOption={(input, option) =>
+														option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+													}
+												>
+													{
+														campaigns?.map((campaign) => (
+															<Select.Option value={campaign._id}>{campaign.title}</Select.Option>
+														))
+													}
+												</Select>
+											)
+										}
+									</div>
+								</Modal>
 								<div className="flex flex-row">
 									<button className="btn btn-outline btn-warning gap-2">
 										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="fill-current">
@@ -122,7 +209,7 @@ export const InfluencerListing = () => {
 														viewBox="0 0 24 24">
 														<path d="M 19.5 4 C 18.119 4 17 5.119 17 6.5 L 17 17.5 C 17 18.881 18.119 20 19.5 20 C 20.881 20 22 18.881 22 17.5 L 22 6.5 C 22 5.119 20.881 4 19.5 4 z M 12.5 8 C 11.119 8 10 9.119 10 10.5 L 10 17.5 C 10 18.881 11.119 20 12.5 20 C 13.881 20 15 18.881 15 17.5 L 15 10.5 C 15 9.119 13.881 8 12.5 8 z M 5.5 12 C 4.119 12 3 13.119 3 14.5 L 3 17.5 C 3 18.881 4.119 20 5.5 20 C 6.881 20 8 18.881 8 17.5 L 8 14.5 C 8 13.119 6.881 12 5.5 12 z"></path>
 													</svg>
-													<Link target="_blank" to={"/influencerprofile/"+id} className="link text-[#3f96b6] font-medium link-hover">See more Analytics</Link>
+													<Link target="_blank" to={"/influencerprofile/" + id} className="link text-[#3f96b6] font-medium link-hover">See more Analytics</Link>
 												</div>
 											</div>
 											<div className="flex gap-3 px-3">
@@ -140,8 +227,6 @@ export const InfluencerListing = () => {
 												</div>
 											</div>
 										</div>
-
-
 
 									</div>
 
@@ -183,7 +268,7 @@ export const InfluencerListing = () => {
 													</div> */}
 												</div>
 												<div className="flex justify-center">
-													<button className="btn btn-success btn-wide mt-3">Send Request</button>
+													<button disabled={sent} onClick={showModal} className="btn btn-success btn-wide mt-3">{(sent)? "Invite Sent": "Send Request"}</button>
 												</div>
 											</div>
 										</div>

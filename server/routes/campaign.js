@@ -105,6 +105,7 @@ router.get("/campaigns/details/:id", async (req, res, next) => {
 
 //get campaign listing by brand. return the following fields(id, title, status, date, bannerImg)
 router.get("/campaigns/brand/:id", async (req, res, next) => {
+  console.log(req.params.id)
   try {
     const data = await Campaign.find({ brand: req.params.id }).select("title status updatedAt bannerImg")
     res.status(200).json({

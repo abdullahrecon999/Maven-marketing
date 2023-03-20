@@ -30,12 +30,9 @@ const invitesSchema = new mongoose.Schema({
         default: null,
         
     },
-    
-
 },{
     timestamps: true
 })
-
 
 const invites = mongoose.model('invites',invitesSchema);
 

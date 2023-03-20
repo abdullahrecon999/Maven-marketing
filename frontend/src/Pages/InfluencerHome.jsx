@@ -122,7 +122,7 @@ const InfluencerHome = () => {
               <div className="card-body flex-row p-5">
                 <div className="flex-col w-40">
                   <h2 className="card-title">Current work</h2>
-                  <p className="py-2 text-sm">YOur current work is displayed here</p>
+                  <p className="py-2 text-sm">Your current work is displayed here</p>
                   <a className="link link-primary self-end">view</a>
                 </div>
                 <div className="flex-col w-20">
