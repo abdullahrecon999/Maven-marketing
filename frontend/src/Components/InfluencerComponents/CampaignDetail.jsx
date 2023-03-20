@@ -135,6 +135,10 @@ const InfluencerBidsDetailModal = ({ handleClose, id }) => {
             </div>
           </div>
 
+          <div>
+            {data?.data?.data?.hasOwnProperty("file")? <a  className="bg-yellow-500 text-xl text-white font-railway rounded-full px-2 py-1" href={data?.data?.data?.file}>View Attached File</a>:null}
+          </div>
+
           <div className='place-self-stretch space-x-3'>
             <button className='bg-green px-3 py-2 rounded-full text-white'>View Profile</button>
             <button disabled={isAcceptingSuccess} className='bg-blue px-3 py-2 rounded-full text-white' onClick={(id) => {

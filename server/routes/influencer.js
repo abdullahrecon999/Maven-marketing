@@ -913,8 +913,10 @@ router.post("/invite/reject/:id", async(req, res, next)=>{
 
 router.post("/acceptcontract/:id", async (req, res) => {
   const id= req.params.id
+  console.log(id)
   try{
-    const data = await contracts.find({_id:id})
+    const data = await contracts.findOne({_id: id})
+    console.log("data in the contract", data)
     await contracts.updateOne({_id:id}, {accepted:true})
     const msg = {
       text: "Contract accepted",
