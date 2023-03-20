@@ -72,7 +72,7 @@ export default function MultipleSelect({setvalue,defaultValue, names,...props}) 
           {...props}
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
-          multiple
+          
           
           onChange={handleChange}
           input={<OutlinedInput label="Name" />}

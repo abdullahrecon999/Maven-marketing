@@ -87,11 +87,11 @@ router.post('/verify', async function(req, res, next) {
   //  console.log(data);
   //  res.send(data);
 
-  const url = "http://127.0.0.1:6000/";
+  const url = "http://127.0.0.1:6000/verifyprofile";
   // make axios post call on url
 
   axios.post(url, {
-    url: req.body.url
+    username: req.body.username
   })
   .then(function (response) {
     // handle success

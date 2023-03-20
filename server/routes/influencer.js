@@ -506,18 +506,20 @@ router.post('/completeProfile/:id',async (req, res, next) => {
 
 router.post("/activateProfile/:id", async(req, res, next)=> { 
     const id = req.params.id
+    const { platform, handle, followers } = req.body
+    // patch the user with profileActive = 1 and add {plarform, handle, followers} in socialMediaHandles array
     try{
-      await User.updateOne({_id: id}, req.body)
-    
+      const data = await User.findOneAndUpdate({_id: id}, { $push: { socialMediaHandles: {platform, handle, followers} } }, {new: true})
       res.status(200).json({
-        status: "success"
+        status: "success",
+        data
       });
-      }
-      catch(e){
-        res.status(500).json({
-          status: "error"
-        })
-      }
+    } catch(e){
+      console.log(e)
+      res.status(500).json({
+        status: "error"
+      })
+    }
 })
 
 router.post("/deactivateProfile/:id", async(req, res, next)=> { 
