@@ -232,7 +232,7 @@ const Profilecompletion = () => {
                 
                 
             </div>
-
+                {console.log(formik.values)}
                 </div>
                 <div className='flex flex-col space-y-2' >
                     <h2  className='font-railway text-sm md:text-base '>Full name <span className='text-xl text-red-500'>*</span></h2>

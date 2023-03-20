@@ -2,9 +2,9 @@ import React from 'react'
 import { TextField } from '@mui/material'
 import { useField, ErrorMessage } from 'formik'
 const style = {
-    width:{md:"100%"},
+    width:{md:"100%", marginTop:100},
     "& .MuiInputBase-root":{
-        height: {sm: 35 ,md:40}
+        height: {sm: 100 ,md:40}
     }
 
 }
@@ -14,7 +14,7 @@ const FormTextField = ({...props}) => {
     
   return (
         <>
-         <TextField sx={style} 
+         <textarea 
         required
         {...props}
         {...feild}
@@ -24,7 +24,7 @@ const FormTextField = ({...props}) => {
         variant="standard"
         >
           
-        </TextField>
+        </textarea>
         <ErrorMessage component="div" className='text-sm text-red-600' name={feild.name}></ErrorMessage>
         </>
     

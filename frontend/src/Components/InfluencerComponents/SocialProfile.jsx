@@ -38,6 +38,11 @@ const categories =[
 const Profile = ({onEdit})=>{
     const {user,setUser} = useContext(AuthContext);
 
+
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("user")))
+    },[])
+
     
     const {data, isLoading}= useQuery(["getProfile"],()=>{
         return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
@@ -164,14 +169,14 @@ const EditProfile = ({onSave})=>{
                 <ProfileImage image={user?.photo} name = "photo" setvalue = {formik.setFieldValue} ></ProfileImage>
                 </div>
                
-                <div className='flex flex-col space-y-0 items-center'>
+                <div className='flex flex-col flex-1 space-y-0 items-center'>
                     <h1 className='text-black font-railway text-xl'>{user?.name}</h1>
                     <p className='text-gray-700 font-railway text-xs'>{user?.description.slice(0,4)+"......."}</p>
                 </div>
                 <div className='flex flex-col space-y-5 w-[100%]'>
                 <hr ></hr>
 
-                    <div className='flex flex-col w-[100%] px-2 space-y-9'>
+                    <div className='flex flex-col w-[100%] px-2 '>
                         <h1 className='text-blue font-railway text-base'>About </h1>
                         {/* <TextField
                             id="outlined-multiline-static"
@@ -182,7 +187,9 @@ const EditProfile = ({onSave})=>{
                             variant='standard'
                             /> */}
 
-                        <TextField  defaultValue={user?.description} name="description"></TextField>
+                        <div>
+                        <TextField rows={9} className="w-full resize-none" defaultValue={user?.description} name="description"></TextField>
+                        </div>
                     </div>
 
 
