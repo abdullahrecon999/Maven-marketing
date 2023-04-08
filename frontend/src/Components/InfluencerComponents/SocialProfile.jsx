@@ -37,7 +37,8 @@ const categories = [
 	"Travel"
 ]
 
-
+const Profile = ({onEdit})=>{
+	const [user, setUser] = useState({})
     useEffect(()=>{
         setUser(JSON.parse(localStorage.getItem("user")))
     },[])

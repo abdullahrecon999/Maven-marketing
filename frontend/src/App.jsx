@@ -44,6 +44,7 @@ import { BrandProfile } from './Pages/brand/brandProfile';
 import { LinkedInCallback } from 'react-linkedin-login-oauth2';
 import AccountNotVerified from './Pages/AccountNotVerified';
 import Wrapper from './Components/wrapper';
+import InfluencerContract from './Pages/Contracts/InfluencerContract';
 
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -123,6 +124,7 @@ function App() {
               <Route path='/influencerchat' element={<Chat/>}></Route> 
               <Route path='/accountnotverified' element={<AccountNotVerified/>} ></Route>
               <Route path="/CampaignMarketPlace/" element={<InfluencerAllCampaigns/>}></Route>
+              <Route path="/contract/:id" element = {<InfluencerContract/>}></Route>
             </Route>
 
             <Route element={<RequireAuth allowedRoles={['influencer', 'brand']} />} >
