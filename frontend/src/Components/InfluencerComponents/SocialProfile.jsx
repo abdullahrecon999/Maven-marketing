@@ -38,15 +38,18 @@ const categories = [
 ]
 
 
-    useEffect(()=>{
-        setUser(JSON.parse(localStorage.getItem("user")))
-    },[])
+const Profile = ({ onEdit }) => {
+	const { state } = useLocation();
+	const { user } = state;
 
-    
-    const {data, isLoading}= useQuery(["getProfile"],()=>{
-        return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
-    })
+	const { data, isLoading } = useQuery(["getProfile"], () => {
+		console.log("USER: ",user)
+		return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
+	})
 
+    // const {data, isLoading}= useQuery(["getProfile"],()=>{
+    //     return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
+    // })
 
 	return (
 

@@ -144,4 +144,98 @@ router.get('/auth/google/callback',(req, res, next) => {
 })(req, res, next);
 });
 
+router.get('/linkedin/callback', passport.authenticate('linkedin', {
+  successRedirect: 'http://localhost:5173/brandhome',
+  failureRedirect: '/login',
+  session: false
+}));
+
+router.get('/auth/linkedin',
+  passport.authenticate('linkedin', { session: false }),
+  function(req, res){
+  // The request will be redirected to LinkedIn for authentication, so this
+  // function will not be called.
+});
+
+router.get('/youtube/callback', passport.authenticate('youtube', {
+  successRedirect: 'http://localhost:5173/brandhome',
+  failureRedirect: '/login',
+  session: false
+}));
+
+router.get('/auth/youtube',
+  passport.authenticate('youtube', { session: false }),
+  function(req, res){
+  // The request will be redirected to LinkedIn for authentication, so this
+  // function will not be called.
+});
+
+router.get('/addInstaInfluencers', async (req, res, next) => {
+  try{
+    const data = await loadInsta()
+      
+    if(data){
+      res.send(data);
+    } else {
+      res.send("error");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+})
+
+router.get('/addYoutubeInfluencers', async (req, res, next) => {
+  try{
+    const data = await loadYoutube()
+      
+    if(data){
+      res.send(data);
+    } else {
+      res.send("error");
+    }
+  }
+  catch (err) {
+    console.log(err);
+  }
+})
+
+router.get('/addTiktokInfluencers', async (req, res, next) => {
+  try{
+    const data = await loadTiktok()
+      
+    if(data){
+      res.send(data);
+    } else {
+      res.send("error");
+    }
+  }
+  catch (err) {
+    console.log(err);
+  }
+})
+
+const loadYoutube = async () => {
+  const url = "http://127.0.0.1:3333/youtube_data";
+
+  let resp = await axios.post(url)
+  console.log(resp.data);
+  return resp.data;
+}
+
+const loadTiktok = async () => {
+  const url = "http://127.0.0.1:3333/tiktok_data";
+
+  let resp = await axios.post(url)
+  console.log(resp.data);
+  return resp.data;
+}
+
+const loadInsta = async () => {
+  const url = "http://127.0.0.1:3333/insta_data";
+
+  let resp = await axios.post(url)
+  console.log(resp.data);
+  return resp.data;
+}
+
 module.exports = router;
