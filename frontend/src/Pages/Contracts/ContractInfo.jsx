@@ -12,7 +12,7 @@ const ContractInfo = () => {
               <h1 className='text-sm'>Expires At</h1>
               <a href='#' className='text-sm text-blue hover:text-indigo-500'>View Original Campaign</a>
             </div>
-            <label className='self-end border text-base px-1 border-blue text-blue'>End Contract</label>
+            <label htmlFor="my-drawer-5" className='self-end border text-base px-1 border-blue text-blue'>End Contract</label>
         </div>
     </div>
   )

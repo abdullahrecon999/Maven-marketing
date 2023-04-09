@@ -16,7 +16,7 @@ const ContractDetails = () => {
                             <h1 className='text-sm text-center'>Amount</h1>
                             <h1 className="text-xl font-railway text-center">$ 17000</h1>
                         </div>
-                        <label className='btn bg-green text-white border-green'> Request payment</label>
+                        <label htmlFor="my-drawer-4" className='btn bg-green text-white border-green'> Request payment</label>
                     </div>
 
                     {/* Work Tracker */}

@@ -1,5 +1,6 @@
 import React from 'react'
 const length = 0;
+const type = 0;
 const Container = () => {
 
   return (
@@ -7,7 +8,7 @@ const Container = () => {
       <div>
       <h1 className='font-railway'>Upload your work</h1>
       <p className='text-sm text-gray-600'>Upload files of your work on campaign here, this allows the client to determine the quality of your work</p>
-      
+
       </div>
       {length !== 0? <div className="max-w-full">
           <label
@@ -25,10 +26,10 @@ const Container = () => {
               </span>
               <input type="file" name="file_upload" className="hidden"/>
           </label>
-        </div>: 
+        </div>:
         // display files here
-        <>
-          <div className='border bg-white p-3 h-[60vh] overflow-y-auto'>
+        <div className='flex flex-col space-y-3'>
+          <div className='border bg-white p-3 h-[40vh] '>
             <div className='flex justify-between items-center px-3 py-2 border-b-2'>
               <div className='space-x-0'>
                 <h1 className='text-sm text-gray-800 font-railway'>File name</h1>
@@ -44,10 +45,16 @@ const Container = () => {
               </div>
               <a href="ajfkashf" className='text-blue'>view</a>
             </div>
+          </div >
+          <div className='self-end'>
+            {type === 'brand'? null:<>
+              <label className='btn'>Upload more files</label>
+              <input type='file' className="hidden"></input>
+            </>}
           </div>
 
-          
-        </>}
+
+        </div>}
     </div>
   )
 }

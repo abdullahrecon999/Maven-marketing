@@ -44,6 +44,10 @@ const contracts = new mongoose.Schema({
         type: Boolean,
         default: false,
         
+    },
+    filesRef:{
+        type:String,
+        default: ""
     }
     
 
