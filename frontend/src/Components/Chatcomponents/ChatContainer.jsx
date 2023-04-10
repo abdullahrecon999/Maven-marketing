@@ -37,10 +37,10 @@ const ContractModel =()=>{
         return axios.get("http://localhost:3000/chats/getcontractdetails/"+Id)
       })
     
-      useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"))
-        setUser(user)
-      }, [])
+    useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"))
+    setUser(user)
+    }, [])
 
     useEffect(()=>{
         setData(data?.data?.data)
