@@ -1,8 +1,8 @@
-import React , {useContext, useState, useEffect}from 'react'
+import React , {useContext, useState, useEffect, useRef, useMemo}from 'react'
 
 import {ContractContext} from "../ContractProvider"
 import { storage } from '../../../utils/fireBase/fireBaseInit';
-import {ref, listAll, uploadBytes, getDownloadURL, getMetadata} from "firebase/storage"
+import {ref, listAll, uploadBytes, getDownloadURL, getMetadata, deleteObject} from "firebase/storage"
 import {v4} from "uuid"
 import { async } from '@firebase/util';
 const length = true;
@@ -13,6 +13,8 @@ const Container = () => {
   const [checkIfFiles, setCheckIfFiles] = useState(true)
   const [files, setFile] = useState([])
   const [uploadedFiles, setUploadedFiles] = useState([])
+
+  
   var temp = []
   const checkFiles = async()=>{
     try{
@@ -22,6 +24,7 @@ const Container = () => {
       
 
       if(list.items.length !==0){
+        setCheckIfFiles(true)
         const temp = [];
         list.items.forEach(async(item)=>{
           console.log(list.items.length)
@@ -38,26 +41,41 @@ const Container = () => {
           }catch(e){
             console.log("there was some eroorrrr opsiii")
           }
-         
-            
-            
-          
         })
-        
+        setUploadedFiles(temp)
         return temp
-        
+      }else{
+        setCheckIfFiles(false)
       }
-
-      
-     
+           
     }catch(e){
       console.log(e)
     }
   }
-  useEffect(()=>{
-     temp = checkFiles()
-  }, [])
+
+  const handleDelete = (referenceUrl, name)=>{
+    if(window.confirm("Are you sure to delete file name")){
+      console.log("cnfrm")
+      deleteObject(ref(storage, "gs://mavenmarketing-93029.appspot.com/ODgyXzE2Nzk1MDQyMDcxNDZfNDk/brand (1).jpg")).then(async()=>{
+        alert("file removed")
+        const temp = uploadedFiles.filter((item)=>{
+          return item.name !==name
+        })
+        setUploadedFiles(temp)
+
+       
+      }).catch((err)=>{
+        console.log("there was an error")
+        alert('error')
+      })
+    }else{
+      console.log("not cnfrm")
+    }
+  }
   
+  useEffect(()=>{
+    checkFiles()
+  },[])
 
   const upload = async(files)=>{
     
@@ -66,6 +84,8 @@ const Container = () => {
     console.log(fileRef)
     uploadBytes(fileRef,files).then((file)=>{
       alert(`${files.name} is uploaded`)
+      const abc = "https://firebasestorage.googleapis.com/v0/b/mavenmarketing-93029.appspot.com/o/ODgyXzE2Nzk1MDQyMDcxNDZfNDk%2Fbrand%20(2).jpg?alt=media&token=27da5e21-42f0-4d31-a5f3-3b450ab2d82c"
+
     }).catch(e=>{
       console.log(e)
     })
@@ -74,12 +94,14 @@ const Container = () => {
   
   return (
     <div className='px-4 py-5 space-y-4 border mx-4 my-3'>
+
+      
       <div>
       <h1 className='font-railway'>Upload your work</h1>
       <p className='text-sm text-gray-600'>Upload files of your work on campaign here, this allows the client to determine the quality of your work</p>
 
       </div>
-      {checkIfFiles=== false? <div className="max-w-full">
+      {false? <div className="max-w-full">
           <label
               className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
               <span className="flex items-center space-x-2">
@@ -103,13 +125,40 @@ const Container = () => {
         <div className='flex flex-col space-y-3'>
           <div className='border bg-white p-3 h-[40vh] '>
             {console.log(uploadedFiles)}
-            {temp.map((file, i)=>{
-              return <div key={i} className='flex justify-between items-center px-3 py-2 border-b-2'>
+            <div  className='flex justify-between items-center px-3 py-2 border-b-2'>
               <div className='space-x-0'>
                 <h1 className='text-sm text-gray-800 font-railway'>File name</h1>
                 <h1 className='mt-0 text-xs text-gray-500 italic' >uploaded at date and time</h1>
               </div>
-              <a href="ajfkashf" className='text-blue'>view</a>
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn m-1">Click</label>
+                <ul tabIndex={0} className="dropdown-content menu p-2 bg-base-100 rounded-box w-24 border shadow-md">
+                  <li className='text-xs'><a>View</a></li>
+                  <li className='text-xs' onClick={()=>{
+                    
+                    handleDelete("https://firebasestorage.googleapis.com/v0/b/mavenmarketing-93029.appspot.com/o/ODgyXzE2Nzk1MDQyMDcxNDZfNDk%2Fbrand%20(1).jpg?alt=media&token=d95166ee-0c69-42c6-8d0e-3e7e72ca85be", "brand (1).jpg")
+                  }}><h1>Delete</h1></li>
+
+                </ul>
+              </div>
+            </div>
+            {uploadedFiles.map((file, i)=>{
+              return <div key={i} className='flex justify-between items-center px-3 py-2 border-b-2'>
+              <div className='space-x-0'>
+                <h1 className='text-sm text-gray-800 font-railway'>{file?.name}</h1>
+                <h1 className='mt-0 text-xs text-gray-500 italic' >uploaded at {file?.date}</h1>
+              </div>
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn m-1">Click</label>
+                <ul tabIndex={0} className="dropdown-content menu p-2 bg-base-100 rounded-box w-24 border shadow-md">
+                  <li className='text-xs'><a>View</a></li>
+                  <li className='text-xs' onClick={()=>{
+                    
+                    handleDelete()
+                  }}><h1>Delete</h1></li>
+
+                </ul>
+              </div>
             </div>
             })}
             {console.log(" this is the damn file a te")}

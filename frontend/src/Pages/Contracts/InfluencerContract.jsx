@@ -34,7 +34,7 @@ const Contract = ()=>{
             <h1 className="text-gray-400 font-railway text-sm">Contract Details</h1>
             <ul className="px-1">
     
-              <li className="font-railway text-base text-gray-800">Active</li>
+              <li className="font-railway text-base text-gray-800">{(!contract?.expired && contract?.accepted)?"Active":"Expired"}</li>
               <li className="">Remainging Days</li>
               <li>Expires At</li>
               <li> Amount Paid 10 $</li>

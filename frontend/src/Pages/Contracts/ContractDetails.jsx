@@ -1,12 +1,15 @@
-import React from 'react'
+import React,  {useContext} from 'react'
 import User from './User'
 import ContractInfo from './ContractInfo'
 import Container from "./WorkTrack/Container"
+import { ContractContext } from './ContractProvider'
 const ContractDetails = () => {
+    const {contract} = useContext(ContractContext)
   return (
     <div className='container mx-auto'>
+        {console.log(contract)}
         <div className='flex flex-col space-y-2'>
-            <h1  className='px-9 text-xl font-railway'>CampaignTitle</h1>
+            <h1  className='px-9 text-xl font-railway'></h1>
             <div className='flex flex-col space-y-3 px-5 md:flex-row md:space-y-0'>
                 <div className='flex-1 '>
 
