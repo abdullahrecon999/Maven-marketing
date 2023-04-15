@@ -3,7 +3,8 @@ var router = express.Router();
 const passport = require('passport');
 const axios = require('axios');
 const CLIENT_URL = "http://localhost:5173/brandhome"
-/* GET users listing. */
+const Listing = require('../models/listing');
+
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
@@ -173,13 +174,29 @@ router.get('/auth/youtube',
 router.get('/addInstaInfluencers', async (req, res, next) => {
   try{
     const data = await loadInsta()
-      
-    if(data){
-      res.send(data);
-    } else {
-      res.send("error");
-    }
-  } catch (err) {
+    console.log(data)
+
+    const operations = data.map((val) => ({
+      updateOne: {
+        filter: { social_media_handle: val.social_media_handle },
+        update: {
+          $setOnInsert: val,
+        },
+        upsert: true
+      }
+    }));
+    
+    Listing.bulkWrite(operations)
+      .then((result) => {
+        console.log(result);
+        res.send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.send(error);
+      });
+  }
+  catch (err) {
     console.log(err);
   }
 })
@@ -187,12 +204,27 @@ router.get('/addInstaInfluencers', async (req, res, next) => {
 router.get('/addYoutubeInfluencers', async (req, res, next) => {
   try{
     const data = await loadYoutube()
-      
-    if(data){
-      res.send(data);
-    } else {
-      res.send("error");
-    }
+    console.log(data)
+  
+    const operations = data.map((val) => ({
+      updateOne: {
+        filter: { social_media_handle: val.social_media_handle },
+        update: {
+          $setOnInsert: val,
+        },
+        upsert: true
+      }
+    }));
+    
+    Listing.bulkWrite(operations)
+      .then((result) => {
+        console.log(result);
+        res.send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.send(error);
+      });
   }
   catch (err) {
     console.log(err);
@@ -202,12 +234,27 @@ router.get('/addYoutubeInfluencers', async (req, res, next) => {
 router.get('/addTiktokInfluencers', async (req, res, next) => {
   try{
     const data = await loadTiktok()
-      
-    if(data){
-      res.send(data);
-    } else {
-      res.send("error");
-    }
+    console.log(data)
+
+    const operations = data.map((val) => ({
+      updateOne: {
+        filter: { url: val.url },
+        update: {
+          $setOnInsert: val,
+        },
+        upsert: true
+      }
+    }));
+    
+    Listing.bulkWrite(operations)
+      .then((result) => {
+        console.log(result);
+        res.send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.send(error);
+      });
   }
   catch (err) {
     console.log(err);

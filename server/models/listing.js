@@ -28,7 +28,7 @@ const listingSchema = new mongoose.Schema({
 	platform: {
 		type: String,
 	},
-	reels: {
+	posts: {
 		type: Array,
 	},
 	posts_images: {
@@ -36,18 +36,6 @@ const listingSchema = new mongoose.Schema({
 	},
 	no_posts: {
 		type: Number,
-	},
-	posts_videos: {
-		type: [
-			{
-				thumbnails: {
-					type: String,
-				},
-				video: {
-					type: String,
-				}
-			}
-		]
 	},
 	social_media_handle: {
 		type: String,
@@ -103,9 +91,12 @@ const listingSchema = new mongoose.Schema({
 	contact_links: {
 		type: Array,
 	},
+	url: {
+		type: String,
+	},
 }, { timestamps: true });
 
-userSchema.plugin(mongoosePaginate);
-const User = mongoose.model('Listing', listingSchema);
+listingSchema.plugin(mongoosePaginate);
+const Listing = mongoose.model('Listing', listingSchema);
 
 module.exports = Listing;

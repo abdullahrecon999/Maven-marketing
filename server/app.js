@@ -10,6 +10,7 @@ const compression = require('compression');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 require('./config/passport')(passport);
 
 // importing the router
@@ -49,7 +50,7 @@ app.disable('etag');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(mongoSanitize()); // Data sanitization against NoSQL query injection
 app.use(xss()); // Data sanitization against XSS
@@ -59,15 +60,22 @@ app.use(
 session({
     secret: 'secret',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: 'mongodb+srv://root:root@cluster0.trpwg.mongodb.net/mavenMarketing', ttl: 60 * 60 * 24, autoRemove: 'native' }),
     })
 );
-  
+
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 //calling the routers
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
+
+app.use(express.static(path.join(__dirname, '../frontend', 'dist')));
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+})
+
 app.use('/admin', adminRouter);
 app.use('/brand', brandRouter);
 app.use('/users', usersRouter);
