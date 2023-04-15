@@ -2,23 +2,60 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
-require('dotenv').config()
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-// Load User model
+var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+var YoutubeV3Strategy = require('passport-youtube-v3').Strategy
+
+require('dotenv').config()
 const User = require('../models/User');
-// const Token = require('../models/Token');
 const { Console } = require('console');
 
 module.exports = function(passport) {
+
+  passport.use(new YoutubeV3Strategy({
+    clientID: "208240571680-cve3qvn3jecndmln578g0ob6kvtv1u79.apps.googleusercontent.com",
+    clientSecret: "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",
+    callbackURL: "http://127.0.0.1:3000/users/youtube/callback",
+    scope: ['https://www.googleapis.com/auth/youtube.readonly']
+  },
+  function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function () {
+      // To keep the example simple, the user's LinkedIn profile is returned to
+      // represent the logged-in user. In a typical application, you would want
+      // to associate the LinkedIn account with a user record in your database,
+      // and return that user instead.
+      console.log(profile)
+      return done(null, profile);
+    });
+  }
+));
+
+  passport.use(new LinkedInStrategy({
+    clientID: "77oyqfmbrr2780",
+    clientSecret: "7VhpJoOGUOjz6TdS",
+    callbackURL: "http://127.0.0.1:3000/users/linkedin/callback",
+    scope: ['r_emailaddress', 'r_liteprofile'],
+    state: true
+  }, function(accessToken, refreshToken, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      // To keep the example simple, the user's LinkedIn profile is returned to
+      // represent the logged-in user. In a typical application, you would want
+      // to associate the LinkedIn account with a user record in your database,
+      // and return that user instead.
+      return done(null, profile);
+    });
+  }));
 
   passport.use(new GoogleStrategy({
     clientID : process.env.GOOGLE_SSO_CLIENT_ID,
     clientSecret : process.env.GOOGLE_SSO_CLIENT_SECRET,
     callbackURL : 'http://localhost:3000/users/auth/google/callback',
-    passReqToCallback : true
+    passReqToCallback: true
   },
   function(request, accessToken, refreshToken, profile, done) {
     // User.findOne won't fire until we have all our data back from Google
+    //done(null, profile);
     process.nextTick(function() {
 
       console.log(profile)
@@ -29,8 +66,8 @@ module.exports = function(passport) {
                 // if a user is found, log them in
                 user.email_verified = true;
                 await user.save({ validateBeforeSave: false });
-
-                return done(null, user, { message: 'Logged In success', status: 200 });
+                
+                return done(null, user, { message: 'Login successful', status: 200 });
             } else {
                 // if the user isnt in our database, redirect them to register page
                 return done(null, false, { message: 'Email not registered', status: 401 });

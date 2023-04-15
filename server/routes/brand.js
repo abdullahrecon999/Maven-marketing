@@ -8,9 +8,13 @@ var utils = require('../config/authUtils');
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const User = require('../models/User');
 const Campaign = require('../models/Campaign');
+const Contract = require("../models/Contracts");
+const Bids = require("../models/Proposals")
+const contacts = require("../models/MessageContacts")
+const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
-
+const invites = require ("../models/Invites")
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('Brand Router called');
@@ -48,7 +52,10 @@ router.post('/register', (req, res) => {
                 //res.redirect('/admin/login');
 
                 console.log('Here user: ', user);
-
+                await contacts.create({
+                  user: user["_id"],
+                  contacts: []
+                })
                 // Not working
                 // send email verification link
                 const verifyEmailToken = user.createEmailVerificationToken();
@@ -111,6 +118,23 @@ router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Brand) ,
     res.send('Brand Dashboard');
 })
 
+// update profile using id from params and update only chnaged fields from req.body
+router.patch('/update-profile/:id', async (req, res) => {
+  console.log(req.body);
+  try {
+    const data = await User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+    res.status(200).json({
+      status: 'success',
+      data
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err
+    });
+  }
+});
+
 // get all users of brand role
 router.get('/all', async (req, res) => {
   try {
@@ -158,18 +182,33 @@ router.post('/password-reset', authController.PasswordReset);
 router.post('/resetPassword/:token', authController.PasswordResetVerify);
 
 //create campaign
-router.post('/create-campaign', (req, res) => {
+router.post('/create-campaign', async (req, res) => {
   const { title, email, description, country, language, platform } = req.body;
   console.log(req.body)
-  const newCampaign = new Campaign({
-    title, email, description, country, language, platform
-  });
 
-  newCampaign.save().then(campaign => {
-    res.send(campaign);
-  }).catch(err => {
-    res.send(err);
-  });
+  try{
+    Campaign.create(req.body)
+
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+
+  // const newCampaign = new Campaign({
+  //   title, email, description, country, language, platform
+  // });
+
+  
+
+  // newCampaign.save().then(campaign => {
+  //   res.send(campaign);
+  // }).catch(err => {
+  //   res.send(err);
+  // });
 
 });
 
@@ -179,6 +218,193 @@ router.post('/campaigns', (req, res) => {
   }).catch(err => {
     res.send("not Found");
   })
+})
+
+router.post('/campaigns/:id', (req, res) => {
+  
+  Campaign.find({_id:id, status: "live"}).then(campaigns => {
+    res.send(campaigns);
+  }).catch(err => {
+    res.send("not Found");
+  })
+})
+
+router.post("/createContract", async (req, res)=>{
+    const data= req.body
+
+    try{
+
+    const contract =  await Contract.create(req.body)
+    const campaign = await Campaign.findOne({_id:contract["campaignId"]}).populate("brand", "name")
+    console.log(campaign)
+     const msg = {
+      text: `Contract Available for ${campaign["title"]} by ${campaign?.brand.name}`,
+      users:[
+        data["sender"].toString(),
+        data["to"].toString()
+      ],
+      sender: data["sender"],
+      msgType: "contract",
+      contract: contract["_id"]
+    }
+    console.log(msg)
+    await Message.create(msg)
+    
+      res.status(200).json({
+        status: "success"
+      })
+
+    }catch(e){
+      res.status(500).json({
+        status: "error"
+      })
+    }
+  
+})
+
+router.get("/getallbids/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await Bids.find({campaignId:id, accepted:false}).populate("campaignId", "title").populate("sender", "name")
+    console.log(data)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.get("/inviteinfluencers", async(req,res)=>{
+  try{
+    const data= await User.find({role: "influencer"}).limit(10)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
+
+router.post("/sendinvite", async(req, res)=>{
+  try{
+    await invites.create(req.body)
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.get("/getbiddetails/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await Bids.findOne({_id:id}).populate("sender").populate("campaignId")
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+
+router.post("/bid/accept/:id", async(req, res, next)=>{
+  const id = req.params.id
+  
+  try{
+    const data = await Bids.findOne({_id: id})
+    const val = {
+      accepted: true
+    }
+    if(Object.keys(data).length !==0){
+
+      await Bids.updateOne({_id: id}, val)
+      const campaign = await Campaign.findOne({_id: data["campaignId"]}).populate("brand", "name")
+    const msg = {
+    text: `Accepting the Proposal  for ${campaign["title"]} by ${campaign?.brand.name}`,
+    users:[
+      data["sender"].toString(),
+      data["to"].toString()
+    ],
+    sender: data["to"]
+  }
+
+  console.log("to",data["to"])
+  console.log("sender", data["sender"])
+    await Message.create(msg)
+      
+     const hasUser= await contacts.find({user:data["to"], "contacts.contact":data["sender"]})
+     
+     if(hasUser?.length){
+      console.log("hase user", hasUser)
+      res.status(200).json({
+        status: "success",
+        msg: "accepted"
+  
+      })
+     }
+     else{
+      console.log("haree user", hasUser)
+      await contacts.updateOne({user: data["to"]},{$push: {contacts:[{contact: data["sender"]}]}})
+      await contacts.updateOne({user: data["sender"]},{$push: {contacts:[{contact: data["to"]}]}})
+      res.status(200).json({
+        status: "success",
+        msg: "accepted"
+  
+      })
+     }
+      
+      
+    
+    }
+    else{
+      res.status(404).json({
+        status: "not found"
+
+      })
+    }
+  }
+  catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+      msg: "an error occured"
+
+    })
+  }
+})
+
+
+router.get("/getacceptedbids/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await Bids.find({campaignId:id, accepted:true}).populate("campaignId", "title").populate("sender", ["name", "photo"])
+    
+    
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
 })
 
 module.exports = router;

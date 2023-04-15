@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import * as Yup from 'yup';
 import GoogleIcon from '@mui/icons-material/Google';
-
+import { TailSpin } from 'react-loader-spinner'
 const style = {
     position: 'absolute',
     top: '50%',
@@ -47,7 +47,7 @@ function ChildModal() {
     const [open, setOpen] = React.useState(false);
 
     const [passErr, setPassErr] = React.useState("");
-
+    const [loading, setLoading] = React.useState(false)
     const handleOpen = () => {
         setOpen(true);
     };
@@ -128,7 +128,7 @@ const InfluencerLogin = () => {
     const navigate = useNavigate();
     const [err, setErr] = useState(false);
     const [errMsg, seterrMsg] = useState("")
-
+    const [loading, setLoading] = useState(false)
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -186,7 +186,7 @@ const InfluencerLogin = () => {
 
     const handleSubmit=(values)=>{
         // call API for login for influencer
-        
+        setLoading(true)
         var state = {}
         state = values
         state.role = "influencer"
@@ -199,12 +199,17 @@ const InfluencerLogin = () => {
         .then(res => {
             console.log(res.data.user)
             if(res.data.success === true){
+                setLoading(false)
                 localStorage.setItem('user', JSON.stringify(res.data.user))
                 
                 if(res.data.user.profileComplete === 0){
                     navigate("/profileCompletion")    
                 
-                }else{
+                }else if (res.data.user.profileActive === 0){
+                    navigate("/accountnotverified")
+                }
+                
+                else{
                 navigate("/influencerhome")
                 }
             }
@@ -215,6 +220,7 @@ const InfluencerLogin = () => {
         })
         .catch(err => {
             setErr(true)
+            setLoading(false)
             seterrMsg(err.response.data.message)
             console.log(err.response.data.message)
         })
@@ -247,12 +253,23 @@ const InfluencerLogin = () => {
                     <div className='flex flex-col space-y-3 '>
                       
                     <FormTextField2 name= "email" label= "Email"></FormTextField2>
-                    <FormTextField2 name= "password" label= "Password" ></FormTextField2>
+                    <FormTextField2 name= "password" label= "Password" type = "password" ></FormTextField2>
                     <p onClick={handleOpen} className='text-sm text-blue font-railway'>Forgot Password?</p>
 
                     <div className='flex flex-col justify-center items-center space-y-2'>
                         <div className='flex justify-center pt-1 pr-3'>
-                            <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">Login</Button>                      
+                            <Button type='submit' disabled={!formik.isValid } className={formik.isValid? "bg-blue": "bg-grey text-white"} variant="contained">{
+                            loading?<TailSpin
+                                height="20"
+                                width="20"
+                                color="white"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                />: "Login"}
+                                </Button>                      
                         </div >
                         <p className='font-railway text-sm text-grey'>or</p>
                         <Button variant="outlined" onClick={() => googleAuth()} startIcon={<GoogleIcon />}>

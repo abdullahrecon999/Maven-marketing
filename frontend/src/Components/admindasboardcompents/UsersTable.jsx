@@ -86,7 +86,8 @@ const UsersTable = ({type, data}) => {
     console.log("From Tables: ",data)
   
     const handleClick = (params)=> {
-      //navigate(`influencer/${params.row.id}`,{id: params.row.id})
+      console.log(params.row.id)
+      navigate(`influencer/${params.row.id}`,{id: params.row.id})
     }
 
   return (
@@ -94,7 +95,10 @@ const UsersTable = ({type, data}) => {
       
       <Box sx={{ height: 400, width: '100%' }}>
       <DataGrid
-        onRowClick={handleClick}
+        onRowClick={(param)=>{
+          console.log(param.row["_id"])
+          navigate(`influencer/${param.row["_id"]}`,{id: param.row["_id"]})
+        }}
         rows={data}
         getRowId ={(row) => row._id}
         columns={type === "influencer"? columns1 : columns2}

@@ -84,15 +84,130 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+//forgot password
+router.post('/password-reset', authController.PasswordReset);
+
+// reset password
+router.post('/resetPassword/:token', authController.PasswordResetVerify);
+
 router.get('/logout', (req, res) => {
     req.logout();
     res.status(200).send('Logout Success');
 });
 
-router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) ,(req, res, next) => {
-    res.send('Admin Dashboard');
+router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) ,async (req, res, next) => {
+  try{
+    const data =await User.aggregate([
+      {
+        $group:{
+          _id: '$role',
+          count: {
+            $sum: 1
+          }
+        }
+      }
+    ])
+
+    const NumberActivationRequests = await User.count({role: "influencer", profileActive: 0})
+    const users =await User.find({role:"influencer", profileActive: 0})
+    .select({ "_id": 1,"name": 1, "platforms": 1, "profileActive": 1, "country":1 })
+    
+    const val = {
+      total: data[1].count + data[2].count,
+      activationRequests: NumberActivationRequests,
+      influencers: data[1].count,
+      brands: data[2].count,
+      
+      
+    }
+    console.log(users)
+    res.status(200).json({
+
+      status: "success",
+      
+        val,
+        users
+      
+    })
+
+  }catch(e){
+    res.status(200).json({
+      status: "error",
+      msg: "something went wrong"
+    })
+  }
+    
 })
 
+//get inactive profiles
+router.get("/getInactiveProfiles", ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) ,async (req, res, next)=>{
+    try{
+      const data =await User.find({role:"influencer", profileActive: 0})
+      .select({ "_id": 1,"name": 1, "platforms": 1, "profileActive": 1, "country":1 })
+      console.log(data)
+      res.status(200).json(
+        {status: "success",
+        data
+      }
+      )
+    }catch(e){
+      console.log(e)
+    }
+
+})
+
+router.get('/getInfluencers', async (req, res) => {
+  try {
+    const users = await User.find({ role: "influencer" });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        users
+      }
+    });
+  } catch (err) {
+    console.log(err)
+    res.status(404).json({
+      status: 'error',
+      message: err
+    });
+  }
+});
+
+//get the userProfile
+
+router.get("/influencer/:id", ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) , async(req, res, next)=>{
+  const id = req.params.id
+  try{
+    const data = await User.findOne({_id: id})
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+//activating the profile of influencer
+
+router.post("/activateProfile/:id", async(req, res, next)=> { 
+  const id = req.params.id
+  try{
+    await User.updateOne({_id: id}, {profileActive:1})
+  
+    res.status(200).json({
+      status: "success"
+    });
+    }
+    catch(e){
+      res.status(500).json({
+        status: "error"
+      })
+    }
+})
 //forgot password
 router.post('/password-reset', authController.PasswordReset);
 

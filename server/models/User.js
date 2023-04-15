@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -24,7 +25,7 @@ const userSchema = new mongoose.Schema({
     default: 'admin'
   },
   country: {
-    type: String,
+    type: [String],
   },
   category: {
     type: [String],
@@ -46,8 +47,13 @@ const userSchema = new mongoose.Schema({
         {
             platform: String,
             handle: String,
+            followers: Number,
         }
     ],
+  },
+  url: String,
+  language:{
+    type: [String]
   },
   email_verified: {
     type: Boolean,
@@ -65,6 +71,9 @@ const userSchema = new mongoose.Schema({
   profileActive: {
     type: Number,
     default: 0
+  },
+  registered: {
+    type: Boolean,
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
@@ -125,6 +134,7 @@ userSchema.methods.createEmailVerificationToken = function() {
   return verificationToken;
 };
 
+userSchema.plugin(mongoosePaginate);
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
