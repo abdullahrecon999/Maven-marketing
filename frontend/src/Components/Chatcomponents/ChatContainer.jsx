@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import { AuthContext } from '../../utils/authProvider'
 import { useQuery, useMutation } from 'react-query'
 import { ChatContext } from './ChatProvider'
@@ -17,7 +17,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 const FallBack=()=>{
-    return(<div className="h-screen flex flex-col flex-1 mt-10 items-center px-4 py-2 bg-slate-50">
+    return(<div className="h-[80vh] flex flex-col flex-1 mt-10 items-center px-4 py-2 bg-slate-50">
         <div className='flex flex-col border-gray-400 border-2 shadow-inner  px-12 py-6 rounded-lg  w-[70%] h-[50vh] justify-center items-center'>
             
             <h1 className="text-4xl text-gray-600 font-railway">Chat here</h1>
@@ -123,14 +123,18 @@ const ContractModel =()=>{
 
 const ChatContainer = () => {
     const {user, setUser} = useContext(AuthContext)
-    const {currentUser, openContract} = useContext(ChatContext)
+    const {currentUser, openContract, socket} = useContext(ChatContext)
     const [message, setMessage] = useState("")
     const [fileUpload, setFileUpload] = useState(null)
     const[disable, setdisable] = useState(false)
     const [Fileurl, setUrl] = useState("")
     const[isUploaded, setUpload] = useState(false)
     const [uploading, setUploading] = useState(false)
+    const [messages, setMessages] = useState([])
+    const [arrivalMessages, setArrivalMessages] = useState(null)
+    const [status, setStatus] = useState("offline")
 
+    const scrollRef = useRef()
     const handleMessageChange=(e)=>{
         setUpload(false)
         setMessage(e.target.value)
@@ -138,7 +142,73 @@ const ChatContainer = () => {
     }
     useEffect(()=>{
         setUser(JSON.parse(localStorage.getItem('user')))
+        console.log("this is the socket",socket)
       },[])
+
+    useEffect (()=>{
+        const fetchMessages = async ()=>{
+            if(Object.keys(currentUser).length !==0){
+                const response = await axios.post("http://localhost:3000/chats/getMessages",{
+                
+                to: currentUser["_id"],
+                from: user["_id"]
+            
+                })
+                setMessages(response?.data?.projectMessages)
+            }
+
+        }
+        fetchMessages()
+        if(socket.current){
+            socket.current.emit('checkOnline', currentUser["_id"])
+            socket.current.on("userOnline", (text)=>{
+                
+                if(text === "online")
+                    setStatus(text)
+                else
+                    setStatus(text)
+            })
+            socket.current.on('offlineTime', time=>{
+                console.log("the offline time is",time)
+            })
+        }
+
+
+    },[currentUser])
+
+    useEffect(()=>{
+        
+        if(socket.current){
+           
+            socket.current.on("msg-recieve", (msg)=>{
+                console.log("msg is ", msg)
+                setMessages([...messages,{
+                    fromSelf:false,
+                    message:msg
+                }])
+            })
+
+            
+        }
+
+    },[])
+     
+    
+    // useEffect(()=>{
+    //     scrollRef.current?.scrollIntoView({behaviou: 'smooth'})
+    // }, [messages])
+
+    useEffect(()=>{
+        const handleTabClose = (e)=>{
+            if(socket.current){
+                socket.current.emit("logout", user?._id)
+            }
+        }
+        window.addEventListener('beforeunload', handleTabClose);
+        return ()=>{
+            window.removeEventListener('beforeunload', handleTabClose);
+        }
+    })
 
     const handleFileUpload = (fileUpload)=>{
         console.log(fileUpload.name)
@@ -166,22 +236,42 @@ const ChatContainer = () => {
         })
     }
 
-    const {data, isLoading} = useQuery(["getAllMessages"], ()=>{
-        if(Object.keys(currentUser).length !== 0 )
-        console.log(currentUser["_id"])
-        return axios.post("http://localhost:3000/chats/getMessages",{
+    // const {data, isLoading} = useQuery(["getAllMessages"], ()=>{
+    //     if(Object.keys(currentUser).length !== 0 )
+    //     console.log(currentUser["_id"])
+    //     return axios.post("http://localhost:3000/chats/getMessages",{
             
-                to: currentUser["_id"],
-                from: user["_id"]
+    //             to: currentUser["_id"],
+    //             from: user["_id"]
             
-        })
-    },{
-        refetchInterval:1000
-    })
+    //     })
+    // },{
+    //     refetchInterval: 100000
+    // })
     const {mutate} = useMutation(()=>{
-        console.log("in mutation")
+        console.log(socket, "the socket is")
+        socket.current.emit("send-msg", {
+            to: currentUser._id,
+            from: user._id,
+            text: message
+        })
+        // socket.on("recieve-msg",(data)=>{
+        //     const allMessages = [...data.data.projectMessages]
+        //     allMessages.push({
+        //         fromSelf : true,
+        //         text: message
+        //     })
+
+        // })
+        
+        
+        console.log("in mutation", message)
         var text = message
         setMessage("")
+        setMessages([...messages, {
+            message: text,
+            fromSelf: true
+        }])
         if(Object.keys(currentUser).length !== 0){
             console.log("innn")
             if(Fileurl === ""){
@@ -222,34 +312,53 @@ const ChatContainer = () => {
 
             
     }
-    })
+    
+    
+    }
+
+    
+    
+    )
   return (
     <>
     {openContract && <ContractModel></ContractModel>}
     {Object.keys(currentUser).length === 0?<FallBack/>:
-    <div className='flex flex-col flex-1 shadow-inner my-0'>
-    <div className='flex shadow-md w-[100%] px-5 py-4 '>
-        <h1 className='text-xl text-black font-railway'>{currentUser?.name}</h1>
-    </div>
-    {isLoading?<div className='max-h-[75vh] flex-1'>loading</div>:
-        <div className='flex-1 flex-col bg-slate-50 overflow-y-auto max-h-[75vh] px-6'>
+    <div className='flex flex-col flex-1  shadow-inner my-0 bg-white'>
+        <div className='flex flex-col shadow-md w-[100%] px-5 py-2 '>
+            <h1 className='text-sm text-black font-railway'>{currentUser?.name}</h1>
+            <p className={status === "online"?"text-xs text-blue-600": "text-xs text-green-500"}>{status}</p>
+        </div>
+    
+        <div className=' flex-col  overflow-y-auto  w-full h-[68vh] px-6'>
         
-        {data?.data?.projectMessages.map(msg=>{
+        {messages.map(msg=>{
             
             return (<div className={msg?.fromSelf===true?"flex justify-end my-1":"justify-start my-1"}>
 
               
-            {msg.msgType=== "contract"? <div className={msg?.fromSelf===true?" text-white max-w-[50%] rounded-full my-1 px-4 py-1":"text-black max-w-[50%] rounded-full my-2 px-4 py-1"}><Contract id={msg?.id} text={msg.msgType}/></div>:
-             <h1 className={msg?.fromSelf===true?" text-white max-w-[50%] bg-blue rounded-full my-1 px-4 py-1":"text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"}>{msg?.message}</h1>
+            {msg?.msgType=== "contract"? <div className={msg?.fromSelf===true?" text-white max-w-[50%] rounded-full my-1 px-4 py-1":"text-black max-w-[50%] rounded-full my-2 px-4 py-1"}><Contract id={msg?.id} text={msg?.msgType}/></div>:
+             
+             <div className='flex '>
+                {console.log(msg)}
+                <img src={msg?.sender?.photo} alt="tomatoes are disgusting" className="w-[30px] h-[30px] rounded-full object-cover"/>
+                <div className="flex flex-col justify-start">
+                    <div>
+                        <h1>{msg?.sender?.name}</h1>
+                        <p>{msg?.date}</p>
+                    </div>
+                    <h1 ref={scrollRef} className={msg?.fromSelf===true?" text-gray-700 max-w-[50%] bg-blue rounded-full my-1 px-4 py-1":"text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"}>{msg?.message}</h1>
+            
+                </div>     
+             </div>
             }
          </div>)
             
         })}
     </div>
-    }
+    
     <div>
-    <div className='flex items-center shadow-md px-5 py-8 space-x-2'>
-        <label htmlFor='fileInput'  className='text-grey hover:bg-gray-300 '>
+    <div className='flex items-center shadow-md px-5   space-x-2'>
+        <label htmlFor='fileInput'  className='text-grey text-xs hover:bg-gray-300 '>
         <AttachFileIcon/></label>
         <input 
         className='hidden'
@@ -261,11 +370,12 @@ const ChatContainer = () => {
             
            handleFileUpload(e.target.files[0])
         }} type="file"></input>
-        <TextField
+        <input
         disabled={disable} 
         value={message}
         size='small'
         placeholder='send message ...' 
+        className='border px-3 text-sm w-[100%] '
         sx={{
             width: "70%",
             borderRadius: 200
@@ -273,7 +383,7 @@ const ChatContainer = () => {
         onChange={(e)=>{
            handleMessageChange(e)
         }}
-        ></TextField>
+        ></input>
         {uploading?<TailSpin
                                 height="20"
                                 width="20"

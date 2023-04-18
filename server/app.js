@@ -91,6 +91,7 @@ const io = socket(server,{
 })
 
 global.onlineUsers = new Map();
+global.offlineTime = new Map();
 
 io.on("connection", (socket)=>{
     global.chatSocket = socket;
@@ -108,6 +109,34 @@ io.on("connection", (socket)=>{
         if(sendUserSocket){
             socket.to(sendUserSocket).emit("msg-recieve", data.text)
             console.log("message is",data.text)
+        }
+    })
+    socket.on("checkOnline", (userId)=>{
+        if(onlineUsers.has(userId))
+            socket.emit("userOnline","online")
+        else
+        {
+            socket.emit("userOnline","offline")
+            console.log(offlineTime)
+            if(offlineTime.has(userId)){
+                const time = offlineTime.get(userId)
+                socket.emit("offlineTime", time)
+            }
+        }
+    })
+    socket.on('logout', (userId)=>{
+        
+        if(onlineUsers.has(userId)){
+            onlineUsers.delete(userId)
+            console.log("user removereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeed")
+            
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date+' '+time;
+            
+            offlineTime.set(userId, dateTime)
+            socket.emit("userOnline","offline")
         }
     })
 })

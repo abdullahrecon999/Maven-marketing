@@ -15,11 +15,12 @@ const Container = () => {
   const [uploadedFiles, setUploadedFiles] = useState([])
 
   
-  var temp = []
   const checkFiles = async()=>{
+    console.log("Contract and comma",contract)
     try{
       const fileRef = ref(storage, contract?.filesRef)
       const list = await listAll(fileRef)
+      
       
       
 
@@ -31,7 +32,7 @@ const Container = () => {
           try{
             const url = await getDownloadURL(ref(storage, item))
             const metaData = await getMetadata(ref(storage, item))
-            
+            console.log(url+"this is the url")
             temp.push({
               name: metaData.name,
               ref :item,
@@ -74,17 +75,18 @@ const Container = () => {
   }
   
   useEffect(()=>{
+    console.log("inside useEffect")
     checkFiles()
-  },[])
+    console.log("after useEffect")
+  },[contract])
 
   const upload = async(files)=>{
     
-    console.log("the files" +files.name)
+    
     const fileRef = ref(storage, contract?.filesRef+"/"+files.name)
-    console.log(fileRef)
+   
     uploadBytes(fileRef,files).then((file)=>{
       alert(`${files.name} is uploaded`)
-      const abc = "https://firebasestorage.googleapis.com/v0/b/mavenmarketing-93029.appspot.com/o/ODgyXzE2Nzk1MDQyMDcxNDZfNDk%2Fbrand%20(2).jpg?alt=media&token=27da5e21-42f0-4d31-a5f3-3b450ab2d82c"
 
     }).catch(e=>{
       console.log(e)
@@ -124,7 +126,8 @@ const Container = () => {
         // display files here
         <div className='flex flex-col space-y-3'>
           <div className='border bg-white p-3 h-[40vh] '>
-            {console.log(uploadedFiles)}
+        
+            {console.log("bakra",uploadedFiles)}
             <div  className='flex justify-between items-center px-3 py-2 border-b-2'>
               <div className='space-x-0'>
                 <h1 className='text-sm text-gray-800 font-railway'>File name</h1>
@@ -152,17 +155,14 @@ const Container = () => {
                 <label tabIndex={0} className="btn m-1">Click</label>
                 <ul tabIndex={0} className="dropdown-content menu p-2 bg-base-100 rounded-box w-24 border shadow-md">
                   <li className='text-xs'><a>View</a></li>
-                  <li className='text-xs' onClick={()=>{
-                    
-                    handleDelete()
-                  }}><h1>Delete</h1></li>
+                  <li className='text-xs'><h1>Delete</h1></li>
 
                 </ul>
               </div>
             </div>
             })}
-            {console.log(" this is the damn file a te")}
-            {console.log(uploadedFiles.length+"after render")}
+           
+            
 
 
            

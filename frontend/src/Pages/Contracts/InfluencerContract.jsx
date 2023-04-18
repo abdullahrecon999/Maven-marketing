@@ -11,8 +11,10 @@ const Contract = ()=>{
   console.log("this is the damn loading"+loading)
   useEffect(()=>{
     
-    setContract(data.data)
-    console.log(contract)
+    if (!loading){
+      setContract(data.data)
+    console.log(contract, "this is the conrract in the main contrainer")
+    }
   },[data])
   
 

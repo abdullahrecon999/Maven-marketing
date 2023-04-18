@@ -5,6 +5,7 @@ import Container from "./WorkTrack/Container"
 import { ContractContext } from './ContractProvider'
 const ContractDetails = () => {
     const {contract} = useContext(ContractContext)
+    
   return (
     <div className='container mx-auto'>
         {console.log(contract)}
