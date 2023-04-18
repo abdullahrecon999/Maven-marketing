@@ -11,7 +11,7 @@ const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 require('./config/passport')(passport);
-
+const socket = require('socket.io')
 // importing the router
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -79,4 +79,36 @@ app.all('*', (req, res, next) => {
       res.status(404).json({'Error':`Cant Find ${req.originalUrl}`}); // 404 Not Found
 });
 
+const server = app.listen( 5000, ()=>{
+    console.log("socket server started at 5000")
+})
+
+const io = socket(server,{
+    cors:{
+        origin: 'http://localhost:5173',
+        credentials: true
+    }
+})
+
+global.onlineUsers = new Map();
+
+io.on("connection", (socket)=>{
+    global.chatSocket = socket;
+    socket.on("add-user", (userId)=>{
+        console.log("the user is", socket.id)
+        
+        onlineUsers.set(userId,socket.id)
+        console.log("the map is",onlineUsers)
+    })
+    socket.on("send-msg", async(data)=>{
+        const sendUserSocket = await onlineUsers.get(data.to)
+        console.log(onlineUsers)
+        console.log("data user id is ",sendUserSocket)
+        
+        if(sendUserSocket){
+            socket.to(sendUserSocket).emit("msg-recieve", data.text)
+            console.log("message is",data.text)
+        }
+    })
+})
 module.exports = app;

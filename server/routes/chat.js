@@ -89,7 +89,7 @@ router.post("/getMessages", async (req, res, next)=>{
         }}).sort({updatedAt: 1})
 
         const projectMessages = data.map(message=>{
-            console.log(message)
+            
             return({
                 id: message["_id"],
                 fromSelf : message.sender.toString() === from,
@@ -98,7 +98,7 @@ router.post("/getMessages", async (req, res, next)=>{
                 
             })
         })
-        console.log(projectMessages)
+        
 
         res.status(200).json({
             status: "success",

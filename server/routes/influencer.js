@@ -1,5 +1,6 @@
 var express = require('express');
 const authController = require('../controller/authController');
+const {UniqueString} = require("unique-string-generator")
 var router = express.Router();
 const crypto = require('crypto');
 const passport = require('passport');
@@ -918,11 +919,12 @@ router.post("/invite/reject/:id", async(req, res, next)=>{
 router.post("/acceptcontract/:id", async (req, res) => {
   const id= req.params.id
   console.log(id)
+  const ref = UniqueString()+"/"
   try{
     const data = await contracts.findOne({_id: id})
     console.log("data in the contract", data)
     const campaign = await Campaings.findOne({_id: data["campaignId"]}).populate("brand", "name")
-    await contracts.updateOne({_id:id}, {accepted:true})
+    await contracts.updateOne({_id:id, filesRef:ref}, {accepted:true})
     console.log(campaign)
     const msg = {
       text: `Accepting the contract for ${campaign["title"]} by ${campaign?.brand.name}`,

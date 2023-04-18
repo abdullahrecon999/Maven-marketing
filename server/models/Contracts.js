@@ -47,7 +47,7 @@ const contracts = new mongoose.Schema({
     },
     filesRef:{
         type:String,
-        default: ""
+        unique: true
     }
     
 
