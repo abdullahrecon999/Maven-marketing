@@ -189,7 +189,9 @@ export function NavBar({avatar, name, email, role, id, user}) {
                 Profile
               </Link>
             </li>
-            <li><a>Settings</a></li>
+            <li><Link to={role==="influencer"? "/influencerPayments":"/brandPayments"} >
+              Payments
+            </Link></li>
             <li><a onClick={()=>logout()}>Logout</a></li>
           </ul>
         </div>
