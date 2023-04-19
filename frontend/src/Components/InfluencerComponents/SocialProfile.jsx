@@ -37,10 +37,12 @@ const categories = [
 	"Travel"
 ]
 
+const Profile = ({onEdit})=>{
+	const [user, setUser] = useState({})
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("user")))
+    },[])
 
-const Profile = ({ onEdit }) => {
-	const { state } = useLocation();
-	const { user } = state;
 
 	const { data, isLoading } = useQuery(["getProfile"], () => {
 		console.log("USER: ",user)

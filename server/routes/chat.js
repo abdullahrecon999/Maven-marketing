@@ -86,19 +86,24 @@ router.post("/getMessages", async (req, res, next)=>{
     try{
         const data = await messages.find({users:{
             $all: [to, from]
-        }}).sort({updatedAt: 1})
+        }}).sort({updatedAt: 1}).populate("sender")
 
         const projectMessages = data.map(message=>{
-            console.log(message)
+            
             return({
                 id: message["_id"],
-                fromSelf : message.sender.toString() === from,
+                fromSelf : message.sender._id.toString() === from,
                 message : message.text,
                 msgType: message.msgType,
+                sender: {
+                    name: message.sender.name,
+                    photo: message.sender.photo
+                },
+                date: message.createdAt
                 
             })
         })
-        console.log(projectMessages)
+        
 
         res.status(200).json({
             status: "success",

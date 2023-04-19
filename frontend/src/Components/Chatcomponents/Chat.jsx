@@ -6,7 +6,7 @@ const Chat = () => {
   
   return (
     <ChatProvider>
-      <div className='flex h-screen'>
+      <div className='flex '>
       
       <ChatSideBar ></ChatSideBar>
       <ChatContainer></ChatContainer>

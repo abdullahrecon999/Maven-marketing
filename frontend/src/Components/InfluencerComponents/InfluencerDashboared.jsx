@@ -1,22 +1,21 @@
 import React, {useContext} from 'react'
 import {Box} from '@mui/material'
 import { useTheme } from '@mui/material/styles';
-import CampaignCard from "./CampaignCard"
+
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import image from "../../images/mobile.jpg"
+
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button"
-import CampaignIcon from '@mui/icons-material/Campaign';
+
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
 import axios from "axios"
-import {useQuery} from "@tanstack/react-query"
-import { AuthContext } from '../../utils/authProvider';
+import {useNavigate} from "react-router-dom"
 function DashboardCard ({title, subtitle, buttonText}){
   const theme = useTheme();
-
+  
   return (
     <Card sx={{ display: 'flex' , margin: 1}}>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -132,7 +131,7 @@ const InfluencerDashboaredCampaign = ({onViewClick})=>{
 const InfluencerDashboared = ({onCampaignViewClick}) => {
 
   const [data, setdata] = React.useState({})
-  
+  const navigate = useNavigate();
   React.useEffect(()=>{
     async function getData(){
       const user = JSON.parse(localStorage.getItem("user"))
@@ -173,7 +172,11 @@ const InfluencerDashboared = ({onCampaignViewClick}) => {
 			</div>
 			<div className="ml-auto">
 
-				<label htmlFor='campaignModal' className="badge badge-accent text-white btn hover:bg-green">View</label>
+				<label onClick={()=>{
+          console.log("clicked")
+          console.log(item)
+          navigate('/contract/1234')
+        }} htmlFor='campaignModal' className="badge badge-accent text-white btn hover:bg-green">View</label>
 			</div>
 		</div>
     </>
