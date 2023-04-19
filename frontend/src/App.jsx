@@ -45,6 +45,8 @@ import { LinkedInCallback } from 'react-linkedin-login-oauth2';
 import AccountNotVerified from './Pages/AccountNotVerified';
 import Wrapper from './Components/wrapper';
 import InfluencerContract from './Pages/Contracts/InfluencerContract';
+import { Privacy } from './Pages/legal/privacypolicy';
+import { Terms } from './Pages/legal/termsofuse';
 
 const Services = lazy(import("./Pages/Services"))
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -68,7 +70,7 @@ function App() {
   const {loading} = useContext(AuthContext);
 
   return (
-    <Router>
+    <Router basename='/'>
         <div className='app' data-theme="cupcake">
         {loading? (<h1>loadig</h1>) : (
           <Suspense fallback={<div>loading</div>}>
@@ -84,6 +86,8 @@ function App() {
               <Route path='/aboutus' element={<Aboutus/>} ></Route>
               <Route path='/services' element={<Services/>} ></Route>
               <Route path='/whyus' element={<Whyus/>} ></Route>
+              <Route path='/privacy' element={<Privacy/>} ></Route>
+              <Route path='/terms' element={<Terms/>} ></Route>
             </Route>
             
             {/* Admin Protected Routes */}
