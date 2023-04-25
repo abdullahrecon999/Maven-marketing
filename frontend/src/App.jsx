@@ -47,6 +47,7 @@ import InfluencerContract from "./Pages/Contracts/InfluencerContract";
 import InfluencerPayments from "./Components/InfluencerComponents/InfluencerPayments";
 import { Privacy } from "./Pages/legal/privacypolicy";
 import { Terms } from "./Pages/legal/termsofuse";
+import MainScreen from "./Pages/MarketAutomation/MainScreen";
 
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -153,6 +154,11 @@ function App() {
                 <Route
                   path="/brand/linkedin"
                   element={<LinkedInCallback />}
+                ></Route>
+
+                <Route
+                  path="/marketautomation"
+                  element={<MainScreen />}
                 ></Route>
               </Route>
 
