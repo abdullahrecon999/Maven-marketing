@@ -43,11 +43,15 @@ const Profile = ({onEdit})=>{
         setUser(JSON.parse(localStorage.getItem("user")))
     },[])
 
-    
-    const {data, isLoading}= useQuery(["getProfile"],()=>{
-        return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
-    })
 
+	const { data, isLoading } = useQuery(["getProfile"], () => {
+		console.log("USER: ",user)
+		return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
+	})
+
+    // const {data, isLoading}= useQuery(["getProfile"],()=>{
+    //     return axios.get(`http://localhost:3000/influencer/profile/${user["_id"]}`)
+    // })
 
 	return (
 
