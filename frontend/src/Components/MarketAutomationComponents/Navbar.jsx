@@ -3,6 +3,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import MovieIcon from "@mui/icons-material/Movie";
 import { Filter } from "@mui/icons-material";
+
 const Navbar = () => {
   return (
     // Navbar
@@ -58,15 +59,20 @@ const Navbar = () => {
           </div>
           {/* filter */}
 
-          <label htmlFor="FilterModal" className="text-xs text-gray-800 ">
+          <label htmlFor="my-drawer-4" className="text-xs text-gray-800 ">
             Filter <Filter className="text-sm"></Filter>
           </label>
-          <label htmlFor="my-drawer-4" className="text-xs text-gray-800 ">
+          <label className="text-xs text-gray-800 ">
             media <MovieIcon className="text-sm"></MovieIcon>
           </label>
         </div>
 
-        <label className="btn bg-green border-green text-white">compose</label>
+        <label
+          htmlFor="FilterModal"
+          className="btn bg-green border-green text-white"
+        >
+          compose
+        </label>
       </div>
     </div>
   );
