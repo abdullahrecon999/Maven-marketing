@@ -6,6 +6,8 @@ import { ArrowDownward, Close } from "@mui/icons-material";
 import { Button } from "antd";
 import EmojiPicker from "emoji-picker-react";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+import AddNewPagesModal from "../../Components/MarketAutomationComponents/AddNewPagesModal";
+import Posts from "../../Components/MarketAutomationComponents/Posts";
 
 // const FilterModal = () => {
 //   return (
@@ -379,8 +381,10 @@ const MainScreen = () => {
 
       <div className="drawer-content">
         {/* <FilterModal></FilterModal> */}
+        <AddNewPagesModal />
         <ComposeModal />
         <Navbar></Navbar>
+
         {/* header */}
         <section className="container relative mx-auto bg-slate-50 border shadow-md h-[50vh]">
           <img
@@ -402,6 +406,9 @@ const MainScreen = () => {
             </div>
           </div>
         </section>
+
+        {/* Post sections */}
+        <Posts></Posts>
       </div>
       <FilterComponent></FilterComponent>
     </div>

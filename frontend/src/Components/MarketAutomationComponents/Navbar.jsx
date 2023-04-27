@@ -34,7 +34,9 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <label className="text-base text-gray-500 font-bold">Add pages</label>
+        <label htmlFor="addPage" className="text-base text-gray-500 font-bold">
+          Add pages
+        </label>
       </div>
 
       {/* filters and other stuff */}
