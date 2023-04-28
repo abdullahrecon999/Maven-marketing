@@ -5,6 +5,12 @@ import CommentComponent from "./CommentComponent";
 const PostSideComments = () => {
   const [openReply, setOpenReply] = useState(false);
   const [openNewComment, setOpenNewComment] = useState(false);
+  const handleNewCommentClose = () => {
+    setOpenNewComment(!openNewComment);
+  };
+  const handleCommentClose = () => {
+    setOpenReply(!openReply);
+  };
   return (
     <div className="hidden w-[30%] md:block">
       <div className="bg-white w-full p-2 ">
@@ -25,15 +31,18 @@ const PostSideComments = () => {
 
             <div className="mt-1 px-1">
               <div className="text-xs"> @Bryn can you share the source?</div>
-              {openReply ? (
+              {!openReply ? (
                 <label
                   onClick={() => setOpenReply(!openReply)}
                   className="text-xxs text-gray-400 hover:text-gray-600"
                 >
                   reply
                 </label>
-              ) : // <CommentComponent open={setOpenNewComment} isOpen={openReply} />
-              null}
+              ) : (
+                <div className="min-w-[80%] max-w-[80%]">
+                  <CommentComponent open={setOpenReply} isOpen={openReply} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -41,7 +50,14 @@ const PostSideComments = () => {
         <div className="flex space-y-2 flex-col justify-center mt-1 hover:border rounded-md p-1 space-x-1">
           <div className="flex space-x-1">
             <img className="w-5 h-5 rounded-full" src={ProfileImage} alt="" />
-            {!openNewComment ? null : (
+            {openNewComment ? (
+              <div className="flex flex-row-reverse w-full">
+                <CommentComponent
+                  open={handleNewCommentClose}
+                  isOpen={!openNewComment}
+                ></CommentComponent>
+              </div>
+            ) : (
               <label
                 onClick={() => setOpenNewComment(!openNewComment)}
                 className="text-xs text-gray-400"
@@ -50,15 +66,6 @@ const PostSideComments = () => {
               </label>
             )}
           </div>
-
-          {openNewComment === true && (
-            <div className="flex flex-row-reverse">
-              <CommentComponent
-                open={setOpenNewComment}
-                isOpen={!openNewComment}
-              ></CommentComponent>
-            </div>
-          )}
         </div>
       </div>
     </div>

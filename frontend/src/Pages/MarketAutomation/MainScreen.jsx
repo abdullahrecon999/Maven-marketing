@@ -8,7 +8,8 @@ import EmojiPicker from "emoji-picker-react";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import AddNewPagesModal from "../../Components/MarketAutomationComponents/AddNewPagesModal";
 import Posts from "../../Components/MarketAutomationComponents/Posts";
-
+import { MarketAutomationProvider } from "./MainScreenProvider";
+import MediaPreviewModal from "../../Components/MarketAutomationComponents/MediaPreviewModal";
 // const FilterModal = () => {
 //   return (
 //     <>
@@ -376,42 +377,45 @@ const FilterComponent = () => {
 };
 const MainScreen = () => {
   return (
-    <div className="drawer drawer-end">
-      <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+    <MarketAutomationProvider>
+      <div className="drawer drawer-end">
+        <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
-      <div className="drawer-content">
-        {/* <FilterModal></FilterModal> */}
-        <AddNewPagesModal />
-        <ComposeModal />
-        <Navbar></Navbar>
+        <div className="drawer-content">
+          {/* <FilterModal></FilterModal> */}
+          <AddNewPagesModal />
+          <ComposeModal />
+          <MediaPreviewModal></MediaPreviewModal>
+          <Navbar></Navbar>
 
-        {/* header */}
-        <section className="container relative mx-auto bg-slate-50 border shadow-md h-[50vh]">
-          <img
-            className="w-full h-[35vh]"
-            src={BannerImage}
-            alt="because tomatoes are disgusting"
-          ></img>
-          <div className="bg-white">
+          {/* header */}
+          <section className="container relative mx-auto bg-slate-50 border shadow-md h-[50vh]">
             <img
-              src={ProfileImage}
-              alt="profile "
-              className="w-[90px] h-[90px] border-[7px] border-white absolute top-[25vh] left-10"
+              className="w-full h-[35vh]"
+              src={BannerImage}
+              alt="because tomatoes are disgusting"
             ></img>
-            <div className="absolute top-[37vh] left-[30vh]">
-              <h1 className="text-xl font-bold text-gray-800">
-                Brand Page Name
-              </h1>
-              <p className="text-sm text-gray-500">A short discription</p>
+            <div className="bg-white">
+              <img
+                src={ProfileImage}
+                alt="profile "
+                className="w-[90px] h-[90px] border-[7px] border-white absolute top-[25vh] left-10"
+              ></img>
+              <div className="absolute top-[37vh] left-[30vh]">
+                <h1 className="text-xl font-bold text-gray-800">
+                  Brand Page Name
+                </h1>
+                <p className="text-sm text-gray-500">A short discription</p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Post sections */}
-        <Posts></Posts>
+          {/* Post sections */}
+          <Posts></Posts>
+        </div>
+        <FilterComponent></FilterComponent>
       </div>
-      <FilterComponent></FilterComponent>
-    </div>
+    </MarketAutomationProvider>
   );
 };
 

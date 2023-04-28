@@ -3,6 +3,12 @@ import ProfileImage from "../../images/profile.jpg";
 import BannerImage from "../../images/banner.jpg";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import PostSideComments from "./PostSideComments";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import LinkIcon from "@mui/icons-material/Link";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Delete } from "@mui/icons-material";
 const Post = () => {
   return (
     <div className="flex w-full justify-center md:w-[80%] space-x-2">
@@ -14,7 +20,7 @@ const Post = () => {
             </label>
 
             <div className="dropdown dropdown-bottom dropdown-end">
-              <div className="tooltip " data-tip="More Actions">
+              <div className="tooltip " data-tip="More Options">
                 <label
                   className="hover:text-blue rounded-md bg-slate-50"
                   tabIndex={0}
@@ -25,13 +31,35 @@ const Post = () => {
 
               <ul
                 tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <a>Item 1</a>
+                  <label>
+                    <RefreshIcon /> Repost
+                  </label>
                 </li>
                 <li>
-                  <a>Item 2</a>
+                  <label>
+                    <LinkIcon></LinkIcon> copy link to share
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <LinkIcon></LinkIcon> Edit and repost
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <Delete /> Delete Post
+                  </label>
+                </li>
+                <li>
+                  <hr></hr>
+                </li>
+                <li>
+                  <label>
+                    <ArchiveIcon /> Archive post
+                  </label>
                 </li>
               </ul>
             </div>

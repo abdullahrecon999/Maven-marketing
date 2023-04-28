@@ -85,6 +85,10 @@ function App() {
                   element={<InfluencerLogin />}
                 ></Route>
                 <Route
+                  path="/marketautomation"
+                  element={<MainScreen />}
+                ></Route>
+                <Route
                   path="/businesslogin"
                   element={<BusinessLogin />}
                 ></Route>
@@ -154,11 +158,6 @@ function App() {
                 <Route
                   path="/brand/linkedin"
                   element={<LinkedInCallback />}
-                ></Route>
-
-                <Route
-                  path="/marketautomation"
-                  element={<MainScreen />}
                 ></Route>
               </Route>
 
