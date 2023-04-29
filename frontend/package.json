@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+   
     "@cometchat-pro/chat": "^3.0.11",
     "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.10.5",
@@ -25,6 +26,7 @@
     "beautiful-react-hooks": "^3.11.2",
     "daisyui": "^2.51.3",
     "dateformat": "^4.0.0",
+    "emoji-picker-react": "^4.4.9",
     "firebase": "^9.17.2",
     "formik": "^2.2.9",
     "html-react-parser": "^1.4.5",
