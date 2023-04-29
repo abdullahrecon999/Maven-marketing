@@ -19,7 +19,7 @@ const Post = () => {
               Status
             </label>
 
-            <div className="dropdown dropdown-bottom dropdown-end">
+            <div className="dropdown dropdown-bottom dropdown-end w-24">
               <div className="tooltip " data-tip="More Options">
                 <label
                   className="hover:text-blue rounded-md bg-slate-50"
@@ -31,34 +31,34 @@ const Post = () => {
 
               <ul
                 tabIndex={0}
-                className="dropdown-content p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content p-2 shadow bg-base-100 rounded-box w-36"
               >
-                <li>
-                  <label>
-                    <RefreshIcon /> Repost
+                <li className="hover:bg-slate-200 rounded-md p-1">
+                  <label className="text-xxs md:text-xs text-gray-700 ">
+                    <RefreshIcon className="text-xs " /> Repost
                   </label>
                 </li>
-                <li>
-                  <label>
-                    <LinkIcon></LinkIcon> copy link to share
+                <li className="hover:bg-slate-200 rounded-md p-1">
+                  <label className="text-xxs md:text-xs text-gray-700">
+                    <LinkIcon className="text-xs"></LinkIcon> Copy link to share
                   </label>
                 </li>
-                <li>
-                  <label>
-                    <LinkIcon></LinkIcon> Edit and repost
+                <li className="hover:bg-slate-200 rounded-md p-1">
+                  <label className="text-xxs md:text-xs text-gray-700">
+                    <EditIcon className="text-xs"></EditIcon> Edit and repost
                   </label>
                 </li>
-                <li>
-                  <label>
-                    <Delete /> Delete Post
+                <li className="hover:bg-slate-200 rounded-md p-1">
+                  <label className="text-xxs md:text-xs text-gray-700">
+                    <Delete className="text-xs" /> Delete Post
                   </label>
                 </li>
                 <li>
                   <hr></hr>
                 </li>
-                <li>
-                  <label>
-                    <ArchiveIcon /> Archive post
+                <li className="hover:bg-slate-200 rounded-md p-1">
+                  <label className="text-xxs md:text-xs text-gray-700">
+                    <ArchiveIcon className="text-xs" /> Archive post
                   </label>
                 </li>
               </ul>
@@ -82,6 +82,10 @@ const Post = () => {
             </div>
           </div>
         </div>
+        <div className="flex justify-center p-1 border md:hidden">
+          <h1 className="text-blue hover:text-purple-300">Comments</h1>
+        </div>
+        <></>
         {/* <div className="flex">
         <></>
       </div> */}

@@ -1,14 +1,63 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import MovieIcon from "@mui/icons-material/Movie";
 import { Filter } from "@mui/icons-material";
-
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import CalendarViewDayIcon from "@mui/icons-material/CalendarViewDay";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { MainScreenMarketAutomationContext } from "../../Pages/MarketAutomation/MainScreenProvider";
 const Navbar = () => {
+  const { switchScreen, setSwitch } = useContext(
+    MainScreenMarketAutomationContext
+  );
+  const handleScreenDropDownChange = (e) => {
+    console.log(e.target.innerText);
+    if (e.target.innerText === "Feed") setSwitch(true);
+    if (e.target.innerText === "Calender") setSwitch(false);
+  };
   return (
     // Navbar
     <div className="navbar justify-center space-x-2">
       <div className="w-[60%] flex justify-between">
+        <div className="dropdown">
+          <label tabIndex={0} className=" m-1">
+            {switchScreen === true ? (
+              <label className="hover:bg-slate-300 rounded-full px-2 py-1 text-sm">
+                <DynamicFeedIcon className="text-sm"></DynamicFeedIcon> Feed{" "}
+                <KeyboardArrowDownIcon className="text-sm" />
+              </label>
+            ) : (
+              <label className="hover:bg-slate-300 rounded-full px-2 py-1 text-sm">
+                <CalendarViewDayIcon className="text-sm"></CalendarViewDayIcon>{" "}
+                Calender <KeyboardArrowDownIcon className="text-sm" />
+              </label>
+            )}
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40"
+          >
+            <li
+              onClick={(e) => {
+                handleScreenDropDownChange(e);
+              }}
+            >
+              <label>
+                <DynamicFeedIcon></DynamicFeedIcon>Feed
+              </label>
+            </li>
+            <li
+              onClick={(e) => {
+                handleScreenDropDownChange(e);
+              }}
+            >
+              <label>
+                <CalendarViewDayIcon></CalendarViewDayIcon> Calender
+              </label>
+            </li>
+          </ul>
+        </div>
         <div class="border-b  border-gray-200 dark:border-gray-700">
           <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
             <li class="mr-2">
