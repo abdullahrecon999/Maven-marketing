@@ -196,6 +196,7 @@ def allTiktokData():
             no_posts = data["UserModule"]["stats"][row["Tiktoker name"]]["videoCount"]
             likes = (data["UserModule"]["stats"][row["Tiktoker name"]]["heartCount"])
             bio = data["UserModule"]["users"][row["Tiktoker name"]]["signature"]
+            platform = "Tiktok"
             try:
                 link = data["UserModule"]["users"][row["Tiktoker name"]]["bioLink"]["link"]
             except Exception as e:
@@ -208,7 +209,7 @@ def allTiktokData():
                 if len(posts) >= 5:
                     break
 
-            users.append({ "title": title, "url": url, "profilePic": profilePic, "followers_avg": followers, "followees_avg": followees, "no_posts": no_posts, "likes": likes, "description": bio, "posts": posts, "link": link })
+            users.append({ "title": title, "url": url, "profilePic": profilePic, "followers_avg": followers, "followees_avg": followees, "no_posts": no_posts, "likes": likes, "description": bio, "posts": posts, "link": link, "platform": platform })
             print(users[-1])
         except Exception as e:
             #users.append({"error": e})
