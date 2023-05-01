@@ -21,7 +21,7 @@ var brandRouter = require('./routes/brand');
 var influencerRouter = require('./routes/influencer');
 var MessageRouter = require("./routes/chat");
 var campaign = require("./routes/campaign")
-
+var listing = require("./routes/listing")
 var app = express();
 
 const corsOptions = {
@@ -71,10 +71,10 @@ app.use(passport.session());
 //calling the routers
 // app.use('/', indexRouter);
 
-app.use(express.static(path.join(__dirname, '../frontend', 'dist')));
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
-})
+// app.use(express.static(path.join(__dirname, '../frontend', 'dist')));
+// app.get('/*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+// })
 
 app.use('/admin', adminRouter);
 app.use('/brand', brandRouter);
@@ -82,6 +82,7 @@ app.use('/users', usersRouter);
 app.use('/influencer', influencerRouter);
 app.use("/chats", MessageRouter)
 app.use("/campaign", campaign)
+app.use("/list", listing)
 
 app.all('*', (req, res, next) => {
       res.status(404).json({'Error':`Cant Find ${req.originalUrl}`}); // 404 Not Found
