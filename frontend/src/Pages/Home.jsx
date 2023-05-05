@@ -52,10 +52,10 @@ const Home = () => {
           ></img>
         </div>
       </section>
-      <SignupModal
+      {/* <SignupModal
         visible={openSignupModal}
         onClose={handleClose}
-      ></SignupModal>
+      ></SignupModal> */}
     </>
   );
 };

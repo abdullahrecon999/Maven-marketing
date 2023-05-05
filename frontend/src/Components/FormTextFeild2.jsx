@@ -1,26 +1,27 @@
-import React from 'react'
+import React from "react";
 
-import { TextField } from '@mui/material'
-import { useField, ErrorMessage } from 'formik'
-const FormTextFeild2 = ({...props}) => {
+import { TextField } from "@mui/material";
+import { Input } from "antd";
+import { useField, ErrorMessage } from "formik";
+const FormTextFeild2 = ({ size = "medium", ...props }) => {
+  const [feild, meta] = useField(props);
 
-    const [feild, meta] = useField(props)
-    
   return (
-        <>
-         <TextField
+    <>
+      <Input
         required
         {...props}
         {...feild}
-        size='small'
-        >
-          
-        </TextField>
-        <ErrorMessage component="div" className='text-sm text-red-600' name={feild.name}></ErrorMessage>
-        </>
-    
-  )
-}
+        size={size}
+        placeholder={props.name}
+      ></Input>
+      <ErrorMessage
+        component="div"
+        className="text-sm text-red-600"
+        name={feild.name}
+      ></ErrorMessage>
+    </>
+  );
+};
 
-
-export default FormTextFeild2
+export default FormTextFeild2;
