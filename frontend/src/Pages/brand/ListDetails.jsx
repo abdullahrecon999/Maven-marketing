@@ -3,10 +3,55 @@ import BannerImage from "../../images/banner.jpg";
 import ProfileImage from "../../images/profile.jpg";
 import Views from "../../images/view.png";
 import axios from "axios";
-
+import { Button, Modal } from "antd";
+import CreateNewGigModal from "../../Components/InfluencerComponents/CreateNewGigModal";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 const ListDetails = () => {
   const [data, setData] = useState({});
+  const [user, setUser] = useState({});
+
+  // states of delete modal
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState(
+    "are you sure you want to delete the listing"
+  );
+  // states of edit modal
+  const [openEdit, setOpenEdit] = useState(false);
+  const [confirmLoadingEdit, setConfirmLoadingEdit] = useState(false);
+
+  const showEditModal = () => {
+    setOpenEdit(true);
+  };
+  const handleEditOk = () => {
+    setConfirmLoadingEdit(true);
+    setTimeout(() => {
+      setOpenEdit(false);
+      setConfirmLoadingEdit(false);
+    }, 2000);
+  };
+  const handleEditCancel = () => {
+    console.log("Clicked cancel button");
+    setOpen(false);
+  };
+
+  // functions of delete modal
+  const showDeleteModal = () => {
+    setOpen(true);
+  };
+  const handleDeleteOk = () => {
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+  const handleDeleteCancel = () => {
+    console.log("Clicked cancel button");
+    setOpen(false);
+  };
   useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
     const fetch = async () => {
       const data = await axios.get(
         "http://localhost:3000/list/getlistingdetails/6433325b875297785f55e6c7"
@@ -18,8 +63,29 @@ const ListDetails = () => {
 
     fetch();
   }, []);
+
   return (
     <div className="container mx-auto mt-5 bg-white">
+      {/* this is the delete modal */}
+      <Modal
+        title="Delete this Gig?"
+        open={open}
+        onOk={handleDeleteOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleDeleteCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+
+      {/* this modal is used for both edit and creating new gig */}
+      <CreateNewGigModal
+        gigTitle="Edit Gig"
+        open={openEdit}
+        setOpen={setOpenEdit}
+        title={data?.title}
+        description={data?.description}
+        platform={data?.platform}
+      ></CreateNewGigModal>
       <header className="w-full h-[60vh] flex justify-center px-10 mb-2">
         <div
           style={{
@@ -28,8 +94,34 @@ const ListDetails = () => {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
-          className="w-full  border rounded-t-2xl flex justify-center items-center bg-opacity-25"
+          className="w-full relative border rounded-t-2xl flex justify-center items-center bg-opacity-25"
         >
+          {user?.role === "influencer" ? (
+            <div className="dropdown dropdown-end absolute top-2 right-5">
+              <label tabIndex={0} className="text-white">
+                <EditOutlined></EditOutlined>
+              </label>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32"
+              >
+                <li>
+                  <label className="text-xs " onClick={() => showEditModal()}>
+                    <EditOutlined></EditOutlined>Edit
+                  </label>
+                </li>
+                <li>
+                  <label
+                    className="text-xs "
+                    onClick={() => showDeleteModal(true)}
+                  >
+                    <DeleteOutlined className="text-red-500"></DeleteOutlined>{" "}
+                    Delete gig
+                  </label>
+                </li>
+              </ul>
+            </div>
+          ) : null}
           <div className="flex flex-col item-center relative justify-center">
             <div className="relative">
               <img

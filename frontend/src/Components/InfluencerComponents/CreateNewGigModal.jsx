@@ -1,27 +1,25 @@
-import { Button, Modal } from "antd";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Input } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, EditOutlined } from "@ant-design/icons";
 import { UploadOutlined } from "@ant-design/icons";
+import { Button, Modal } from "antd";
+import { Formik, ErrorMessage } from "formik";
 import { Upload } from "antd";
 import { Select } from "antd";
-import { Formik, ErrorMessage } from "formik";
 import gigSchema from "../../ValidationSchemas/gigValidation";
 const { TextArea } = Input;
-const length = 0;
-const fileList = [];
-const InfluencerGigs = () => {
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+const CreateNewGigModal = ({
+  gigTitle = "Create a new Gig",
+  open,
+  setOpen,
+  title = "",
+  description = "",
+  banner = "",
+  additional = "",
+  platform = "",
+}) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
-  const [files, setFiles] = useState([]);
-  const showModal = () => {
-    setOpen(true);
-  };
   const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
     setConfirmLoading(true);
     setTimeout(() => {
       setOpen(false);
@@ -32,57 +30,10 @@ const InfluencerGigs = () => {
     console.log("Clicked cancel button");
     setOpen(false);
   };
-  const handleView = () => {
-    // add navigation code here
-  };
   return (
-    <div className="w-[full]">
-      {length !== 0 ? (
-        <div className="w-full h-[70vh] flex flex-col justify-center items-center bg-white border rounded-xl space-y-4 px-10">
-          <div className="flex flex-col justify-center items-center">
-            <h1 className="text-base text-gray-800 font-semibold">
-              No listings
-            </h1>
-            <p className="text-xs text-gray-600 font-semibold">
-              There are no listings found. Create one to get noticed and find
-              more work
-            </p>
-          </div>
-          <Button onClick={showModal} className="bg-blue text-white">
-            Create A gig
-          </Button>
-        </div>
-      ) : (
-        <div className="w-full h-[70vh] flex flex-col py-8 bg-white border rounded-xl space-y-4 px-10">
-          {/* add this in a map */}
-          <div className="bg-gray-50 flex flex-col md:flex  w-full rounded-lg px-3 py-2 border shadow mb-2">
-            <div className="flex flex-col flex-1 space-y-1">
-              <h1 className="text-xl font-semibold text-gray-700">Title</h1>
-              <p className="text-sm text-gray-400">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-              <p className="text-sm text-blue">Created on data</p>
-            </div>
-            <div className="flex flex-[0.25] items-end justify-end">
-              <Button className="mr-1 bg-blue text-white" onClick={handleView}>
-                View
-              </Button>
-              <Button className="mr-1 bg-blue text-white hover:bg-red-500 hover:text-white">
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* modal to create a new listing */}
+    <div>
       <Modal
-        title="Create a new Gig"
+        title={gigTitle}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -112,6 +63,7 @@ const InfluencerGigs = () => {
                       console.log("formik values", formik.values);
                       formik.setFieldValue("title", e.target.value);
                     }}
+                    value={title}
                   />
                 </div>
                 <div>
@@ -119,6 +71,7 @@ const InfluencerGigs = () => {
                     Description <span className="text-red-600">*</span>
                   </h1>
                   <TextArea
+                    value={description}
                     showCount
                     placeholder="Enter details of the services that you provide"
                     autoSize={{
@@ -164,6 +117,7 @@ const InfluencerGigs = () => {
                   </h1>
                   <Select
                     showSearch
+                    value={platform}
                     style={{
                       width: 200,
                     }}
@@ -231,4 +185,4 @@ const InfluencerGigs = () => {
   );
 };
 
-export default InfluencerGigs;
+export default CreateNewGigModal;
