@@ -332,7 +332,7 @@ const CampaignDetailInfluencer = () => {
   }
   return (
     <div className="relative container mx-8  px-8 my-10">
-      <Modal
+      {/* <Modal
         title="Submit a Proposal"
         open={isModalOpen}
         footer={[
@@ -443,7 +443,7 @@ const CampaignDetailInfluencer = () => {
                         </div>
                         <div className="border px-5 py-5">
                           {/* {filename !== "" ? <h1>{filename}</h1> : null} */}
-                          <div class="max-w-xl">
+      {/* <div class="max-w-xl">
                             <label class="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
                               <span class="flex items-center space-x-2">
                                 <svg
@@ -514,7 +514,7 @@ const CampaignDetailInfluencer = () => {
             </Form>
           )}
         </Formik>
-      </Modal>
+      </Modal> */}
 
       {state?.invite && (
         <div className="fixed w-[100%] bg-white shadow-xl flex justify-end items-center -mx-5 px-9 py-4 space-x-1">
@@ -587,14 +587,14 @@ const CampaignDetailInfluencer = () => {
                     })}
                   </div>
                 </div>
-                {/* {open && (
+                {open && (
                   <BidModal
                     data={data.data.data.questions}
                     brand={data.data.data.brand["_id"]}
                     id={data.data.data["_id"]}
                     onClose={handleClose}
                   ></BidModal>
-                )} */}
+                )}
                 <div className="flex  flex-col md:w-[40%] md:flex-row md:justify-between ">
                   <div className="space-y-2">
                     <h1 className="text-base text-gray-800 font-semibold">
@@ -703,7 +703,7 @@ const CampaignDetailInfluencer = () => {
                 <Button
                   type="primary"
                   className="text-white bg-blue"
-                  onClick={() => showModal()}
+                  onClick={() => handleOpen()}
                 >
                   I'd like to submit a pitch
                 </Button>

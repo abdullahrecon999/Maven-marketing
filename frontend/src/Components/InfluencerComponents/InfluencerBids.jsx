@@ -182,14 +182,7 @@ const Bids = () => {
               <h1 className="text-xl self-start md:text-2xl text-gray-800 mb-1 pl-4">
                 Your Bids here
               </h1>
-              <Button
-                onClick={() => {
-                  setBidModal(true);
-                  console.log("clicked", openBidModal);
-                }}
-              >
-                Click
-              </Button>
+
               <p className="text-xs self-start text-grey mb-4 pl-4 md:text-sm">
                 All of the bids that you submitted and aare pendeling approval
                 are displayed here
