@@ -628,7 +628,7 @@ router.get("/myBids/:id", async(req, res)=>{
   const id= req.params.id
   try{
     const data = await bids.find({sender:id, accepted: false})
-    .populate("to","name").populate("campaignId","title")
+    .populate("to","name").populate("campaignId")
    
       res.status(200).json({
         status: "success",
