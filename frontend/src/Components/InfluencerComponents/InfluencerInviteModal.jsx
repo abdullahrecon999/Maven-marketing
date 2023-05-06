@@ -15,6 +15,8 @@ const InfluencerInviteModal = () => {
   const [done, setDone] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [rejecting, setRejecting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [successMsg, setSuccessMessage] = useState("");
   const [error, setError] = useState({
     err: false,
     errText: "There was some error in the server",
@@ -66,40 +68,57 @@ const InfluencerInviteModal = () => {
     console.log("Clicked cancel button");
     setInviteModal(false);
     setDone(false);
+    setSuccessMessage("");
   };
 
   const handleInviteAccept = async () => {
     setAccepting(true);
-    await axios.post(
-      `http://localhost:3000/influencer/invite/accept/${id}`,
-      {
-        id: id,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      await axios.post(
+        `http://localhost:3000/influencer/invite/accept/${id}`,
+        {
+          id: id,
         },
-        withCredentials: true,
-      }
-    );
-    setAccepting(false);
-    setDone(true);
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      setAccepting(false);
+
+      setSuccessMessage("Accepted successfully");
+      setDone(true);
+    } catch (e) {
+      setAccepting(false);
+      setDone(false);
+    }
   };
 
   const handleDeclineAccept = async () => {
-    await axios.post(
-      `http://localhost:3000/influencer/invite/reject/${id}`,
-      {
-        accepted: false,
-        rejected: true,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      await axios.post(
+        `http://localhost:3000/influencer/invite/reject/${id}`,
+        {
+          accepted: false,
+          rejected: true,
         },
-        withCredentials: true,
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      setRejecting(true);
+      setDone(true);
+      setSuccessMessage("Rejected successfully");
+    } catch (e) {
+      setRejecting(false);
+      setDone(false);
+    }
   };
   return (
     <>
@@ -136,6 +155,10 @@ const InfluencerInviteModal = () => {
             <h1 className="text-xl  py-2  mt-0  px-4 text-gray-800 font-semibold">
               Invitation Details
             </h1>
+            <div>
+              <Tag color="green">{successMsg}</Tag>
+            </div>
+
             {/* <label className="text-xxs  text-red-500">
               {error.err && <Tag color="red">{error.errText}</Tag>}
             </label> */}

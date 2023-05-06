@@ -276,7 +276,7 @@ const Bids = () => {
         <Initialbids />
       ) : (
         <div className=" px-[10%]">
-          {close && <Modal onClose={handleClose} id={id} onOpen={handleOpen} />}
+          {/* {close && <Modal onClose={handleClose} id={id} onOpen={handleOpen} />} */}
 
           {!close && (
             <>
