@@ -677,7 +677,7 @@ router.get("/bidDetails/:id", async(req, res, next)=>{
   }
 })
 
-router.post("/bidCampaign/:id", async (req, res, next) => {
+router.post("/bidCampaign", async (req, res, next) => {
   const {campaignId, sender} = req.body
   console.log(campaignId)
   try{

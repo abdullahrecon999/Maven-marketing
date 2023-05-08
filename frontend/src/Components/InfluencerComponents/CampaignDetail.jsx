@@ -10,7 +10,7 @@ import { Carousel } from "react-responsive-carousel";
 import BidsTable from "./table";
 import InfluencerGenaricModal from "./InfluencerGenaricModal";
 import CloseIcon from "@mui/icons-material/Close";
-import { Formik, Form } from "formik";
+import { Formik, Form, ErrorMessage } from "formik";
 import { TailSpin } from "react-loader-spinner";
 import CampaignAcceptedList from "../brandComponents/campaignAcceptedList";
 import ContractModel from "../brandComponents/ContractModel";
@@ -18,6 +18,10 @@ import { Image, Input, InputNumber } from "antd";
 import dayjs from "dayjs";
 import { PlusOneOutlined } from "@mui/icons-material";
 import { Collapse, Button, Modal, Tag } from "antd";
+import { storage } from "../../utils/fireBase/fireBaseInit";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import bidValidation from "../../ValidationSchemas/bidValidation";
 
 const { Panel } = Collapse;
 
@@ -205,7 +209,9 @@ const CampaignDetailInfluencer = () => {
   const [contract, setOpenContract] = useState(false);
   const [bidId, setBidId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [url, setUrl] = useState("");
+  const [reference, setRef] = useState(null);
+  const [filename, setFileName] = useState("");
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
@@ -249,18 +255,6 @@ const CampaignDetailInfluencer = () => {
     setOpenContract(!contract);
   };
 
-  const {
-    isLoading: bidsIsloading,
-    data: bids,
-    isError: bidsIsError,
-  } = useQuery(["getallbids"], () => {
-    return axios.get(`http://localhost:3000/brand/getallbids/${state.id}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    });
-  });
   const { isLoading, data, isError, isSuccess } = useQuery(
     ["getCampaignDetails"],
     () => {
@@ -275,6 +269,70 @@ const CampaignDetailInfluencer = () => {
       );
     }
   );
+  const handleSubmit = async (values) => {
+   
+    const val = {
+      sender: user["_id"],
+      to: data.data.data.brand?.name,
+      campaignId: data.data.data["_id"],
+      file: url,
+      ...values,
+    };
+    
+    
+    return await axios.post(
+      `http://localhost:3000/influencer/bidCampaign`,
+      val,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+  };
+  const {
+    mutate :bidSubmitMutate,
+    isLoading :bidsubmitting,
+    isSuccess : bidSubmitSuccess,
+    isError :bidSubmitIsError,
+    data: status,
+  } = useMutation(handleSubmit);
+  const onFileChange = (file, formik) => {
+    console.log(formik);
+    const fileRef = ref(storage, `files/${file.name + v4()}`);
+    setRef(fileRef);
+
+    uploadBytes(fileRef, file)
+      .then(() => {
+        console.log("uploading the files in the db");
+
+        getDownloadURL(fileRef).then((url) => {
+          alert("file is uploaded");
+          console.log("this is the file reference");
+          setUrl(url);
+          setFileName(file.name);
+          return url;
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const {
+    isLoading: bidsIsloading,
+    data: bids,
+    isError: bidsIsError,
+  } = useQuery(["getallbids"], () => {
+    return axios.get(`http://localhost:3000/brand/getallbids/${state.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+  });
+  
 
   const { isLoading: acceptedBidsLoading, data: acceptedBids } = useQuery(
     ["getacceptedbids"],
@@ -332,11 +390,11 @@ const CampaignDetailInfluencer = () => {
   }
   return (
     <div className="relative container mx-8  px-8 my-10">
-      {/* <Modal
+      <Modal
         title="Submit a Proposal"
         open={isModalOpen}
         footer={[
-          <Button className="text-white bg-blue">Submit Proposal</Button>,
+          
         ]}
         onCancel={handleCancel}
       >
@@ -347,14 +405,16 @@ const CampaignDetailInfluencer = () => {
             answer1: "",
             answer2: "",
             answer3: "",
+            file: "",
           }}
+          validationSchema={bidValidation}
           onSubmit={(values) => {
-            mutate(values);
+            bidSubmitMutate(values);
           }}
         >
           {(formik) => (
             <Form>
-              {console.log(formik.values)}
+              
               <div className="flex bg-white flex-col h-80  ">
                 <div className="   bg-white p-4  rounded-xl overflow-y-auto ">
                   <div className="space-y-1">
@@ -384,9 +444,16 @@ const CampaignDetailInfluencer = () => {
                         allowClear
                         onChange={(e) => {
                           formik.setFieldValue("discription", e.target.value);
-                          console.log(formik.values);
+                          
                         }}
                       ></Input.TextArea>
+                      <ErrorMessage
+                        component="div"
+                        className="text-sm text-red-600"
+                        name="discription"
+                      >
+                        error
+                      </ErrorMessage>
                     </div>
                     <div>
                       <h1 className="text-base text-gray-800 font-semibold">
@@ -394,8 +461,8 @@ const CampaignDetailInfluencer = () => {
                       </h1>
                       <InputNumber
                         required
-                        onChange={(e) => {
-                          formik.setFieldValue("amount", e.target.value);
+                        onChange={(value) => {
+                          formik.setFieldValue("amount", value.toString());
                           console.log(formik.values);
                         }}
                         min={1}
@@ -417,10 +484,17 @@ const CampaignDetailInfluencer = () => {
                               <CampaignQuestions
                                 text={items}
                                 key={i}
+                                i={i}
                               ></CampaignQuestions>
                               <Input
                                 onchange={(e) => console.log(e)}
                                 placeholder="your response"
+                                onChange={(e) => {
+                                  formik.setFieldValue(
+                                    `answer${i + 1}`,
+                                    e.target.value
+                                  );
+                                }}
                               ></Input>
                             </div>
                           );
@@ -442,8 +516,7 @@ const CampaignDetailInfluencer = () => {
                           </p>
                         </div>
                         <div className="border px-5 py-5">
-                          {/* {filename !== "" ? <h1>{filename}</h1> : null} */}
-      {/* <div class="max-w-xl">
+                          <div class="max-w-xl">
                             <label class="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
                               <span class="flex items-center space-x-2">
                                 <svg
@@ -467,12 +540,11 @@ const CampaignDetailInfluencer = () => {
                                 </span>
                               </span>
                               <input
-                                // onChange={async (e) => {
-                                //   const url = await onFileChange(
-                                //     e.target.files[0],
-                                //     formik
-                                //   );
-                                //}}
+                                onChange={async (e) => {
+                                  const url = await onFileChange(
+                                    e.target.files[0]
+                                  );
+                                }}
                                 type="file"
                                 name="file_upload"
                                 class="hidden"
@@ -482,39 +554,18 @@ const CampaignDetailInfluencer = () => {
                         </div>
                       </div>
                     </div>
-                    <button
-                      type="submit"
-                      disabled={isSuccess}
-                      className={`text-white btn text-xl font-railway text-center px-3 py-2 rounded-full bg-blue hover:bg-indigo-500 ${
-                        isSuccess === true ? "hidden" : ""
-                      }`}
-                    >
-                      {isLoading ? (
-                        <TailSpin
-                          height="20"
-                          width="20"
-                          color="white"
-                          ariaLabel="tail-spin-loading"
-                          radius="1"
-                          wrapperStyle={{}}
-                          wrapperClass=""
-                          visible={!isSuccess}
-                        />
-                      ) : (
-                        "Submit"
-                      )}
-                    </button>
+                    <Button onClick={()=>{
+                      bidSubmitMutate(formik.values)
+                    }} type = "submit" className="text-white bg-blue">Submit Proposal</Button>
 
-                    {isSuccess ? (
-                      <p className="text-red-500">Bid sumitted successfully</p>
-                    ) : null}
+                    
                   </div>
                 </div>
               </div>
             </Form>
           )}
         </Formik>
-      </Modal> */}
+      </Modal>
 
       {state?.invite && (
         <div className="fixed w-[100%] bg-white shadow-xl flex justify-end items-center -mx-5 px-9 py-4 space-x-1">
@@ -700,10 +751,11 @@ const CampaignDetailInfluencer = () => {
                   If this campaign interests you then submit a bid to
                   collaborate
                 </p>
+
                 <Button
                   type="primary"
                   className="text-white bg-blue"
-                  onClick={() => handleOpen()}
+                  onClick={() => showModal()}
                 >
                   I'd like to submit a pitch
                 </Button>
@@ -711,13 +763,12 @@ const CampaignDetailInfluencer = () => {
             </div>
           )}
         </div>
-        <button
-          onClick={() => handleOpen()}
-          className="bg-blue text-center text-white font-railway py-2 px-3 rounded-full shadow hover:bg-indigo-600 md:hidden"
-        >
-          {" "}
-          Submit a Bid
-        </button>
+        <div className="flex md:hidden">
+          <Button onClick={() => showModal()} className="bg-blue text-white">
+            {" "}
+            Submit a Bid
+          </Button>
+        </div>
 
         {close && (
           <InfluencerBidsDetailModal
