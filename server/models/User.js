@@ -80,6 +80,14 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   emailVerificationToken: String,
   emailVerificationExpires: Date,
+  socialMediaAccounts:{
+    type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Social"
+        }
+    ],
+  }
 }, { timestamps: true });
 
 // userSchema.pre('save', async function(next) {

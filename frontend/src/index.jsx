@@ -5,8 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { StyledEngineProvider } from '@mui/material';
 import { AuthProvider } from './utils/authProvider';
+import axios from 'axios';
 import {QueryClient,  QueryClientProvider} from "react-query"
 import {ChatInit, CreateNewChatUser, ChatLogin} from "./ChatUtils"
+axios.defaults.withCredentials = true;
+
 const client = new QueryClient({
   defaultOptions: {
     queries: {

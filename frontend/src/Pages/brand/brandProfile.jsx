@@ -8,6 +8,7 @@ import { Modal, Upload, Row, Col, notification } from 'antd';
 import { v4 } from "uuid"
 import { storage } from '../../utils/fireBase/fireBaseInit';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import axios from "axios";
 
 const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
@@ -81,19 +82,39 @@ export const BrandProfile = (props) => {
 			})
 	}
 
-	const { linkedInLogin } = useLinkedIn({
-		clientId: '77oyqfmbrr2780',
-		scope: 'r_liteprofile r_emailaddress w_member_social',
-		redirectUri: `http://localhost:5173/brand/linkedin/`,
-		onSuccess: (code) => {
-			console.log(code);
-			// exchange for access token
-			exchange(code)
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
+	// const { linkedInLogin } = useLinkedIn({
+	// 	clientId: '77oyqfmbrr2780',
+	// 	scope: 'r_liteprofile r_emailaddress w_member_social',
+	// 	redirectUri: `http://localhost:5173/brand/linkedin/`,
+	// 	onSuccess: (code) => {
+	// 		console.log(code);
+	// 		// exchange for access token
+	// 		exchange(code)
+	// 	},
+	// 	onError: (error) => {
+	// 		console.log(error);
+	// 	},
+	// });
+
+	const linkedInLogin = async () => {
+		const res = await axios.get("http://localhost:3000/automate/linkedin/me");
+		//const res = await axios.get("http://127.0.0.1:3000/users/user", { withCredentials: true, headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json'}});
+    // const data = await res.json();
+		//const res = fetch("http://127.0.0.1:3000/users/user", { method: "GET", headers: { "Content-Type": "application/json" }, credentials: "same-origin", credentials: "include" })
+		console.log(res);
+	}
+
+	const redditLogin = async () => {
+		const res = await axios.get("http://localhost:3000/automate/reddit/me");
+		console.log(res);
+	}
+
+	const sendText = async () => {
+		const res = await axios.post("http://localhost:3000/automate/linkedin/posts", {
+			"text": "Hello World"
+		} );
+		console.log(res);
+	}
 
 	const changeMode = () => {
 		if (mode === "view") {
@@ -337,7 +358,7 @@ export const BrandProfile = (props) => {
 
 						<div className="flex justify-evenly flex-wrap border w-96 h-96">
 							{/* Linnkedin button */}
-							<div className="flex items-center justify-center w-1/2 h-1/2">
+							<div className="flex flex-col items-center justify-center w-1/2 h-1/2">
 								<div onClick={linkedInLogin} className="btn btn-outline btn-wide glass gap-1 flex items-center justify-center">
 									<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 										width="16" height="16"
@@ -345,6 +366,17 @@ export const BrandProfile = (props) => {
 										<path fill="#0288d1" d="M8.421 14h.052 0C11.263 14 13 12 13 9.5 12.948 6.945 11.263 5 8.526 5 5.789 5 4 6.945 4 9.5 4 12 5.736 14 8.421 14zM4 17H13V43H4zM44 26.5c0-5.247-4.253-9.5-9.5-9.5-3.053 0-5.762 1.446-7.5 3.684V17h-9v26h9V28h0c0-2.209 1.791-4 4-4s4 1.791 4 4v15h9C44 43 44 27.955 44 26.5z"></path>
 									</svg>
 									<p className="text-lg text-[#212529] font-medium">LinkedIn</p>
+								</div>
+								<div onClick={sendText} className="btn btn-outline btn-wide glass gap-1 flex items-center justify-center">
+									<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+										width="16" height="16"
+										viewBox="0 0 48 48">
+										<path fill="#0288d1" d="M8.421 14h.052 0C11.263 14 13 12 13 9.5 12.948 6.945 11.263 5 8.526 5 5.789 5 4 6.945 4 9.5 4 12 5.736 14 8.421 14zM4 17H13V43H4zM44 26.5c0-5.247-4.253-9.5-9.5-9.5-3.053 0-5.762 1.446-7.5 3.684V17h-9v26h9V28h0c0-2.209 1.791-4 4-4s4 1.791 4 4v15h9C44 43 44 27.955 44 26.5z"></path>
+									</svg>
+									<p className="text-lg text-[#212529] font-medium">LinkedIn sendText</p>
+								</div>
+								<div onClick={redditLogin} className="btn btn-outline btn-wide glass gap-1 flex items-center justify-center">
+									<p className="text-lg text-[#212529] font-medium">Reddit</p>
 								</div>
 							</div>
 						</div>
