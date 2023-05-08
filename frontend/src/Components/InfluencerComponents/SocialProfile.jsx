@@ -71,7 +71,7 @@ const Profile = ({onEdit})=>{
 				<img src={user?.photo} alt={image} className="w-[150px] h-[150px] rounded-full border shadow-md" />
 				<div className='flex flex-col space-y-0 items-center'>
 					<h1 className='text-black font-railway text-xl'>{user?.name}</h1>
-					<p className='text-gray-700 font-railway text-xs'>{user?.description.slice(0, 4) + "......."}</p>
+					<p className='text-gray-700 font-railway text-xs'>{user?.description?.slice(0, 4) + "......."}</p>
 				</div>
 				<div className='flex flex-col space-y-5 w-[100%]'>
 					<hr ></hr>
@@ -86,14 +86,14 @@ const Profile = ({onEdit})=>{
 					<div className='flex justify-between space-x-1'>
 						<div className='px-2 flex flex-col flex-1 space-y-1'>
 							<h1 className='text-blue font-railway text-base'>Country</h1>
-							<DetailBox data={user?.country[0]}></DetailBox>
+							{/* <DetailBox data={user?.country[0]}></DetailBox> */}
 						</div>
 						<div className='px-2 flex flex-col space-y-1'>
 							<h1 className='text-blue font-railway text-base'>languages </h1>
 							<div className="flex flex-wrap">
-								{user?.language.map(item => {
+								{/* {user?.language.map(item => {
 									return (<DetailBox key={item} data={item}></DetailBox>)
-								})}
+								})} */}
 							</div>
 						</div>
 

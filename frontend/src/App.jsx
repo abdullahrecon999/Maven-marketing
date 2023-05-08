@@ -48,6 +48,7 @@ import InfluencerPayments from "./Components/InfluencerComponents/InfluencerPaym
 import { Privacy } from "./Pages/legal/privacypolicy";
 import { Terms } from "./Pages/legal/termsofuse";
 import MainScreen from "./Pages/MarketAutomation/MainScreen";
+import ListDetails from "./Pages/brand/ListDetails";
 
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -78,6 +79,7 @@ function App() {
           <Suspense fallback={<div>loading</div>}>
             <Routes>
               {/* Public Routes */}
+
               <Route element={<Wrapper />}>
                 <Route path="/" element={<Home />}></Route>
                 <Route
@@ -88,6 +90,7 @@ function App() {
                   path="/marketautomation"
                   element={<MainScreen />}
                 ></Route>
+
                 <Route
                   path="/businesslogin"
                   element={<BusinessLogin />}
@@ -106,6 +109,7 @@ function App() {
                 <Route path="/whyus" element={<Whyus />}></Route>
                 <Route path="/privacy" element={<Privacy />}></Route>
                 <Route path="/terms" element={<Terms />}></Route>
+                <Route path="/listdetails" element={<ListDetails />}></Route>
               </Route>
 
               {/* Admin Protected Routes */}
