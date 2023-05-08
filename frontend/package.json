@@ -4,7 +4,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-   
     "@cometchat-pro/chat": "^3.0.11",
     "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.10.5",
@@ -30,6 +29,7 @@
     "firebase": "^9.17.2",
     "formik": "^2.2.9",
     "html-react-parser": "^1.4.5",
+    "lodash": "^4.17.21",
     "node-sass": "^8.0.0",
     "react": "^18.2.0",
     "react-datepicker": "^4.10.0",

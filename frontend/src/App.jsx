@@ -49,6 +49,7 @@ import { Privacy } from "./Pages/legal/privacypolicy";
 import { Terms } from "./Pages/legal/termsofuse";
 import MainScreen from "./Pages/MarketAutomation/MainScreen";
 import ListDetails from "./Pages/brand/ListDetails";
+import ManageCampaignPage from "./Components/brandComponents/ManageCampaignPage";
 
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -156,6 +157,10 @@ function App() {
                 <Route
                   path="/influencerprofile/:id"
                   element={<InfluencerProfile />}
+                ></Route>
+                <Route
+                  path="managecampaign/"
+                  element={<ManageCampaignPage></ManageCampaignPage>}
                 ></Route>
                 <Route path="/brandchat" element={<Chat />}></Route>
                 <Route path="/brandprofile" element={<BrandProfile />}></Route>

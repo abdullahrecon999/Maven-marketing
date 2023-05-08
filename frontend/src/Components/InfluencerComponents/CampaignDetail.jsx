@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigation , Link} from "react-router-dom";
 import { useQuery, useMutation } from "react-query";
 import axios from "axios";
 import HelpIcon from "@mui/icons-material/Help";
@@ -212,6 +212,7 @@ const CampaignDetailInfluencer = () => {
   const [url, setUrl] = useState("");
   const [reference, setRef] = useState(null);
   const [filename, setFileName] = useState("");
+  
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
@@ -270,7 +271,6 @@ const CampaignDetailInfluencer = () => {
     }
   );
   const handleSubmit = async (values) => {
-   
     const val = {
       sender: user["_id"],
       to: data.data.data.brand?.name,
@@ -278,8 +278,7 @@ const CampaignDetailInfluencer = () => {
       file: url,
       ...values,
     };
-    
-    
+
     return await axios.post(
       `http://localhost:3000/influencer/bidCampaign`,
       val,
@@ -292,10 +291,10 @@ const CampaignDetailInfluencer = () => {
     );
   };
   const {
-    mutate :bidSubmitMutate,
-    isLoading :bidsubmitting,
-    isSuccess : bidSubmitSuccess,
-    isError :bidSubmitIsError,
+    mutate: bidSubmitMutate,
+    isLoading: bidsubmitting,
+    isSuccess: bidSubmitSuccess,
+    isError: bidSubmitIsError,
     data: status,
   } = useMutation(handleSubmit);
   const onFileChange = (file, formik) => {
@@ -332,7 +331,6 @@ const CampaignDetailInfluencer = () => {
       withCredentials: true,
     });
   });
-  
 
   const { isLoading: acceptedBidsLoading, data: acceptedBids } = useQuery(
     ["getacceptedbids"],
@@ -393,9 +391,7 @@ const CampaignDetailInfluencer = () => {
       <Modal
         title="Submit a Proposal"
         open={isModalOpen}
-        footer={[
-          
-        ]}
+        footer={[]}
         onCancel={handleCancel}
       >
         <Formik
@@ -414,7 +410,6 @@ const CampaignDetailInfluencer = () => {
         >
           {(formik) => (
             <Form>
-              
               <div className="flex bg-white flex-col h-80  ">
                 <div className="   bg-white p-4  rounded-xl overflow-y-auto ">
                   <div className="space-y-1">
@@ -444,7 +439,6 @@ const CampaignDetailInfluencer = () => {
                         allowClear
                         onChange={(e) => {
                           formik.setFieldValue("discription", e.target.value);
-                          
                         }}
                       ></Input.TextArea>
                       <ErrorMessage
@@ -554,11 +548,15 @@ const CampaignDetailInfluencer = () => {
                         </div>
                       </div>
                     </div>
-                    <Button onClick={()=>{
-                      bidSubmitMutate(formik.values)
-                    }} type = "submit" className="text-white bg-blue">Submit Proposal</Button>
-
-                    
+                    <Button
+                      onClick={() => {
+                        bidSubmitMutate(formik.values);
+                      }}
+                      type="submit"
+                      className="text-white bg-blue"
+                    >
+                      Submit Proposal
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -701,11 +699,9 @@ const CampaignDetailInfluencer = () => {
 
           {user?.role === "brand" ? (
             <div className="flex flex-[0.1] w-[30%]">
-              <div className="dropdown dropdown-bottom dropdown-end relative bg-cyan-100 h-[10%] w-full">
-                <label tabIndex={0} className="btn m-1 bg-blue">
-                  Invite Influencer
-                </label>
-                <ul
+              <div >
+                <Link to="managecampaign/"></Link>
+                {/* <ul
                   tabIndex={0}
                   className=" dropdown-content absolute menu p-2 shadow bg-base-100 rounded-box w-[400px] h-[400px] overflow-x-auto"
                 >
@@ -741,7 +737,7 @@ const CampaignDetailInfluencer = () => {
                       </li>
                     );
                   })}
-                </ul>
+                </ul> */}
               </div>
             </div>
           ) : (
@@ -776,7 +772,7 @@ const CampaignDetailInfluencer = () => {
             id={id}
           ></InfluencerBidsDetailModal>
         )}
-        <div className="flex flex-col md:flex-row space-x-1 ">
+        {/* <div className="flex flex-col md:flex-row space-x-1 ">
           {user?.role === "brand" ? (
             <div className="flex flex-col  flex-1 item-center border bg-slate-100 p-10">
               <div className="my-4">
@@ -820,7 +816,7 @@ const CampaignDetailInfluencer = () => {
               )}
             </div>
           ) : null}
-        </div>
+        </div> */}
       </div>
     </div>
   );
