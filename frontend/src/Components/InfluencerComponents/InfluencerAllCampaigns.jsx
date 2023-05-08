@@ -46,6 +46,7 @@ const InfluencerAllCampaigns = () => {
   };
 
   const fetchCampaigns = async () => {
+    console.log("these are the search params", decodeURIComponent(searchParams.get('platforms')))
     const res = await fetch(
       "http://localhost:3000/campaign/allcampaigns?" +
         decodeURIComponent(searchParams)

@@ -49,6 +49,7 @@ router.get("/allcampaigns", async (req, res, next) => {
         locale: "en",
       },
     };
+
     const query = {};
     if (search) {
       query.$and = [
