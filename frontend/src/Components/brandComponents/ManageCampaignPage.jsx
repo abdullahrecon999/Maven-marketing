@@ -328,7 +328,7 @@ const ManageCampaignPage = () => {
 
   useEffect(() => {
     const fetchInfluencer = () => {};
-    console.log("ran");
+    console.log("sadajfiajsdnc");
   }, [count]);
   return (
     <div>
