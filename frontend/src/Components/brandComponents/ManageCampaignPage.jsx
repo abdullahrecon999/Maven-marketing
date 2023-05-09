@@ -5,7 +5,7 @@ import profileImage from "../../images/profile.jpg";
 import { Tabs, Table, Tag, Button, Space, Modal, Skeleton } from "antd";
 import { Collapse } from "antd";
 import { useQuery, useMutation } from "react-query";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 const { Panel } = Collapse;
 const { Column } = Table;
@@ -195,7 +195,7 @@ const Bids = ({ id }) => {
           </div>
         )}
       </Modal>
-      <div className="gap-3">
+      <div className="gap-3 my-2">
         <Button
           onClick={() => {
             setTextButton(!textButton);
@@ -348,7 +348,7 @@ const Invites = ({ id, userId }) => {
 
   return (
     <div className="p-4">
-      <div className="gap-3">
+      <div className="gap-3 my-2">
         <Button
           onClick={() => {
             setTextButton(!textButton);
@@ -513,94 +513,81 @@ const ProfileDetails = ({ item, id, brandId }) => {
   );
 };
 
-const CurrentInfluencers = () => {
-  const [invites, setInvites] = useState([]);
+const CurrentInfluencers = ({ id }) => {
+  const [currentInfluencers, setCurrentInfluencers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   useEffect(() => {
-    // const fetch = async () => {
-    //   const data = await axios.get(
-    //     `http://localhost:3000/influencer/getInvites/}`,
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       withCredentials: true,
-    //     }
-    //   );
-    //   console.log(data);
-    //   const bidsData = data.data.data.map((item) => {
-    //     return {
-    //       key: item["_id"],
-    //       campaignName: item?.campaignId?.title,
-    //       brandName: item?.to.name,
-    //       platforms: item?.campaignId?.platform,
-    //       submitAt: dayjs(item?.createdAt).toDate().toLocaleTimeString(),
-    //       status: item?.rejected ? "Rejected" : "Pending",
-    //     };
-    //   });
-    //   setBids(bidsData);
-    // };
-    // fetch();
-  }, []);
+    const fetch = async () => {
+      setLoading(true);
+      const data = await axios.get(
+        "http://localhost:3000/brand/getcurrentworkinginfluencers/64078565f1116ce68f3aff06",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      const currentInfluencerData = data.data.data.map((item) => {
+        return {
+          key: item["_id"],
+
+          name: item?.to.name,
+          status: "Active",
+        };
+      });
+      setCurrentInfluencers(currentInfluencerData);
+      setLoading(false);
+    };
+    fetch();
+  }, [refresh]);
 
   return (
     <div className="p-4">
-      <Table>
-        <Column
-          title="Campaign Name"
-          dataIndex="campaignName"
-          key="campaignName"
-        ></Column>
-        <Column
-          title="Brand name"
-          dataIndex="brandName"
-          key="brandName"
-        ></Column>
-        <Column
-          title="platforms"
-          dataIndex="platforms"
-          key="platforms"
-          render={(tags) => {
-            return (
-              <>
-                {tags.map((item) => {
-                  const color =
-                    item === "Any"
-                      ? "volcano"
-                      : ["linkedIn", "Twitter", "Facebook"].includes(item)
-                      ? "blue"
-                      : "purple";
-
-                  return (
-                    <>
-                      <Tag color={color}>{item}</Tag>
-                    </>
-                  );
-                })}
-              </>
-            );
+      <div className="my-2">
+        <Button
+          className="text-white bg-blue"
+          onClick={() => {
+            setRefresh(!refresh);
           }}
-        ></Column>
+        >
+          Refresh
+        </Button>
+      </div>
+      <Table loading={loading} dataSource={currentInfluencers}>
+        <Column title="Influencer Name" dataIndex="name" key="name"></Column>
+
         <Column
-          title="Status"
+          title="Contract Status"
           dataIndex="status"
           key="status"
           render={(record) => {
-            const color =
-              record.status === "Pending"
-                ? "purple"
-                : record.status === "Rejected"
-                ? "red"
-                : "green";
-            return <Tag color="red">Pending</Tag>;
+            return <Tag color="green">Active</Tag>;
           }}
         ></Column>
+
         <Column
           title="Action"
           key="action"
           render={(record) => {
             return (
               <Space size="middle">
-                <Button onClick={() => {}}>View</Button>
+                <Link className="link text-blue">View Contract</Link>
+              </Space>
+            );
+          }}
+        ></Column>
+        <Column
+          title="Influencer Profile"
+          key="action"
+          render={(record) => {
+            return (
+              <Space size="middle">
+                <Link className="link text-blue" onClick={() => {}}>
+                  View Profile
+                </Link>
               </Space>
             );
           }}

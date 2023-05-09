@@ -425,6 +425,20 @@ router.get("/getacceptedbids/:id", async (req, res)=>{
   }
 })
 
-
+router.get("/getcurrentworkinginfluencers/:id",async(req, res, next)=>{
+  try{
+    const id = req.params.id
+    const data = await Contract.find({campaignId: id, accepted: true, expired:false}).populate("to")
+      
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
 
 module.exports = router;
