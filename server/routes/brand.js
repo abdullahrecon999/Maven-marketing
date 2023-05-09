@@ -14,12 +14,29 @@ const contacts = require("../models/MessageContacts")
 const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
-const invites = require ("../models/Invites")
+const invites = require ("../models/Invites");
+const { platform } = require('os');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('Brand Router called');
 });
 
+router.post("/getinvites/", async(req, res)=>{
+  const {sender, campaignId} = req.body
+  console.log(req.body)
+  try{
+    const data = await invites.find({campaignId:campaignId, sender:sender}).populate("to").populate("campaignId")
+   
+    res.status(200).json({
+      status:"success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
 // Register
 router.post('/register', (req, res) => {
   const { name, email, password } = req.body;
@@ -265,7 +282,7 @@ router.post("/createContract", async (req, res)=>{
 router.get("/getallbids/:id", async (req, res)=>{
   const id = req.params.id
   try{
-    const data = await Bids.find({campaignId:id, accepted:false}).populate("campaignId", "title").populate("sender", "name")
+    const data = await Bids.find({campaignId:id}).populate("campaignId").populate("sender", "name")
     console.log(data)
     res.status(200).json({
       status: "success",
@@ -280,7 +297,7 @@ router.get("/getallbids/:id", async (req, res)=>{
 
 router.get("/inviteinfluencers", async(req,res)=>{
   try{
-    const data= await User.find({role: "influencer"}).limit(10)
+    const data= await User.find({role: "influencer"}).limit(5)
     res.status(200).json({
       status: "success",
       data
@@ -310,6 +327,7 @@ router.get("/getbiddetails/:id", async (req, res)=>{
   const id = req.params.id
   try{
     const data = await Bids.findOne({_id:id}).populate("sender").populate("campaignId")
+    console.log(data)
     res.status(200).json({
       status: "success",
       data
@@ -406,5 +424,7 @@ router.get("/getacceptedbids/:id", async (req, res)=>{
     })
   }
 })
+
+
 
 module.exports = router;

@@ -159,7 +159,7 @@ function App() {
                   element={<InfluencerProfile />}
                 ></Route>
                 <Route
-                  path="managecampaign/"
+                  path="managecampaign/:id"
                   element={<ManageCampaignPage></ManageCampaignPage>}
                 ></Route>
                 <Route path="/brandchat" element={<Chat />}></Route>
