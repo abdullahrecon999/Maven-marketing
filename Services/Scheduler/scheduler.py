@@ -84,6 +84,31 @@ def on_change(change):
             run_date=task_date,
             trigger="date"
         )
+    elif change['operationType'] == 'delete':
+        print("-----------------------------------------")
+        print("Task removed from database")
+        print("-----------------------------------------")
+        task_id = str(change['documentKey']['_id'])
+        scheduler.remove_job(task_id)
+    elif change['operationType'] == 'update':
+        print("-----------------------------------------")
+        print("Task updated in database")
+        print("-----------------------------------------")
+        task = change['fullDocument']
+        task_id = str(task['_id'])
+        task_date = task['sendTime']
+        try:
+            scheduler.remove_job(task_id)
+        except:
+            pass
+        scheduler.add_job(
+            misfire_grace_time=60,
+            func=my_task, 
+            args=[task_id], 
+            id=task_id, 
+            run_date=task_date,
+            trigger="date"
+        )
 
 def on_job_removed(event):
     job_id = str(event.job_id)

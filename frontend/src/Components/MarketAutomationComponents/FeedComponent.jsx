@@ -4,7 +4,7 @@ import ProfileImage from "../../images/profile.jpg";
 import Posts from "./Posts";
 const FeedComponent = () => {
   return (
-    <>
+    <div className="">
       <section className="container relative mx-auto bg-slate-50 border shadow-md h-[50vh]">
         <img
           className="w-full h-[35vh]"
@@ -26,7 +26,7 @@ const FeedComponent = () => {
       <div>
         <Posts></Posts>
       </div>
-    </>
+    </div>
   );
 };
 

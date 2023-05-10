@@ -16,3 +16,40 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.modalStyle .ant-modal-content {
+  padding-bottom: 0px;
+  padding-top: 15px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.modalStyle .ant-modal-header {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.bold-placeholder .ant-picker-input > input::placeholder {
+  font-weight: bold;
+}
+
+/* .custom-tab-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+}
+
+.custom-tab-title {
+  font-weight: bold;
+}
+
+.custom-active-tab .ant-tabs-tab-btn {
+  border-bottom: 4px solid #1890ff;
+} */
+
+.ant-tabs-ink-bar {
+  height: 5px !important;
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+}

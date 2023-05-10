@@ -48,6 +48,7 @@ import InfluencerPayments from "./Components/InfluencerComponents/InfluencerPaym
 import { Privacy } from "./Pages/legal/privacypolicy";
 import { Terms } from "./Pages/legal/termsofuse";
 import MainScreen from "./Pages/MarketAutomation/MainScreen";
+import AutomationDashboard from "./Pages/SocialAutomation/automationDashboard";
 
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -87,6 +88,10 @@ function App() {
                 <Route
                   path="/marketautomation"
                   element={<MainScreen />}
+                ></Route>
+                <Route
+                  path="/socialautomation"
+                  element={<AutomationDashboard />}
                 ></Route>
                 <Route
                   path="/businesslogin"

@@ -7,7 +7,7 @@ import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import CalendarViewDayIcon from "@mui/icons-material/CalendarViewDay";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { MainScreenMarketAutomationContext } from "../../Pages/MarketAutomation/MainScreenProvider";
-const Navbar = () => {
+const Navbar = ({handleCompose}) => {
   const { switchScreen, setSwitch } = useContext(
     MainScreenMarketAutomationContext
   );
@@ -78,7 +78,7 @@ const Navbar = () => {
                     clip-rule="evenodd"
                   ></path>
                 </svg>
-                LinkedIn
+                Reddit
               </a>
             </li>
           </ul>
@@ -119,7 +119,8 @@ const Navbar = () => {
         </div>
 
         <label
-          htmlFor="FilterModal"
+          onClick={()=>handleCompose()}
+          htmlFor="FilterModal1"
           className="btn bg-green border-green text-white"
         >
           compose

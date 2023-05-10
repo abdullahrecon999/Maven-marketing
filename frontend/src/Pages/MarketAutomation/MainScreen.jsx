@@ -13,6 +13,8 @@ import MediaPreviewModal from "../../Components/MarketAutomationComponents/Media
 import FeedComponent from "../../Components/MarketAutomationComponents/FeedComponent";
 import { MainScreenMarketAutomationContext } from "./MainScreenProvider";
 import Screens from "../../Components/MarketAutomationComponents/Screens";
+import { Modal } from 'antd';
+
 // const FilterModal = () => {
 //   return (
 //     <>
@@ -379,6 +381,18 @@ const FilterComponent = () => {
   );
 };
 const MainScreen = () => {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <MarketAutomationProvider>
       <div className="drawer drawer-end">
@@ -388,8 +402,13 @@ const MainScreen = () => {
           {/* <FilterModal></FilterModal> */}
           <AddNewPagesModal />
           <ComposeModal />
+          <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal>
           <MediaPreviewModal></MediaPreviewModal>
-          <Navbar></Navbar>
+          <Navbar handleCompose={showModal}></Navbar>
 
           {/* Post sections */}
           <Screens></Screens>

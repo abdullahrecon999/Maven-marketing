@@ -8,7 +8,7 @@ const Screens = () => {
     MainScreenMarketAutomationContext
   );
   return (
-    <div>
+    <div className="h-screen">
       {switchScreen === true ? (
         <FeedComponent></FeedComponent>
       ) : (

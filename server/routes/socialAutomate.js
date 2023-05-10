@@ -24,12 +24,12 @@ const storage = multer.diskStorage({
   });
   
 const upload = multer({ storage: storage, fileFilter: (req, file, cb) => {
-    const allowedFileTypes = /jpeg|jpg|png/;
+    const allowedFileTypes = /jpeg|jpg|png|mp4|mov|avi/;
     const extension = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
     if (extension) {
         cb(null, true);
     } else {
-        cb(new Error('Only jpeg, jpg, and png files are allowed'));
+        cb(new Error('Only jpeg, jpg, mp4, and png files are allowed'));
     }
 }});
 
@@ -184,6 +184,64 @@ router.post('/reddit/createSubreddit', async function(req, res, next) {
     } catch (error) {
         console.error(error);
         res.status(500).send('Failed to fetch LinkedIn profile');
+    }
+});
+
+//search for subreddits
+router.post('/reddit/searchSubreddit', async function(req, res, next) {
+    try {
+        const { subreddit } = req.query;
+        console.log("Req.user: ",req.user._id);
+        const cacheKey = `reddit_${req.user._id}`;
+        const cachedProfile = cache.get(cacheKey);
+        console.log("cachedProfile: ",cachedProfile)
+
+        let access_token = null;
+        let uid = null;
+
+        if(cachedProfile) {
+            console.log('Using cached Reddit profile');
+            access_token = cachedProfile.accessToken;
+            uid = cachedProfile.username;
+        } else {
+            // get the access token from the database on user id
+            const creds = await Social.findOne({ userid: req.user._id, platform: 'reddit' });
+            if(!creds){
+                return res.status(404).send('No Reddit credentials found');
+            } else {
+                access_token = creds.accessToken;
+                uid = creds.username;
+            }
+        }
+
+        let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+            "Authorization": "Bearer "+access_token,
+        }
+
+        let reqOptions = {
+            url: "https://oauth.reddit.com/api/search_subreddits",
+            method: "POST",
+            headers: headersList,
+            params: {
+                "query": subreddit,
+            }
+        }
+
+        let response = await axios.request(reqOptions);
+
+        // check for successful response
+        if(response.status !== 200) {
+            res.status(500).send(`Failed to search subreddit with status code: ${response.status}`);
+        }
+
+        //console.log("response: ",response);
+
+        res.status(200).send(response.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Failed to fetch subreddits');
     }
 });
 
@@ -460,7 +518,7 @@ router.post('/reddit/createPost', async function(req, res, next) {
         let headersList = {
             "Accept": "*/*",
             "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-            "Authorization": "Bearer 1637720178257-y51MGIoU0H3yRNIqRUdF8JNG08QNwQ" 
+            "Authorization": "Bearer "+access_token, 
         }
            
         let formdata = new FormData();
@@ -502,6 +560,146 @@ router.post('/reddit/createPost', async function(req, res, next) {
     } catch (error) {
         console.error(error);
         res.status(500).send('Failed to create post');
+    }
+});
+
+// send a post with image or video to a subreddit
+router.post('/reddit/createPostWithMedia', upload.single('file'), async function(req, res, next) {
+    try {
+        const { subreddit, title, text, media } = req.body;
+        const { originalname, path: Imgpath } = req.file;
+
+        console.log("Req.user: ",req.user._id);
+        const cacheKey = `reddit_${req.user._id}`;
+        const cachedProfile = cache.get(cacheKey);
+        console.log("cachedProfile: ",cachedProfile)
+
+        let access_token = null;
+        let uid = null;
+
+        if(cachedProfile) {
+            console.log('Using cached Reddit profile');
+            access_token = cachedProfile.accessToken;
+            uid = cachedProfile.username;
+        } else {
+            // get the access token from the database on user id
+            const creds = await Social.findOne({ userid: req.user._id, platform: 'reddit' });
+            if(!creds){
+                return res.status(404).send('No Reddit credentials found');
+            } else {
+                access_token = creds.accessToken;
+                uid = creds.username;
+                //cache.put(cacheKey, profile, 1000 * 60 * 5);
+            }
+        }
+
+        // upload to imgur
+        // let formData = new FormData();
+        // formData.append((media == "image")? "image":"video", fs.createReadStream(Imgpath))
+
+        // let resp = await axios.post('https://api.imgur.com/3/upload', formData, {
+        //     headers: {
+        //         "Authorization": `Client-ID 6d6ea978e75e998`
+        //     }
+        // });
+
+        // console.log("resp: ",resp);
+        let mediaLink = "https://i.imgur.com/4170y2C.mp4"
+
+        // create post
+        let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+            "Authorization": "Bearer "+access_token, 
+        }
+
+        let formdata = new FormData();
+        formdata.append("api_type", "json");
+        formdata.append("kind", (media == "image")? "image":"video");
+        formdata.append("sr", subreddit);
+        formdata.append("title", title);
+        formdata.append("text", text);
+        formdata.append("url", mediaLink);
+        formdata.append("video_poster_url", "https://i.imgur.com/9FNd83B.png");
+
+        let bodyContent =  formdata;
+
+        let reqOptions = {
+            url: "https://oauth.reddit.com/api/submit",
+            method: "POST",
+            headers: headersList,
+            data: bodyContent,
+        }
+
+        let response = await axios.request(reqOptions);
+        console.log(response.data.json);
+
+        if(response.status !== 200) {
+            res.status(500).send(`Failed to create post with status code: ${response.status}`);
+        }
+
+        // push into the database
+        // var post = {
+        //     postid: response.data.json.data.id,
+        //     title: title,
+        //     text: text,
+        //     postStatus: "posted"
+        // }
+        // console.log(post)
+
+        // const postResp = await RedditModel.findOneAndUpdate({ userid: req.user._id, subreddit: subreddit.split('/')[1] }, { $push: { posts: post } }, { upsert: true });
+        // console.log("res: ",postResp);
+
+        res.status(200).send("Post Sent");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Failed to create post');
+    }
+});
+
+// Refresh the access token
+router.post('/reddit/refreshToken', async function(req, res, next) {
+    try {
+        let userID = req.user._id;
+        const creds = await Social.findOne({ userid: userID, platform: 'reddit' });
+        if(!creds){
+            return res.status(404).send('No Reddit credentials found');
+        } else {
+            const { refreshToken } = creds;
+
+            let headersList = {
+                "Accept": "*/*",
+                "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+                "Authorization": "Basic bHpZZUlfYjlDbnBkMjRKTDVQMWFOUTphR29TNnEwUll2Ukp0Z3lWM3VVZFc0SU9ZVVd1UWc=",
+            }
+
+            let formdata = new FormData();
+            formdata.append("grant_type", "refresh_token");
+            formdata.append("refresh_token", refreshToken);
+
+            let bodyContent =  formdata;
+
+            let reqOptions = {
+                url: "https://www.reddit.com/api/v1/access_token",
+                method: "POST",
+                headers: headersList,
+                data: bodyContent,
+            }
+
+            let response = await axios.request(reqOptions);
+            console.log(response.data);
+
+            const { access_token, refresh_token } = response.data;
+
+            // update the access token in the database
+            let resp = await Social.findOneAndUpdate({ userid: userID, platform: 'reddit' }, { $set: { accessToken: access_token, refreshToken: refresh_token } });
+            console.log("resp: ",resp);
+
+            res.status(200).send("Token Refreshed");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Failed to refresh token');
     }
 });
 
@@ -601,6 +799,16 @@ router.post('/reddit/sendScheduledPost', async function(req, res, next) {
         }
         
         let response = await axios.request(reqOptions);
+        // response = {
+        //     status: 200,
+        //     data: {
+        //         json: {
+        //             data: {
+        //                 id: "test"
+        //             }
+        //         }
+        //     }
+        // }
         console.log(response.data);
         var newPostid = response.data.json.data.id;
 
@@ -626,6 +834,89 @@ router.post('/reddit/sendScheduledPost', async function(req, res, next) {
     }
 });
 
+// cancel schedule and publish now
+router.post('/reddit/cancelSchedulePost', async function(req, res, next) {
+    try {
+        const { subreddit, userid, postid } = req.body;
+        console.log("Req.user: ",userid);
+        const cacheKey = `reddit_${userid}`;
+        const cachedProfile = cache.get(cacheKey);
+        console.log("cachedProfile: ",cachedProfile)
+        console.log("subreddit: ",subreddit);
+        console.log("postid: ",postid);
+        var access_token = null;
+
+        // delete the schedule from the database on user id and subreddit and postid
+        const results = await ScheduleModel.deleteOne({ userid: userid, subreddit: subreddit, postid: postid });
+        console.log("results: ",results);
+
+        // get the post from the database on user id and subreddit and postid, return the particular post
+        const post = await RedditModel.findOne({ userid: userid, subreddit: subreddit, "posts.postid": postid }, { "posts.$": 1 });
+        console.log("post: ",post);
+
+        // get the access token from the database on user id
+        if(cachedProfile) {
+            console.log('Using cached Reddit profile');
+            access_token = cachedProfile.accessToken;
+        } else {
+            // get the access token from the database on user id
+            const creds = await Social.findOne({ userid: userid, platform: 'reddit' });
+            if(!creds){
+                return res.status(404).send('No Reddit credentials found');
+            } else {
+                access_token = creds.accessToken;
+                //cache.put(cacheKey, profile, 1000 * 60 * 5);
+            }
+        }
+
+        // send the post
+        let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+            "Authorization": "Bearer "+access_token
+        }
+
+        let formdata = new FormData();
+        formdata.append("api_type", "json");
+        formdata.append("kind", "self");
+        formdata.append("sr", "r/"+subreddit);
+        formdata.append("title", post.posts[0].title);
+        formdata.append("text", post.posts[0].text);
+
+        let bodyContent =  formdata;
+
+        let reqOptions = {
+            url: "https://oauth.reddit.com/api/submit",
+            method: "POST",
+            headers: headersList,
+            data: bodyContent,
+        }
+
+        let response = await axios.request(reqOptions);
+        console.log(response.data);
+        var newPostid = response.data.json.data.id;
+
+        if(response.status !== 200) {
+            console.log(`Failed to create post with status code: ${response.status}`);
+            // update the post status to failed
+            const result1 = await RedditModel.updateOne({ userid: userid, subreddit: subreddit, "posts.postid": postid }, { $set: { "posts.$.postStatus": "failed"} }, { new: true });
+            console.log("result1: ",result1);
+            return
+        }
+
+        // update the post status to posted
+        const filter = { userid: userid, subreddit: subreddit, "posts.postid": postid };
+        const update = { $set: { "posts.$.postStatus": "posted", "posts.$.postid": newPostid } };
+        const options = { new: true };
+
+        const result = await RedditModel.updateOne(filter, update, options);
+        console.log("result: ",result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Failed to send scheduled post');
+    }
+});
+
 // get comments
 router.get('/reddit/comments', async function(req, res, next) {
     try {
@@ -638,15 +929,16 @@ router.get('/reddit/comments', async function(req, res, next) {
             }
         });
 
-        console.log(response.data[1].data.childern);
+        //console.log(response.data[1].data.children[0]);
         var commentsData = [{}]
-        for(var a in response.data[1].data.childern){
-            console.log(response.data[1].data.childern[a].data.body);
+        for(var a in response.data[1].data.children){
+            console.log(response.data[1].data.children[a].data.body);
             commentsData.push({
-                body: response.data[1].data.childern[a].data.body,
+                body: response.data[1].data.children[a].data.body,
             })
         }
 
+        console.log(commentsData)
         res.status(200).send(response.data);
     } catch (error) {
         console.error(error);

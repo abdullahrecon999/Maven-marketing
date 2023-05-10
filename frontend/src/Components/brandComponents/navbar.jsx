@@ -5,7 +5,7 @@ import logo from "../../assets/AppLogo.png";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
-export function NavBar({ avatar, name, email, role, id, user }) {
+export function NavBar({ avatar, name, email, role, id, user, isSticky }) {
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -43,7 +43,7 @@ export function NavBar({ avatar, name, email, role, id, user }) {
   };
 
   return (
-    <div className="navbar bg-base-100 sticky top-0 z-50 " data-theme="cupcake">
+    <div className={(isSticky)? "navbar bg-base-100 sticky top-0 z-50 ":"navbar z-50 bg-white"} data-theme="cupcake">
       <div className="flex-1 justify-between w-full">
         <div className="flex gap-5 w-full">
           <a className="btn btn-ghost">
