@@ -88,6 +88,10 @@ function App() {
                   element={<InfluencerLogin />}
                 ></Route>
                 <Route
+                  path="/contract/:id"
+                  element={<InfluencerContract />}
+                ></Route>
+                <Route
                   path="/marketautomation"
                   element={<MainScreen />}
                 ></Route>
