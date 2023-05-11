@@ -260,7 +260,7 @@ export function Dashboard({ uid }) {
           </button>
         </div>
 
-        <ProfileStatusCard />
+        {/* <ProfileStatusCard /> */}
 
         <div className="flex justify-between py-10 flex-wrap gap-5">
 

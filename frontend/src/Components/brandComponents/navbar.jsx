@@ -43,7 +43,7 @@ export function NavBar({ avatar, name, email, role, id, user, isSticky }) {
   };
 
   return (
-    <div className={(isSticky)? "navbar bg-base-100 sticky top-0 z-50 ":"navbar z-50 bg-white"} data-theme="cupcake">
+    <div className={(!isSticky)? "navbar bg-base-100 sticky top-0 z-50 ":"navbar z-50 bg-white"} data-theme="cupcake">
       <div className="flex-1 justify-between w-full">
         <div className="flex gap-5 w-full">
           <a className="btn btn-ghost">
@@ -180,7 +180,7 @@ export function NavBar({ avatar, name, email, role, id, user, isSticky }) {
               to="/marketautomation"
               className="hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
             >
-              Market Automation
+              Automation
             </Link>
           ) : null}
         </div>

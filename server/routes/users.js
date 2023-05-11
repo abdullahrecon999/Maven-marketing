@@ -300,6 +300,7 @@ router.get('/reddit/callback', async (req, res) => {
           accessToken: accessToken,
           refreshToken: refreshToken,
           profilePic: userData.data.icon_img,
+          bannerPic: userData.data.banner_img,
         });
         newSocial.save();
         // add this to user's socials array

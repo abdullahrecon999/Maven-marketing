@@ -49,14 +49,33 @@ router.get('/', function(req, res, next) {
 
 //----------------------------- REDIT -----------------------------
 router.get('/reddit', function(req, res, next) {
-    res.send('Reddit API');
-    // Performs tasks:
-    // create subreddit
-    // create post
-    // read post
-    // update post
-    // delete post
-    // read comments / analytics
+    // Check if user is logged in and has reddit credentials and token is not expired
+    console.log(req.user._id);
+    Social.findOne({ userid: req.user._id, platform: 'reddit' }, function(err, social) {
+        if (err) {
+            return res.status(500).send('Error on the server.');
+        }
+        if (!social) {
+            return res.status(404).send('No reddit credentials found.');
+        }
+        else {
+            // Check if token is expired (token expires in 24 hour after updatedAt)
+            const now = new Date();
+            const diff = now - social.updatedAt;
+            const diffInHours = diff / (1000 * 60 * 60);
+            if (diffInHours > 24) {
+                return res.status(401).send('Token expired.');
+            } else {
+                // send the user profile and subreddit list
+                let profile = {
+                    username: social.username,
+                    profilePic: social.profilePic,
+                    bannerPic: social.bannerPic,
+                    handle: social.handle,
+                };
+            }
+        }
+    });
 });
 
 router.get('/reddit/me', async function(req, res, next) {
@@ -301,6 +320,7 @@ router.get('/reddit/getSubreddits', async function(req, res, next) {
                 icon: subreddit.icon_img,
                 banner: subreddit.banner_img,
                 subredditid: subreddit.name,
+                is_mod: subreddit.user_is_moderator,
             });
         }
 

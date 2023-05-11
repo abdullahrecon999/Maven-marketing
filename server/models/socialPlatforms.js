@@ -12,6 +12,9 @@ const Reddit = new mongoose.Schema({
     subredditid: {
         type: String,
     },
+    is_visible:{
+        type: Boolean,
+    },
     title: {
         type: String,
     },
@@ -23,6 +26,9 @@ const Reddit = new mongoose.Schema({
     },
     banner: {
         type: String,
+    },
+    is_mod: {
+        type: Boolean,
     },
     posts: {
         type: [

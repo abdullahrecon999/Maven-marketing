@@ -20,6 +20,9 @@ const socialSchema = new mongoose.Schema({
     profilePic: {
         type: String,
     },
+    bannerPic: {
+        type: String,
+    },
     accessToken: {
         type: String,
     },
