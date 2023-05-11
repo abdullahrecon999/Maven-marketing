@@ -25,6 +25,10 @@ var campaign = require("./routes/campaign")
 var socialAutomate = require("./routes/socialAutomate")
 
 var listing = require("./routes/listing")
+
+
+// import the cron jobs
+const ExpireContract = require("./CronJobs/updateContractJobs")
 var app = express();
 
 const corsOptions = {
@@ -179,4 +183,8 @@ io.on("connection", (socket) => {
         }
     })
 })
+
+
+
+//ExpireContract.start()
 module.exports = app;
