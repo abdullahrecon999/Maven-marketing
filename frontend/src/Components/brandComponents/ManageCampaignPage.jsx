@@ -612,7 +612,9 @@ const CurrentInfluencers = ({ id }) => {
           render={(record) => {
             return (
               <Space size="middle">
-                <Link className="link text-blue">View Contract</Link>
+                <Link to={`/contract/${record.key}`} className="link text-blue">
+                  View Contract
+                </Link>
               </Space>
             );
           }}

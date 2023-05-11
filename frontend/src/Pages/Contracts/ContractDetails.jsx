@@ -17,36 +17,46 @@ const ContractDetails = () => {
             {/* Top header */}
             <div className="flex flex-col mx-3 border shadow-sm rounded-md px-8 py-3">
               <div className="grid grid-cols-5 gap-4 mb-3">
-                <div>
+                <div className="col-span-2">
                   <h1 className="text-base font-semibold text-gray-700">
                     Campaign Name
                   </h1>
-                  <h1 className="text-xl text-gray-800 font-semibold">Name</h1>
+                  <h1 className="text-xl text-gray-800 font-semibold">
+                    {contract?.campaignId?.title}
+                  </h1>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-3">
                   <h1 className="text-base font-semibold text-gray-700">
                     Platforms
                   </h1>
                   <div className=" gap-1">
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
-                    <Tag color="red">Name</Tag>
+                    {contract?.campaignId?.platform?.map((item) => {
+                      const color =
+                        item === "Any"
+                          ? "volcano"
+                          : ["linkedIn", "Twitter", "Facebook"].includes(item)
+                          ? "blue"
+                          : "purple";
+                      return <Tag color={color}>{item}</Tag>;
+                    })}
+                  </div>
+                </div>
+                <div className="col-span-3">
+                  <h1 className="text-base font-semibold text-gray-700">
+                    Country
+                  </h1>
+                  <div className=" gap-1">
+                    {contract?.campaignId?.country?.map((item) => {
+                      return <Tag color="volcano">{item}</Tag>;
+                    })}
                   </div>
                 </div>
               </div>
               <div className="flex flex-col ">
                 <h1 className="text-sm  text-gray-700 font-medium">Amount</h1>
-                <h1 className="text-xl text-gray-800 ">$ 17000</h1>
+                <h1 className="text-xl text-gray-800 font-semibold ">
+                  $ {contract?.amount}
+                </h1>
               </div>
             </div>
 

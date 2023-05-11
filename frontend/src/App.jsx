@@ -147,7 +147,10 @@ function App() {
                   path="/createCampaign"
                   element={<NewCampaignPage />}
                 ></Route>
-
+                <Route
+                  path="/contract/:id"
+                  element={<InfluencerContract />}
+                ></Route>
                 <Route path="/brandhome" element={<BrandHome />}></Route>
                 <Route
                   path="/editcampaign/:id"
