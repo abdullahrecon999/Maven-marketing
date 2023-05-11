@@ -461,12 +461,29 @@ router.get("/getcurrentworkinginfluencers/:id",async(req, res, next)=>{
 router.get("/getcontractdetails/:id", async (req, res, next)=>{
   try{
     const id = req.params.id
-    const data = await Contract.findOne({_id: id, accepted:true, expired:false}).populate('campaignId').populate("to")
+    const data = await Contract.findOne({_id: id, accepted:true}).populate('campaignId').populate("to")
     res.status(200).json({
       status: "success",
       data
     })
   }catch (e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+router.post("/endcontract/:id", async (req, res, next)=>{
+  try{
+    const id = req.params.id
+    //add code here to pay the influencer
+     await Contract.updateOne({_id:id}, {expired: true})
+    
+    res.status(200).json({
+      status: "success",
+      
+    })
+  }catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error"
     })
