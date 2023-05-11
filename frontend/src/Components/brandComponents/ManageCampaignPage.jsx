@@ -6,7 +6,7 @@ import { Tabs, Table, Tag, Button, Space, Modal, Skeleton } from "antd";
 import { Collapse } from "antd";
 import { useQuery, useMutation } from "react-query";
 import { Link, useLocation, useParams } from "react-router-dom";
-
+import BrandContractModal from "./BrandContractModal";
 const { Panel } = Collapse;
 const { Column } = Table;
 const Bids = ({ id }) => {
@@ -17,10 +17,11 @@ const Bids = ({ id }) => {
   const [counter, setCounter] = useState(0);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
   const [bidDetails, setBidDetails] = useState({});
-  const [bidId, setBidId] = useState("");
+  const [bidContractModalData, setBidContractModalData] = useState({});
   const [bidLoading, setBidLoading] = useState(false);
   const [acceptingBid, setAcceptingBid] = useState(false);
   const [isAcceptingSuccess, setAcceptingSuccess] = useState(false);
+  const [openContractModal, setOpenContractModal] = useState(false);
   const showModal = () => {
     setIsBidModalOpen(true);
   };
@@ -112,6 +113,12 @@ const Bids = ({ id }) => {
   };
   return (
     <div className="p-4">
+      <BrandContractModal
+        open={openContractModal}
+        setOpen={setOpenContractModal}
+        data={bidContractModalData}
+      ></BrandContractModal>
+      {console.log(bidDetails)}
       <Modal
         footer={[]}
         title="Bid Details"
@@ -266,15 +273,26 @@ const Bids = ({ id }) => {
           render={(record) => {
             return (
               <Space size="middle">
-                <Button
-                  onClick={() => {
-                    setCounter(counter + 1);
-                    handleBidDetails(record?.key);
-                    showModal(true);
-                  }}
-                >
-                  View
-                </Button>
+                {record.status === "Accepted" ? (
+                  <Button
+                    onClick={() => {
+                      setBidContractModalData(record);
+                      setOpenContractModal(true);
+                    }}
+                  >
+                    Send Contract
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setCounter(counter + 1);
+                      handleBidDetails(record?.key);
+                      showModal(true);
+                    }}
+                  >
+                    View
+                  </Button>
+                )}
               </Space>
             );
           }}
@@ -291,7 +309,12 @@ const Invites = ({ id, userId }) => {
   const [textButton, setTextButton] = useState(true);
   const [reset, setReset] = useState(false);
   const [counter, setCounter] = useState(0);
-  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
+  const [isInviteConractModalOpen, setInviteConctractModel] = useState(false);
+  const [invitedData, setInviteData] = useState({});
+  const showModal = () => {
+    setInviteConctractModel(true);
+  };
+
   useEffect(() => {
     const fetch = async () => {
       setLoading(true);
@@ -313,10 +336,14 @@ const Invites = ({ id, userId }) => {
         return {
           key: item["_id"],
           campaignName: item?.campaignId?.title,
-          influencer: item?.to.name,
+          sender: item?.to.name,
           platforms: item?.campaignId?.platform,
           submitAt: dayjs(item?.createdAt).toDate().toLocaleTimeString(),
-          status: item?.rejected ? "Rejected" : "Pending",
+          status: item?.accepted
+            ? "Accepted"
+            : item?.rejected
+            ? "Rejected"
+            : "Pending",
         };
       });
       setInvites(inviteData);
@@ -348,6 +375,12 @@ const Invites = ({ id, userId }) => {
 
   return (
     <div className="p-4">
+      <BrandContractModal
+        open={isInviteConractModalOpen}
+        setOpen={setInviteConctractModel}
+        type="invite"
+        data={invitedData}
+      ></BrandContractModal>
       <div className="gap-3 my-2">
         <Button
           onClick={() => {
@@ -372,11 +405,7 @@ const Invites = ({ id, userId }) => {
           dataIndex="campaignName"
           key="campaignName"
         ></Column>
-        <Column
-          title="influencer"
-          dataIndex="influencer"
-          key="influencer"
-        ></Column>
+        <Column title="influencer" dataIndex="sender" key="sender"></Column>
         <Column
           title="platforms"
           dataIndex="platforms"
@@ -413,7 +442,7 @@ const Invites = ({ id, userId }) => {
                 : record === "Rejected"
                 ? "red"
                 : "green";
-            return <Tag color="red">{record}</Tag>;
+            return <Tag color={color}>{record}</Tag>;
           }}
         ></Column>
         <Column
@@ -422,7 +451,16 @@ const Invites = ({ id, userId }) => {
           render={(record) => {
             return (
               <Space size="middle">
-                <Button onClick={() => {}}>View</Button>
+                {record.status === "Accepted" ? (
+                  <Button
+                    onClick={() => {
+                      setInviteData(record);
+                      showModal();
+                    }}
+                  >
+                    Send Contract
+                  </Button>
+                ) : null}
               </Space>
             );
           }}

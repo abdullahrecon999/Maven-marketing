@@ -425,6 +425,23 @@ router.get("/getacceptedbids/:id", async (req, res)=>{
   }
 })
 
+router.get("/getinvitedetails/:id", async (req, res)=>{
+  const id = req.params.id
+  try{
+    const data = await invites.findOne({_id:id}).populate("sender").populate("campaignId")
+    console.log(data)
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
 router.get("/getcurrentworkinginfluencers/:id",async(req, res, next)=>{
   try{
     const id = req.params.id
