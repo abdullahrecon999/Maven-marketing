@@ -5,7 +5,7 @@ import logo from "../../assets/AppLogo.png";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Checkbox } from 'antd';
-export function NavBar({ avatar, name, email, role, id, user }) {
+export function NavBar({ avatar, name, email, role, id, user, isSticky }) {
   const navigate = useNavigate();
   
   const [categories, setCategories] = useState([])

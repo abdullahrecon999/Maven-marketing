@@ -101,10 +101,6 @@ function App() {
                   element={<AutomationDashboard />}
                 ></Route>
                 <Route
-                  path="/socialautomation"
-                  element={<AutomationDashboard />}
-                ></Route>
-                <Route
                   path="/businesslogin"
                   element={<BusinessLogin />}
                 ></Route>

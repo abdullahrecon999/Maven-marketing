@@ -14,6 +14,7 @@ const Reddit = new mongoose.Schema({
     },
     is_visible:{
         type: Boolean,
+        default: true,
     },
     title: {
         type: String,

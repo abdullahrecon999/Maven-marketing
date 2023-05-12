@@ -48,10 +48,10 @@ router.get('/', function(req, res, next) {
 });
 
 //----------------------------- REDIT -----------------------------
-router.get('/reddit', function(req, res, next) {
+router.get('/reddit', async function(req, res, next) {
     // Check if user is logged in and has reddit credentials and token is not expired
     console.log(req.user._id);
-    Social.findOne({ userid: req.user._id, platform: 'reddit' }, function(err, social) {
+    Social.findOne({ userid: req.user._id, platform: 'reddit' }, async function(err, social) {
         if (err) {
             return res.status(500).send('Error on the server.');
         }
@@ -64,16 +64,52 @@ router.get('/reddit', function(req, res, next) {
             const diff = now - social.updatedAt;
             const diffInHours = diff / (1000 * 60 * 60);
             if (diffInHours > 24) {
-                return res.status(401).send('Token expired.');
-            } else {
-                // send the user profile and subreddit list
-                let profile = {
-                    username: social.username,
-                    profilePic: social.profilePic,
-                    bannerPic: social.bannerPic,
-                    handle: social.handle,
-                };
+                // Refresh and update the token
+                const { refreshToken } = social;
+
+                let headersList = {
+                    "Accept": "*/*",
+                    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+                    "Authorization": "Basic bHpZZUlfYjlDbnBkMjRKTDVQMWFOUTphR29TNnEwUll2Ukp0Z3lWM3VVZFc0SU9ZVVd1UWc=",
+                }
+
+                let formdata = new FormData();
+                formdata.append("grant_type", "refresh_token");
+                formdata.append("refresh_token", refreshToken);
+
+                let bodyContent =  formdata;
+
+                let reqOptions = {
+                    url: "https://www.reddit.com/api/v1/access_token",
+                    method: "POST",
+                    headers: headersList,
+                    data: bodyContent,
+                }
+
+                let response = await axios.request(reqOptions);
+                console.log(response.data);
+
+                const { access_token, refresh_token } = response.data;
+
+                // update the access token in the database
+                let resp = await Social.findOneAndUpdate({ userid: userID, platform: 'reddit' }, { $set: { accessToken: access_token, refreshToken: refresh_token } });
+                console.log("resp: ",resp);
             }
+
+            // send the user profile and subreddit list
+            let profile = {
+                username: social.username,
+                profilePic: social.profilePic,
+                bannerPic: social.bannerPic,
+                handle: social.handle,
+            };
+            let subreddits = [];
+
+            // get the list of subreddits from DB apply projection to get only the subreddit name
+            let reddits = await RedditModel.find({ userid: req.user._id }, { subreddit: 1, title: 1, description: 1, icon: 1, _id: 0, banner: 1, subredditid: 1, is_mod: 1, is_visible: 1 });
+            console.log("reddits: ",reddits);
+
+            res.status(200).send({ profile: profile, subreddits: reddits });
         }
     });
 });

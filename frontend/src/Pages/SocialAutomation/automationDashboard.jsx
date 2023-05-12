@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { NavBar } from "../../Components/brandComponents/navbar";
 import { motion, AnimatePresence } from "framer-motion"
 import { Select, Dropdown, Button, Modal, Avatar, Popover, DatePicker, Menu, Drawer } from 'antd';
@@ -15,6 +15,7 @@ import { RedditUI } from "./redditUI";
 import { Typewriter } from 'react-simple-typewriter'
 import { MyCalendar } from "./calenderComponent";
 import { AddPages } from "./addPageModal";
+import axios from "axios";
 const { TabPane } = Tabs;
 const { Dragger } = Upload;
 
@@ -35,6 +36,7 @@ import {
     CloseCircleOutlined,
     CheckCircleOutlined,
 } from '@ant-design/icons';
+import { useQuery } from "react-query";
 
 
 
@@ -275,6 +277,13 @@ const ImageCheckbox = ({ src, checked, onChange }) => {
     );
 };
 
+const loadDashboard = async () => {
+    console.log("Loading Dashboard");
+    const response = await axios.get("http://localhost:3000/automate/reddit");
+    console.log(response.data);
+    return response.data;
+};
+
 const AutomationDashboard = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedTab, setSelectedTab] = useState('0');
@@ -290,38 +299,69 @@ const AutomationDashboard = () => {
     const [selectAll, setSelectAll] = useState(false);
     const [body, setBody] = useState('feed');
 
-    const [connectedPages, setConnectedPages] = useState([
-        {
-          id: 0,
-          name: "MavenMarketing",
-          platform: "Reddit",
-          visible: true,
-        },
-        {
-          id: 1,
-          name: "TestReddit",
-          platform: "Reddit",
-          visible: true,
-        },
-    ]);
-      
+    const { data: subreddits, isLoading, isError, isSuccess } = useQuery("subreddits", loadDashboard, { fetchPolicy: "network-only" });
+
+    // const [connectedPages, setConnectedPages] = useState([
+    //     {
+    //       id: 0,
+    //       name: "MavenMarketing",
+    //       platform: "Reddit",
+    //       visible: true,
+    //     },
+    //     {
+    //       id: 1,
+    //       name: "TestReddit",
+    //       platform: "Reddit",
+    //       visible: true,
+    //     },
+    //     {
+    //       id: 3,
+    //       name: "TestReddit",
+    //       platform: "Reddit",
+    //       visible: true,
+    //     },
+    //     {
+    //       id: 4,
+    //       name: "TestReddit",
+    //       platform: "Reddit",
+    //       visible: true,
+    //     },
+    //     {
+    //       id: 5,
+    //       name: "TestReddit",
+    //       platform: "Reddit",
+    //       visible: true,
+    //     },
+    // ]);
+
+    const [connectedPages, setConnectedPages] = useState([])
+
+    useEffect(() => {
+        if (isSuccess && subreddits) {
+          setConnectedPages(subreddits.subreddits.map((subreddit, index) => ({
+            id: subreddit.subredditid,
+            ...subreddit
+          })));
+        }
+    }, [isSuccess, subreddits]);
+
     const setPageVisible = (id, bool) => {
         console.log(id, bool);
         setConnectedPages((prevPages) =>
-          prevPages.map((page) => {
-            if (page.id == id) {
-                console.log(page);
-              return {
-                ...page,
-                visible: bool,
-              };
-            }
-            return page;
-          })
+            prevPages.map((page) => {
+                if (page.id == id) {
+                    console.log(page);
+                    return {
+                        ...page,
+                        visible: bool,
+                    };
+                }
+                return page;
+            })
         );
         console.log(connectedPages);
     };
-    
+
     const handleImageCheckboxChange = (index, checked) => {
         if (checked) {
             setSelectedKeys([...selectedKeys, index]);
@@ -530,7 +570,7 @@ const AutomationDashboard = () => {
                 </div>
             </Modal>
 
-            <div className="bg-white h-[70px] shadow-[0px_10px_30px_-10px_#ebf8ff] flex p-2 top-[0px] sticky justify-around z-20">
+            <div className="bg-white h-[70px] shadow-[0px_1px_2px_1px_#000] flex p-2 top-[0px] sticky justify-around z-20">
                 <div className="flex flex-col w-1/5 justify-center pl-2 pt-5">
                     {/* Dropdown for feed and calender */}
                     <Select
@@ -577,24 +617,51 @@ const AutomationDashboard = () => {
                     </Select>
                 </div>
 
-                <div className="hidden w-full lg:flex justify-center">
+                <div className="hidden w-full border-2 lg:flex justify-center">
                     {/* Add Pages Button */}
                     {
-                        connectedPages.map((page, index) => (
-                            page.visible ? (
-                                <div key={page.id} onClick={() => setSelectedPage(page.id)} className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
-                                    {
-                                        page.platform === 'Reddit' ? (
-                                            <RedditCircleFilled className={(selectedPage === page.id) ? "text-[#FF4500]" : "text-zinc-300 group-hover:text-gray-500 transition-all"} style={{ fontSize: 28 }} />
-                                        ) : (
-                                            <LinkedinFilled className={(selectedPage === page.id) ? "text-[#0077b5]" : "text-zinc-300 group-hover:text-gray-500 transition-all"} style={{ fontSize: 28 }} />
-                                        )
-                                    }
-                                    <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600 max-w-[80px] text-ellipsis truncate">{page.name}</p>
-                                    <div className={`${(selectedPage === page.id) ? (page.platform === "Reddit") ? "bg-[#FF4500]" : "bg-[#0077b5]" : ""} h-[6px] w-20 top-[64px] absolute rounded-t-sm`}></div>
+                        isLoading ? (
+                            <div className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
+                                <div className="animate-pulse flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
+                                    <div className="bg-zinc-300 h-[28px] w-[28px] rounded-full"></div>
+                                    <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600 max-w-[80px] text-ellipsis truncate">Loading</p>
+                                    <div className="bg-zinc-300 h-[6px] w-20 top-[64px] absolute rounded-t-sm"></div>
                                 </div>
-                            ) : null
-                        ))
+                            </div>
+                        ) : (
+                            isSuccess? (
+                                connectedPages?.map((page, index) => (
+                                    page.is_visible ? (
+                                        <div key={page.id} onClick={() => setSelectedPage(page.id)} className="flex flex-col justify-between w-[80px] border-2 items-center group cursor-pointer ml-1">
+                                            {
+                                                // page.platform === 'Reddit' ? (
+                                                //     <RedditCircleFilled className={(selectedPage === page.id) ? "text-[#FF4500]" : "text-zinc-300 group-hover:text-gray-500 transition-all"} style={{ fontSize: 28 }} />
+                                                // ) : (
+                                                //     <LinkedinFilled className={(selectedPage === page.id) ? "text-[#0077b5]" : "text-zinc-300 group-hover:text-gray-500 transition-all"} style={{ fontSize: 28 }} />
+                                                // )
+                                                <RedditCircleFilled className={(selectedPage === page.id) ? "text-[#FF4500]" : "text-zinc-300 group-hover:text-gray-500 transition-all"} style={{ fontSize: 28 }} />
+                                            }
+                                            <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600 max-w-[80px] text-ellipsis truncate">{page.subreddit}</p>
+                                            {/* <div className={`${(selectedPage === page.id) ? (page.platform === "Reddit") ? "bg-[#FF4500]" : "bg-[#0077b5]" : ""} h-[6px] w-20 top-[64px] absolute rounded-t-sm`}></div> */}
+                                            <div className={`${(selectedPage === page.id) ? "bg-[#FF4500]" : ""} h-[6px] w-20 top-[64px] absolute rounded-t-sm`}></div>
+                                        </div>
+                                    ) : null
+                                ))
+                            ) : (
+                                <div className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
+                                    <div onClick={() => setaddPagesOpen(true)} className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                            className="stroke-zinc-300 group-hover:stroke-gray-500 transition-all"
+                                            width="27" height="27"
+                                            viewBox="0 0 50 50">
+                                            <path d="M 9 4 C 6.2545455 4 4 6.2545455 4 9 L 4 41 C 4 43.745455 6.2545455 46 9 46 L 41 46 C 43.745455 46 46 43.745455 46 41 L 46 9 C 46 6.2545455 43.745455 4 41 4 L 9 4 z M 9 6 L 41 6 C 42.654545 6 44 7.3454545 44 9 L 44 41 C 44 42.654545 42.654545 44 41 44 L 9 44 C 7.3454545 44 6 42.654545 6 41 L 6 9 C 6 7.3454545 7.3454545 6 9 6 z M 24 13 L 24 24 L 13 24 L 13 26 L 24 26 L 24 37 L 26 37 L 26 26 L 37 26 L 37 24 L 26 24 L 26 13 L 24 13 z"></path>
+                                        </svg>
+                                        <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600">ADD PAGES</p>
+                                        {/* <div className="bg-green h-[6px] w-20 top-[64px] absolute rounded-t-sm"></div> */}
+                                    </div>
+                                </div>
+                            )
+                        )
                     }
 
                     <div onClick={() => setaddPagesOpen(true)} className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
@@ -761,7 +828,20 @@ const AutomationDashboard = () => {
                 </Modal> */}
 
                 {/* Add Page Modal */}
-                <AddPages addPagesOpen={addPagesOpen} setaddPagesOpen={setaddPagesOpen} />
+                {
+                    isLoading ? (
+                        <></>
+                    ) : (
+                    isSuccess ? (
+                        connectedPages.length > 0 ? (
+                            <AddPages data={connectedPages} addPagesOpen={addPagesOpen} setaddPagesOpen={setaddPagesOpen} />
+                        ) : (
+                            <></>
+                        )
+                    ) : (
+                        <></>
+                    ))
+                }
 
                 <Modal
                     title="Add your media files"
@@ -816,7 +896,34 @@ const AutomationDashboard = () => {
                 <div className="h-full">
                     {
                         (body == 'feed') ? (
-                            <RedditUI />
+                            isLoading ? (
+                                <div className="flex justify-center items-center h-full">
+                                    <Spin size="large" />
+                                </div>
+                            ) : (
+                                isError ? (
+                                    <div className="flex justify-center items-center h-full">
+                                        <p className="text-2xl font-bold">Something went wrong</p>
+                                    </div>
+                                ) : (
+                                    isSuccess ? (
+                                        connectedPages?.length === 0 ? (
+                                            <div className="flex items-center justify-center h-screen bg-gradient-to-br from-[#1a237e] via-indigo-800 to-[#2196f3]">
+                                                <div className="bg-white bg-opacity-20 p-8 rounded-lg shadow-md">
+                                                    <h1 className="text-3xl font-bold text-gray-100 mb-4 text-center">No Social Media Connected</h1>
+                                                    <p className="text-gray-200 text-lg mb-8 text-center">Connect your social media accounts to start sharing your content with the world.</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <RedditUI />
+                                        )
+                                    ) : (
+                                        <div className="flex justify-center items-center h-full">
+                                            <Spin size="large" />
+                                        </div>
+                                    )
+                                )
+                            )
                         ) : (
                             <MyCalendar />
                         )

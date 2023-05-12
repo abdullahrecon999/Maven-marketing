@@ -223,7 +223,7 @@ export function RedditUI(props) {
                                             showTime
                                             size='small'
                                             suffixIcon={<ClockCircleOutlined style={{ fontSize: 15 }} />}
-                                            style={{ border: "none", minWidth: 120, maxWidth: '25%', fontSize: 20, fontWeight: 'bolder', backgroundColor: "transparent" }}
+                                            style={{ border: "none", minWidth: 120, maxWidth: '35%', fontSize: 20, fontWeight: 'bolder', backgroundColor: "transparent" }}
                                         />
                                     </div>
                                 </div>
@@ -238,9 +238,9 @@ export function RedditUI(props) {
                                 <ExpandableParagraph text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor." />
                             </div>
 
-                            <div className='flex justify-center items-center'>
+                            <div className='flex justify-center items-center max-h-96'>
                                 <Image
-                                    className='object-cover'
+                                    className='object-cover max-h-96'
                                     src="https://external-preview.redd.it/DS9rrnzo7xnJBWlsbzTykkCMfmvF2ipG_tRbigHoq9E.png?auto=webp&v=enabled&s=da5e68832deb70028a8c856f18cd287c17791631"
                                 />
                             </div>

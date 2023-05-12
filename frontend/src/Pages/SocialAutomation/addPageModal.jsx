@@ -21,20 +21,7 @@ import {
 
 export function AddPages(props) {
     const [activeKey, setActiveKey] = useState('1');
-    const [connectedPages, setConnectedPages] = useState([
-        {
-          id: 0,
-          name: "MavenMarketing",
-          platform: "Reddit",
-          visible: true,
-        },
-        {
-          id: 1,
-          name: "TestReddit",
-          platform: "Reddit",
-          visible: true,
-        },
-    ]);
+    const [connectedPages, setConnectedPages] = useState(props?.data);
       
     const setPageVisible = (id, bool) => {
         console.log(id, bool);
@@ -91,8 +78,9 @@ export function AddPages(props) {
                     }
                     key="1"
                 >
-                    <div className="flex flex-col h-80">
-                        <div className=" h-full p-2">
+                    <div className="flex flex-col h-[350px]">
+                        {console.log(connectedPages)}
+                        <div className="h-1/2 p-2">
                             <div className="w-28 h-28 border-[2px] border-dashed flex flex-col justify-center hover:shadow-2xl  hover:border-solid rounded-md transition-all duration-100 cursor-pointer">
                                 <RedditCircleFilled style={{ fontSize: 35, margin: 'auto' }} className="text-[#FF4500]" />
                                 <p className="text-zinc-800 font-railway text-center">Add Reddit Profile</p>
@@ -105,46 +93,47 @@ export function AddPages(props) {
                             <p className="ml-2 font-extralight mt-1 text-[#838383] opacity-80">Connected Communities</p>
                         </span>
 
-                        <div className="h-full p-2 flex gap-3">
+                        <div className="h-full p-2 flex gap-3 overflow-x-scroll">
                             {
-                                connectedPages.map((page, id) => (
-                                    (page.platform === "Reddit") ? (
-                                        <div className="w-36 h-36 border-[1px] flex flex-col justify-between transition-all duration-100">
-                                            <div className="h-7 justify-between items-center align-middle pl-2 flex">
-                                                <div className="tooltip tooltip-right" data-tip="Page visible">
-                                                    {
-                                                        (page.visible) ? (
-                                                            <EyeOutlined onClick={() => setPageVisible(id, false)} className="cursor-pointer" style={{ fontSize: 17, color: "gray" }} />
-                                                        ) :
-                                                            (
-                                                                <EyeInvisibleOutlined onClick={() => setPageVisible(id, true)} className="cursor-pointer" style={{ fontSize: 17, color: "gray" }} />
-                                                            )
-                                                    }
-                                                </div>
-                                                <div className="pr-2 tooltip" data-tip="Disconnect">
-                                                    <CloseCircleOutlined className={`text-[16px] transition-colors duration-200 text-red-500 hover:text-red-700`} />
-                                                </div>
+                                connectedPages?.map((page, id) => (
+                                    <div className="w-36 h-36 border-[1px] flex flex-col justify-between transition-all duration-100">
+                                        <div className="h-7 justify-between items-center align-middle pl-2 flex">
+                                            <div className="tooltip tooltip-right" data-tip="Page visible">
+                                                {
+                                                    (page.is_visible) ? (
+                                                        <EyeOutlined onClick={() => setPageVisible(id, false)} className="cursor-pointer" style={{ fontSize: 17, color: "gray" }} />
+                                                    ) :
+                                                        (
+                                                            <EyeInvisibleOutlined onClick={() => setPageVisible(id, true)} className="cursor-pointer" style={{ fontSize: 17, color: "gray" }} />
+                                                        )
+                                                }
                                             </div>
-                                            <div className="flex flex-col justify-center items-center ">
-                                                <Avatar size={35} style={{ margin: 5 }} icon={<UserOutlined />} />
-                                                <p className="text-zinc-800 font-railway text-center text-xs mb-5">r/{page.name}</p>
-                                                <p className="rounded-full pl-2 pr-2 bg-purple-800 text-zinc-50 font-railway text-sm">mod</p>
-                                                <p className="text-xs font-mono text-lime-600">CONNECTED</p>
+                                            <div className="pr-2 tooltip" data-tip="Disconnect">
+                                                <CloseCircleOutlined className={`text-[16px] transition-colors duration-200 text-red-500 hover:text-red-700`} />
                                             </div>
                                         </div>
-                                    ) : (
-                                        <div>
+                                        <div className="w-36 flex flex-col justify-center items-center ">
+                                            {
+                                                (page.icon) ? (
+                                                    <Avatar size={35} style={{ margin: 5 }} icon={<img src={page.icon.split('?')[0]} />} />
+                                                ) : (
+                                                    <Avatar size={35} style={{ margin: 5 }} icon={<UserOutlined />} />
+                                                )
+                                            }
+                                            <p className="text-zinc-800 font-railway text-center text-xs mb-5">r/{page.subreddit}</p>
+                                            {
+                                                (page.is_mod) ? (
+                                                    <p className="rounded-full pl-2 pr-2 bg-purple-800 text-zinc-50 font-railway text-sm">mod</p>
+                                                ) : (
+                                                    <p className="rounded-full pl-2 pr-2 bg-lime-600 text-zinc-50 font-railway text-sm">subscriber</p>
+                                                )
+                                            }
+                                            <p className="text-xs font-mono text-lime-600">CONNECTED</p>
                                         </div>
+                                    </div>
                                     )
-                                ))
+                                )
                             }
-
-
-                            <div className="w-36 h-36 border-[1px] flex flex-col justify-center items-center hover:shadow-lg transition-all duration-100 cursor-pointer">
-                                <Avatar size={35} style={{ margin: 5 }} icon={<UserOutlined />} />
-                                <p className="text-zinc-800 font-railway text-center text-xs mb-5">User</p>
-                                <p className="text-xs font-mono text-lime-600">CONNECTED</p>
-                            </div>
                         </div>
                     </div>
                 </TabPane>
