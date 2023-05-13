@@ -2,9 +2,10 @@ import React, { useContext } from "react";
 import profileImage from "../../images/profile.jpg";
 import { Button, Tag } from "antd";
 import { ContractContext } from "./ContractProvider";
-import dayjs from "dayjs";
+
 const User = () => {
   const { user, contract } = useContext(ContractContext);
+
   return (
     <>
       {user?.role === "influencer" ? null : (
