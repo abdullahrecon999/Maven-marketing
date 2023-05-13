@@ -258,7 +258,12 @@ const Home = () => {
                     <p className="py-2 text-sm text-gray-500">
                       Your available payouts are displayed here
                     </p>
-                    <a className="link link-primary">view all payouts</a>
+                    <Link
+                      to="/payments/manage/:id"
+                      className="link link-primary"
+                    >
+                      view all payouts
+                    </Link>
                   </div>
                   <div className="flex-col w-20">
                     <div className="h-20 w-20">

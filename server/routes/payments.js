@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 require('dotenv').config()
+const Account = require('../models/Account')
 const secretKey = process.env.STRIPE_KEY
 
 const stripe = require('stripe')(secretKey)
@@ -8,20 +9,31 @@ const stripe = require('stripe')(secretKey)
 
 
 // to create a connected aacount
-router.get("/create", async(req, res, next)=>{
-  try{
-     const account = await stripe.accounts.create({type: 'express'});
+router.post("/create", async(req, res, next)=>{
 
+  try{
+    //  const account = await stripe.accounts.create({type: 'express', email: req.body.email});
+    //  const val = {
+    //   userId: req.body.id,
+    //   role : "influencer",
+    //   accountId: account.id,
+    //  }
+
+    //  Account.create(val)
     
-      const accountLink = await stripe.accountLinks.create({
-        account: account.id,
-        refresh_url: 'https://example.com/reauth',
-        return_url: 'https://example.com/return',
-        type: 'account_onboarding',
-      });
+    //  const data = await Account.create()
+      
+    //   const accountLink = await stripe.accountLinks.create({
+    //     account: account.id,
+    //     refresh_url: 'https://example.com/reauth',
+    //     return_url: 'https://example.com/return',
+    //     type: 'account_onboarding',
+    //   });
+
+     
     res.status(200).json({
       status: 'success',
-      accountLink
+      // account
     })
   }catch(e){
     console.log(e)
