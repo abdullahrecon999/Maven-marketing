@@ -259,7 +259,7 @@ const Home = () => {
                       Your available payouts are displayed here
                     </p>
                     <Link
-                      to="/payments/manage/:id"
+                      to="/payments/manage/11"
                       className="link link-primary"
                     >
                       view all payouts

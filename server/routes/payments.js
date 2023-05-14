@@ -7,33 +7,113 @@ const secretKey = process.env.STRIPE_KEY
 const stripe = require('stripe')(secretKey)
 /* GET home page. */
 
+router.get("/loginlink", async (req, res)=>{
+  try{
+    const loginLink = await stripe.accounts.createLoginLink(
+      'acct_1N7HhXPXYZddKYHH'
+    );
+    res.send(loginLink)
+  }catch(e){
+    res.status(500)
+  }
+})
 
+router.get("/getaccountdetails/:id", async (req, res)=>{
+  try{
+    const id = req.params.id
+    const data = await Account.findOne({userId: id})
+    if(Object.keys(data) !== 0){
+      const balance = await stripe.balance.retrieve({
+        stripeAccount: data?.accountId,
+      });
+      const available = balance?.available.reduce((sum, availablebalance)=>{
+          return sum+ availablebalance.amount
+      }, 0)
+      const pending = balance?.pending.reduce((sum, pendingbalance)=>{
+        return sum, pendingbalance.amount
+      },0)
+      const total = pending +available
+      const cards = await stripe.accounts.listExternalAccounts(
+        data?.accountId,
+        {object: 'card', limit: 3}
+      );
+
+      const loginlink = await stripe.accounts.createLoginLink(
+        data?.accountId
+      );
+      res.status(200).json({
+        status: 'success',
+        data: {
+          accountId: data?.accountId,
+          available: available/100,
+          pending: pending/100,
+          total :total/100,
+          loginLink: loginlink?.url,
+          balance,
+          cards
+
+        }
+    })
+  }
+    
+    
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+      
+    })
+  }
+})
+
+router.get("/getexternalaccounts/:id", async(req, res)=>{
+  try{
+    const id = req.params.id
+    const data = await Account.findOne({userId: id})
+
+    const cards = await stripe.accounts.listExternalAccounts(
+      data.accountId,
+      {object: 'card', limit: 3}
+    );
+      res.status(200).json({
+        status: 'success',
+        data: cards
+      })
+
+  }catch(e){
+    res.status(500).json({
+      status: "error",
+      
+    })
+  }
+})
 // to create a connected aacount
 router.post("/create", async(req, res, next)=>{
-
+  console.log("this is the body", req.body)
+  const {id, email} = req.body
   try{
-    //  const account = await stripe.accounts.create({type: 'express', email: req.body.email});
-    //  const val = {
-    //   userId: req.body.id,
-    //   role : "influencer",
-    //   accountId: account.id,
-    //  }
+     const account = await stripe.accounts.create({type: 'express', email: email});
+     const val = {
+      userId: id,
+      role : "influencer",
+      accountId: account.id,
+     }
 
-    //  Account.create(val)
+      Account.create(val)
     
-    //  const data = await Account.create()
+     
       
-    //   const accountLink = await stripe.accountLinks.create({
-    //     account: account.id,
-    //     refresh_url: 'https://example.com/reauth',
-    //     return_url: 'https://example.com/return',
-    //     type: 'account_onboarding',
-    //   });
+    const accountLink = await stripe.accountLinks.create({
+        account: account.id,
+        refresh_url: 'http://localhost:5173/payments/manage/',
+        return_url: 'http://localhost:5173/payments/manage/',
+        type: 'account_onboarding',
+      });
 
      
     res.status(200).json({
       status: 'success',
-      // account
+       url: accountLink.url
     })
   }catch(e){
     console.log(e)
@@ -43,6 +123,26 @@ router.post("/create", async(req, res, next)=>{
   }
 })
 
+router.get("/createnewAccountlink/:id", async(req, res)=>{
+      const id = req.params.id
+  try{
+    const accountLink = await stripe.accountLinks.create({
+      account: id,
+      refresh_url: 'http://localhost:5173/payments/manage/',
+      return_url: 'http://localhost:5173/payments/manage/',
+      type: 'account_onboarding',
+    });
+
+    res.status(200).json({
+      status: 'success',
+       url: accountLink.url
+    })
+  }catch(e){
+    res.status(500).json({
+      status: 'error'
+    })
+  }
+})
 
 // create brand account to pay
 router.get("/createcustomer", async(req, res, next)=>{

@@ -112,20 +112,47 @@ const ManageModal = () => {
     </>
   );
 };
-const accountExists = false;
+
 const InfluencerPayments = () => {
   const [paymentTabs, setPaymentTabs] = useState(true);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [accountExists, setAccountExists] = useState(false);
+  const [accountData, setAccountData] = useState({});
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
 
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await axios.get(
+        "http://localhost:3000/payments/getaccountdetails/" + user?._id
+      );
+      if (Object.keys(data.data.data).length !== 0) {
+        setAccountExists(true);
+        setAccountData(data.data.data);
+        console.log(data.data.data);
+      }
+    };
+    if (Object.keys(user).length !== 0) {
+      fetch();
+    }
+  }, [user]);
   const handleSetUp = () => {
     setLoading(true);
+
     const fetch = async () => {
-      await axios.post("http://localhost:3000/payments/create");
+      const val = {
+        id: user?._id,
+        email: user?.email,
+      };
+      const data = await axios.post(
+        "http://localhost:3000/payments/create",
+        val
+      );
+
+      window.open(data?.data?.url, "_self");
     };
     fetch();
     setLoading(false);
@@ -143,29 +170,30 @@ const InfluencerPayments = () => {
     <>
       {accountExists ? (
         <div className="container mx-auto space-y-4">
-          <ManageModal></ManageModal>
-          <InfluencerManagePaymentMethods></InfluencerManagePaymentMethods>
           <section className="grid grid-cols-3 bg-white rounded-lg p-5">
             <div className=" flex justify-center items-center">
               <h1 className="text-xl  text-gray-800 font-semibold">
                 Last 30 Days
               </h1>
             </div>
-            <div className=" flex flex-col justify-center items-center">
-              <h1 className="text-base text-gray-800 font-semibold">
-                Transactions
-              </h1>
-              <h1 className="text-xl text-gray-700 ">30</h1>
-            </div>
+
             <div className=" flex flex-col items-center">
               <h1 className="text-base text-gray-800 font-semibold">
                 Earnings
               </h1>
-              <h1 className="text-xl text-gray-700 ">$123456</h1>
+              <h1 className="text-xl text-gray-700 ">{accountData?.total}</h1>
+            </div>
+            <div className=" flex flex-col justify-center items-center">
+              <Button
+                className="bg-blue text-white"
+                onClick={() => window.open(accountData?.loginLink)}
+              >
+                View Stripe Dashoard
+              </Button>
             </div>
           </section>
           <section className="flex space-x-3">
-            <div className="bg-gray-200 flex flex-1 flex-col space-y-3 p-4 rounded-lg">
+            <div className="bg-white border rounded-md flex flex-1 flex-col space-y-3 p-4 ">
               <h1 className="text-xl font-railway">My Balance</h1>
               <div
                 className={`flex flex-col w-full justify-center py-4 px-4 h-[30vh]  space-x-0 space-y-2  rounded-lg md:flex-row md:space-x-2 md:space-y-0 `}
@@ -183,7 +211,9 @@ const InfluencerPayments = () => {
                       Available Balance
                     </h1>
 
-                    <h1 className="text-2xl text-gray-700 font-bold">$1235</h1>
+                    <h1 className="text-2xl text-gray-700 font-bold">
+                      $ {accountData?.available}
+                    </h1>
                     <h1
                       onClick={(e) => {
                         handleChangeTabs(e);
@@ -208,7 +238,9 @@ const InfluencerPayments = () => {
                     <h1 className="text-gray-600 text-xl font-semibold">
                       Pending
                     </h1>
-                    <h1 className="text-2xl text-gray-700 font-bold">$1235</h1>
+                    <h1 className="text-2xl text-gray-700 font-bold">
+                      $ {accountData?.pending}
+                    </h1>
                     <h1
                       onClick={(e) => {
                         handleChangeTabs(e);
@@ -223,17 +255,17 @@ const InfluencerPayments = () => {
               </div>
             </div>
 
-            <div className=" flex flex-col flex-[0.5] p-4 bg-gray-100 rounded-lg p-5">
-              <div className="flex justify-between px-3">
-                <h1 className="text-xl text-gray-800 font-semibold">
-                  Payment Methods
-                </h1>
-                <label
-                  htmlFor="managePayments"
-                  className="text-gray-700 hover:text-gray-800 hover:scale-125"
-                >
-                  <SettingsIcon></SettingsIcon>
-                </label>
+            <div className=" flex flex-col flex-[0.5]  bg-white border  rounded-lg p-5">
+              <div className="flex flex-col">
+                <div className="flex justify-between px-3">
+                  <h1 className="text-xl text-gray-800 font-semibold">
+                    Linked external accounts
+                  </h1>
+                </div>
+                <p className="px-3">
+                  All your payouts that are approved will be transfered to this
+                  account
+                </p>
               </div>
               <div>
                 {false ? (
@@ -257,6 +289,22 @@ const InfluencerPayments = () => {
                       <h1 className="text-sm font-semibold text-gray-800">
                         Master Card 1245*******789
                       </h1>
+                    </div>
+                    <div className="px-3 my-2">
+                      <p className="text-sm">
+                        Want to change external account?
+                      </p>
+                      <p className="text-xs">
+                        <a
+                          className="link text-blue"
+                          href={accountData.loginLink}
+                        >
+                          {" "}
+                          Login
+                        </a>{" "}
+                        to your stripe and and go to setting to change the
+                        external account
+                      </p>
                     </div>
                   </div>
                 )}

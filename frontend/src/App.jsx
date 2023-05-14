@@ -209,7 +209,7 @@ function App() {
                   element={<InfluencerContract />}
                 ></Route>
                 <Route
-                  path="/influencerPayments"
+                  path="/payments/manage/"
                   element={<InfluencerPayments />}
                 ></Route>
               </Route>
