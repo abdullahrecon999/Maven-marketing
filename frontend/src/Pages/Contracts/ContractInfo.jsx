@@ -24,9 +24,10 @@ const ContractInfo = () => {
   };
   const handleEndContract = async () => {
     setLoading(true);
-    await axios.post(
+    const data = await axios.post(
       "http://localhost:3000/brand/endcontract/" + contract?._id
     );
+    console.log(data);
     setLoading(false);
     setSuccess(true);
     setTimeout(() => {

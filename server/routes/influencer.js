@@ -924,7 +924,7 @@ router.post("/acceptcontract/:id", async (req, res) => {
     const data = await contracts.findOne({_id: id})
     console.log("data in the contract", data)
     const campaign = await Campaings.findOne({_id: data["campaignId"]}).populate("brand", "name")
-    await contracts.updateOne({_id:id, filesRef:ref}, {accepted:true})
+    await contracts.updateOne({_id:id}, {accepted:true, filesRef:ref})
     console.log(campaign)
     const msg = {
       text: `Accepting the contract for ${campaign["title"]} by ${campaign?.brand.name}`,

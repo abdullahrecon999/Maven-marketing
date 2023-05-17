@@ -1,4 +1,6 @@
 var express = require('express');
+const Transaction = require("../models/Transaction")
+require('dotenv').config()
 const authController = require('../controller/authController');
 var router = express.Router();
 const crypto = require('crypto');
@@ -15,7 +17,12 @@ const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 const invites = require ("../models/Invites");
+const Account = require('../models/Account')
 const { platform } = require('os');
+
+const secretKey = process.env.STRIPE_KEY
+
+const stripe = require('stripe')(secretKey)
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('Brand Router called');
@@ -446,7 +453,7 @@ router.get("/getcurrentworkinginfluencers/:id",async(req, res, next)=>{
   try{
     const id = req.params.id
     const data = await Contract.find({campaignId: id, accepted: true, expired:false}).populate("to")
-      
+      console.log(data)
     res.status(200).json({
       status: "success",
       data
@@ -475,11 +482,44 @@ router.get("/getcontractdetails/:id", async (req, res, next)=>{
 router.post("/endcontract/:id", async (req, res, next)=>{
   try{
     const id = req.params.id
-    //add code here to pay the influencer
-     await Contract.updateOne({_id:id}, {expired: true})
     
+    //add code here to pay the influencer
+    const data = await Contract.findOne({_id:id})
+    
+
+    const brandAccount = await Account.findOne({userId:data.sender, role:"brand"})
+    const influencerAccount = await Account.findOne({userId:data.to, role:"influencer"})
+    console.log("this is the brand contract")
+    const paymentMethods = await stripe.paymentMethods.list({
+      customer: brandAccount.accountId,
+      type: 'card',
+    });
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: data.amount*100,
+      currency: 'usd',
+     
+      payment_method: paymentMethods?.data[0]?.id,
+      off_session : true,
+      confirm :true,
+      customer : brandAccount.accountId,
+      transfer_data: {
+        destination: influencerAccount.accountId,
+      },
+    }
+   
+    )
+    await Transaction.create({
+      userFrom: brandAccount.userId,
+      userTo: influencerAccount.userId,
+      amount: data.amount,
+      paymentFor:data._id
+
+    })
+
+    await Contract.updateOne({_id:id}, {expired: true})
     res.status(200).json({
       status: "success",
+      data
       
     })
   }catch(e){

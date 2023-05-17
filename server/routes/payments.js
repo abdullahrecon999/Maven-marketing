@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 require('dotenv').config()
 const Account = require('../models/Account')
+const Transactions = require('../models/Transaction')
+const Contracts = require("../models/Contracts")
 const secretKey = process.env.STRIPE_KEY
 
 const stripe = require('stripe')(secretKey)
@@ -57,6 +59,43 @@ router.get("/getaccountdetails/:id", async (req, res)=>{
   }
     
     
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error",
+      
+    })
+  }
+})
+
+router.get("/getbrandaccountdetails/:id", async(req, res)=>{
+
+  try{
+    const id = req.params.id
+    const data = await Account.findOne({userId: id})
+    res.status(200).json({
+      status: 'success',
+      data: data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error",
+      
+    })
+  }
+})
+
+router.get("/getsecret/:id", async (req, res) =>{
+  try{
+    const id = req.params.id
+    const setupIntent = await stripe.setupIntents.create({
+      customer: id,
+      payment_method_types: ['card'],
+    });
+    res.status(200).json({
+      status: 'success',
+      data: setupIntent.client_secret
+    })
   }catch(e){
     console.log(e)
     res.status(500).json({
@@ -145,15 +184,23 @@ router.get("/createnewAccountlink/:id", async(req, res)=>{
 })
 
 // create brand account to pay
-router.get("/createcustomer", async(req, res, next)=>{
+router.post("/createcustomer/:id", async(req, res, next)=>{
   const data = req.body
+  const id = req.params.id
   try{
 
     const customer = await stripe.customers.create({
       ...data,
       description: 'test account 2',
-      balance: 10000
+      balance: 0
     });
+    const val = {
+      userId: id,
+      role : "brand",
+      accountId: customer.id,
+     }
+
+    Account.create(val)
     res.status(200).json({
       status: "success",
       customer
@@ -190,21 +237,27 @@ router.get("/setupintent", async(req, res, next)=>{
     res.status(500)
   }
 })
-router.get("/getpaymentmethods", async(req, res, next)=>{
+router.get("/getpaymentmethods/:id", async(req, res, next)=>{
   const id = req.params.id
   try{
     
-    const paymentMethods = await stripe.paymentMethods.list({
-      customer: "cus_Nt16cydUXuCS7N",
-      type: 'card',
-
-
-    });
+    // const cards = await stripe.customer.listSources(
+    //   {
+    //   customer:  id,
+    //   type: 'card'
+    //   }
+    // );
+    const cards = await stripe.customers.listSources(
+      id,
+      {object: 'card', limit: 3}
+    );
+   console.log(cards)
     res.status(200).json({
       status: "success",
-      paymentMethods
+      paymentMethods: cards.data
     })
   }catch(e){
+    console.log(e)
     res.status(500)
   }
 })
@@ -256,6 +309,82 @@ router.get('/getconnectedaccountbalance/:id', async (req, res, next)=>{
   }catch(e){
     res.status(500).json({
         status:"error"
+    })
+  }
+})
+
+router.get("/getbrandhistory/:id", async(req, res)=>{
+  try{
+    const id = req.params.id
+    const data = await Transactions.find({userFrom:id}).populate('userTo')
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error",
+     
+    })
+  }
+})
+
+router.get("/getinfluencerhistory/:id", async(req, res)=>{
+  try{
+    const id = req.params.id
+    const data = await Transactions.find({userTo:id}).populate('userFrom')
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error",
+     
+    })
+  }
+})
+router.get("/getpendingPayment/:id", async(req, res)=>{
+  try{
+    const id = req.params.id
+    const contracts = await Contracts.find({sender: id, accepted:true, expired:false}).populate("to").populate("campaignId")
+    const data = contracts.map(item=>{
+      return {
+        amount : item.amount,
+        date: item.expiresAt,
+        name: item.to.name,
+        campaign: item.campaignId.title
+      }
+    })
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status: "error",
+     
+    })
+  }
+})
+
+router.get("/getcards/:id", async (req, res)=>{
+  try{
+    const id = req.params.id
+    const accountData = await Account.findOne({userId:id})
+    
+const cards = await stripe.accounts.listExternalAccounts(
+  accountData.accountId,
+  {object: 'card', limit: 3}
+);
+  res.status(200).json({
+    status:"success",
+    data : cards.data
+  })
+  }catch(e){
+    res.status(500).json({
+      status: "error",
+     
     })
   }
 })

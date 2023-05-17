@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const transactions = new mongoose.Schema({
-   user_from : {
+   userFrom : {
     type : mongoose.Types.ObjectId,
     ref: 'User',
     required :true
@@ -14,7 +14,12 @@ const transactions = new mongoose.Schema({
    amount : 
    {
     type: Number,
-    required : true}
+    required : true},
+    paymentFor: {
+        type: mongoose.Types.ObjectId,
+        required: true
+        
+    }
 
 },{timestamps:true})
 

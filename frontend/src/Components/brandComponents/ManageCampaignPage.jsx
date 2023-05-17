@@ -559,7 +559,7 @@ const CurrentInfluencers = ({ id }) => {
     const fetch = async () => {
       setLoading(true);
       const data = await axios.get(
-        "http://localhost:3000/brand/getcurrentworkinginfluencers/64078565f1116ce68f3aff06",
+        "http://localhost:3000/brand/getcurrentworkinginfluencers/" + id,
         {
           headers: {
             "Content-Type": "application/json",

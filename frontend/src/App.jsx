@@ -50,6 +50,7 @@ import { Terms } from "./Pages/legal/termsofuse";
 import MainScreen from "./Pages/MarketAutomation/MainScreen";
 import ListDetails from "./Pages/brand/ListDetails";
 import ManageCampaignPage from "./Components/brandComponents/ManageCampaignPage";
+import BrandPayments from "./Pages/brand/BrandPayments";
 
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
@@ -175,6 +176,11 @@ function App() {
                   path="/brand/linkedin"
                   element={<LinkedInCallback />}
                 ></Route>
+
+                <Route
+                  path="/brandpayments/manage"
+                  element={<BrandPayments />}
+                ></Route>
               </Route>
 
               {/* <Route path='/campaigncreation' element={<CampaginCreation/>} ></Route>
@@ -230,6 +236,10 @@ function App() {
               <Route path="/chat" element={<Chat />}></Route>
               {/* <Route path='/' element={<CampaginCreation/>} ></Route> */}
               <Route path="/unauthorized" element={<ErrorUnauthorized />} />
+              <Route
+                path="/brandpayments/manage"
+                element={<BrandPayments />}
+              ></Route>
 
               <Route path="*" element={<Error />}></Route>
             </Routes>
