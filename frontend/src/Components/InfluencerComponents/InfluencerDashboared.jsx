@@ -227,7 +227,7 @@ const InfluencerDashboared = ({ onCampaignViewClick }) => {
                         onClick={() => {
                           console.log("clicked");
                           console.log(item);
-                          navigate("/contract/1234");
+                          navigate("/contract/" + item?._id);
                         }}
                         htmlFor="campaignModal"
                         className="badge badge-accent text-white btn hover:bg-green"
