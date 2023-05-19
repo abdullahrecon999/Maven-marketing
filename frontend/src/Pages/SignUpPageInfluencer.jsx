@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import FormSelect from "../Components/FormSelect";
 import { styled } from "@mui/system";
 import GoogleSignup from "../Components/GoogleSignup";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import FormTextField2 from "../Components/FormTextFeild2";
 import FormSelect2 from "../Components/FormSelect2";
 import SignupSchema from "../ValidationSchemas/Signupschema";
@@ -103,25 +103,52 @@ const SignUpPageInfluencer = () => {
                       <h1 className="text-gray-800 text-base md:text-base font-semibold mb-1">
                         Password <span className="text-red-500">*</span>
                       </h1>
-                      <Input.Password
-                        type="password"
-                        placeholder="Password"
-                      ></Input.Password>
+                      <Field name="password">
+                        {({ field, meta }) => (
+                          <>
+                            <Input.Password
+                              type="password"
+                              placeholder="Password"
+                              {...field}
+                              onChange={(e) =>
+                                formik.setFieldValue("password", e.target.value)
+                              }
+                            ></Input.Password>
+                            <ErrorMessage
+                              className="text-xs text-red-500"
+                              name="password"
+                              component="div"
+                            ></ErrorMessage>
+                          </>
+                        )}
+                      </Field>
                     </div>
                     <div>
                       <h1 className="text-gray-800 text-base md:text-base font-semibold mb-1">
                         Confirm Password <span className="text-red-500">*</span>
                       </h1>
-                      <Input.Password
-                        type="password"
-                        name="confirmPass"
-                        label="Confirm
-                        Password"
-                        placeholder="Confirm Password"
-                        onChange={(e) => {
-                          formik.setFieldValue("confirmPass", e.target.value);
-                        }}
-                      ></Input.Password>
+                      <Field name="confirmPass">
+                        {({ field, meta }) => (
+                          <>
+                            <Input.Password
+                              type="password"
+                              placeholder="Confirm Password"
+                              {...field}
+                              onChange={(e) =>
+                                formik.setFieldValue(
+                                  "confirmPass",
+                                  e.target.value
+                                )
+                              }
+                            ></Input.Password>
+                            <ErrorMessage
+                              className="text-xs text-red-500"
+                              name="confirmPass"
+                              component="div"
+                            ></ErrorMessage>
+                          </>
+                        )}
+                      </Field>
                     </div>
                     <div className="flex flex-col justify-center items-center space-y-2">
                       <div className="flex justify-center pt-1 pr-3">

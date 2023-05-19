@@ -1,13 +1,21 @@
 import { Button, Modal } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { UploadOutlined } from "@ant-design/icons";
-import { Upload } from "antd";
+import { UploadOutlined, PlusOutlined } from "@ant-design/icons";
+import { Upload, Tag, Alert } from "antd";
 import { Select } from "antd";
 import { Formik, ErrorMessage } from "formik";
 import gigSchema from "../../ValidationSchemas/gigValidation";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../utils/fireBase/fireBaseInit";
+import { v4 } from "uuid";
+import axios from "axios";
+import dayjs from "dayjs";
+import { useQuery } from "react-query";
+import { AuthContext } from "../../utils/authProvider";
+
 const { TextArea } = Input;
 const length = 0;
 const fileList = [];
@@ -15,28 +23,126 @@ const InfluencerGigs = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
-  const [files, setFiles] = useState([]);
+  // const [modalText, setModalText] = useState("Content of the modal");
+  // const [files, setFiles] = useState([]);
+  // const [urls, setUrls] = useState([]);
+  const [posts, setPosts] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [success, setSuccess] = useState(false);
+  const [gigsData, setGigsData] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const { user, setUser } = useContext(AuthContext);
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const data = await axios.get(
+  //       "http://localhost:3000/list/getmylisting/" + user?._id
+  //     );
+  //     console.log("this is the data in the gey my gigs", data.data.data);
+  //     setGigsData(data.data.data);
+  //   };
+  //   fetch();
+  // }, [user]);
   const showModal = () => {
     setOpen(true);
   };
-  const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    }, 2000);
+
+  const { isLoading, data, isError, isSuccess, status, refetch } = useQuery(
+    ["getmylisting"],
+    () => {
+      return axios.get("http://localhost:3000/list/getmylisting/" + user._id, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+    }
+  );
+
+  useEffect(() => {
+    setGigsData(data.data.data);
+  }, [data]);
+
+  const handleDelete = async (id) => {
+    setDeleteLoading(true);
+    await axios.get("http://localhost:3000/list/delete/" + id);
+    const newData = gigsData.filter((item) => {
+      return item?._id !== id;
+    });
+    setGigsData(newData);
+    setDeleteLoading(false);
   };
   const handleCancel = () => {
     console.log("Clicked cancel button");
+    setSuccess(false);
     setOpen(false);
+    // setPosts([]);
+    // setPostUrls([]);
+    // setBannerImage("");
+    // setFiles([]);
   };
+
+  const handleSubmit = async (val) => {
+    setLoading(true);
+    const value = {
+      banner: bannerImage,
+      posts: [posts],
+      owner: user._id,
+      ...val,
+    };
+    console.log(value);
+    await axios.post("http://localhost:3000/list/create", value);
+    setLoading(false);
+    setSuccess(true);
+    refetch();
+  };
+  // const handleUpload = async (vals) => {
+  //   try {
+  //     if (files.length !== 0) {
+  //       const bannerReference = ref(storage, "/gigs/" + files[0].name + v4());
+  //       const snapShot = await uploadBytes(bannerReference, files[0]);
+  //       const url = await getDownloadURL(bannerReference);
+  //       console.log(url);
+  //       setBannerImage(url);
+  //     }
+  //   } catch (e) {}
+
+  //   try {
+  //     posts.forEach(async (file) => {
+  //       const reference = ref(storage, "/gigs/" + file.name + v4());
+  //       const snapShot = await uploadBytes(reference, file);
+  //       const url = await getDownloadURL(reference);
+  //       setPostUrls([...postUrls, url]);
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  //   console.log(vals);
+  //   delete vals["bannerImage"];
+  //   const val = {
+  //     owner: user?._id,
+  //     banner: bannerImage,
+  //     posts: postUrls,
+  //     ...vals,
+  //   };
+  //   console.log(val);
+  // };
   const handleView = () => {
     // add navigation code here
   };
+  if (isLoading) {
+    return <div>loading</div>;
+  }
+  if (isError) {
+    return <div>Error</div>;
+  }
   return (
     <div className="w-[full]">
+      {console.log(data)}
       {length !== 0 ? (
         <div className="w-full h-[70vh] flex flex-col justify-center items-center bg-white border rounded-xl space-y-4 px-10">
           <div className="flex flex-col justify-center items-center">
@@ -55,28 +161,52 @@ const InfluencerGigs = () => {
       ) : (
         <div className="w-full h-[70vh] flex flex-col py-8 bg-white border rounded-xl space-y-4 px-10">
           {/* add this in a map */}
-          <div className="bg-gray-50 flex flex-col md:flex  w-full rounded-lg px-3 py-2 border shadow mb-2">
-            <div className="flex flex-col flex-1 space-y-1">
-              <h1 className="text-xl font-semibold text-gray-700">Title</h1>
-              <p className="text-sm text-gray-400">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-              <p className="text-sm text-blue">Created on data</p>
-            </div>
-            <div className="flex flex-[0.25] items-end justify-end">
-              <Button className="mr-1 bg-blue text-white" onClick={handleView}>
-                View
-              </Button>
-              <Button className="mr-1 bg-blue text-white hover:bg-red-500 hover:text-white">
-                Delete
-              </Button>
-            </div>
+          <div className="flex flex-row-reverse">
+            <Button
+              rootClassName="text-white bg-blue"
+              onClick={() => {
+                showModal();
+              }}
+            >
+              Create a new gig
+            </Button>
+          </div>
+          <div className="h-80 overflow-y-auto">
+            {gigsData.map((item) => {
+              return (
+                <div
+                  key={item}
+                  className="bg-gray-50 flex flex-col md:flex  w-full rounded-lg px-3 py-2 border shadow mb-2"
+                >
+                  <div className="flex flex-col flex-1 space-y-1">
+                    <h1 className="text-xl font-semibold text-gray-700">
+                      {item?.title}
+                    </h1>
+                    <p className="text-sm text-gray-400">{item?.description}</p>
+                    <p className="text-sm text-blue">
+                      Created on{" "}
+                      {dayjs(item?.createdAt).toDate().toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex flex-[0.25] items-end justify-end">
+                    <Button
+                      className="mr-1 bg-blue text-white"
+                      onClick={handleView}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        handleDelete(item?._id);
+                      }}
+                      className="mr-1 bg-blue text-white hover:bg-red-500 hover:text-white"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -84,18 +214,18 @@ const InfluencerGigs = () => {
       <Modal
         title="Create a new Gig"
         open={open}
-        onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
+        footer={[]}
       >
         <Formik
           initialValues={{
             title: "",
             description: "",
-            bannerImage: "",
             platform: "",
-            access: false,
+            access: true,
           }}
+          validationSchema={gigSchema}
         >
           {(formik) => (
             <form>
@@ -109,7 +239,6 @@ const InfluencerGigs = () => {
                     placeholder="Enter Gig Title"
                     prefix={<UserOutlined className="text-gray-600" />}
                     onChange={(e) => {
-                      console.log("formik values", formik.values);
                       formik.setFieldValue("title", e.target.value);
                     }}
                   />
@@ -133,14 +262,51 @@ const InfluencerGigs = () => {
                 </div>
                 <div>
                   <h1 className="text-base text-gray-700 font-semibold">
-                    Upload Banner Image <span className="text-red-600">*</span>
+                    Upload Banner Image {"(optional)"}
                   </h1>
-                  <Upload
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  <p className="text-xxs textgray-500 mb-2">
+                    only one banner image is allowed
+                  </p>
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      const bannerReference = ref(storage, "/gigs/" + v4());
+                      uploadBytes(bannerReference, e.target.files[0])
+                        .then((snapShot) => {
+                          return getDownloadURL(snapShot.ref);
+                        })
+                        .then((url) => {
+                          setBannerImage(url);
+                          alert("Image uploaded successfull " + url);
+                        })
+                        .catch((e) => {
+                          alert("there was an error in uploading the files");
+                        });
+                    }}
+                  ></input>
+
+                  {/* <Upload
+                    // onChange={(e) => {
+                    //   console.log("this is the value in the event", e.file);
+                    //   setFiles(e.file.originFileObj);
+                    // }}
+                    maxCount={1}
+                    beforeUpload={(file) => {
+                      setFiles([...files, file]);
+
+                      console.log(files);
+                      return false;
+                    }}
+                    onRemove={(file) => {
+                      const index = files.indexOf(file);
+                      const newFileList = files.slice();
+                      newFileList.splice(index, 1);
+                      setFiles(newFileList);
+                    }}
                     listType="picture-card"
                   >
-                    <Button icon={<UploadOutlined />}>Upload</Button>
-                  </Upload>
+                    <Button icon={<PlusOutlined />}>Upload</Button>
+                  </Upload> */}
                 </div>
                 <div>
                   <h1 className="text-base text-gray-700 font-semibold">
@@ -150,13 +316,38 @@ const InfluencerGigs = () => {
                   <p className="text-gray-500 text-xxs mb-2">
                     These post allow you to show case your content to brands{" "}
                   </p>
-                  <Upload
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      const bannerReference = ref(storage, "/gigs/" + v4());
+                      uploadBytes(bannerReference, e.target.files[0])
+                        .then((snapShot) => {
+                          return getDownloadURL(snapShot.ref);
+                        })
+                        .then((url) => {
+                          setPosts(url);
+                          alert("Image uploaded successfull " + url);
+                        })
+                        .catch((e) => {
+                          alert("there was an error in uploading the files");
+                        });
+                    }}
+                  ></input>
+                  {/* <Upload
+                    beforeUpload={(file) => {
+                      setPosts([...posts, file]);
+                      return false;
+                    }}
+                    onRemove={(file) => {
+                      const index = posts.indexOf(file);
+                      const newFileList = posts.slice();
+                      newFileList.splice(index, 1);
+                      setPosts(newFileList);
+                    }}
                     listType="picture-card"
-                    beforeUpload={() => false}
                   >
                     <Button icon={<UploadOutlined />}>Upload</Button>
-                  </Upload>
+                  </Upload> */}
                 </div>
                 <div>
                   <h1 className="text-base text-gray-700 font-semibold">
@@ -221,6 +412,20 @@ const InfluencerGigs = () => {
                       Give Access
                     </Button>
                   </div>
+                </div>
+                <div className="my-2 flex flex-row-reverse">
+                  <Button
+                    loading={loading}
+                    disabled={success}
+                    onClick={() => {
+                      // handleUpload(formik.values);
+                      handleSubmit(formik.values);
+                    }}
+                    className="text-white bg-blue"
+                  >
+                    Create Gig
+                  </Button>
+                  {success && <Tag color="red">Success</Tag>}
                 </div>
               </div>
             </form>

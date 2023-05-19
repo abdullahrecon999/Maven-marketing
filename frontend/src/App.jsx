@@ -163,6 +163,10 @@ function App() {
                   element={<InfluencerListing />}
                 ></Route>
                 <Route
+                  path="/listdetails/:id"
+                  element={<ListDetails />}
+                ></Route>
+                <Route
                   path="/influencerprofile/:id"
                   element={<InfluencerProfile />}
                 ></Route>

@@ -27,7 +27,20 @@ const stripe = require('stripe')(secretKey)
 router.get('/', function(req, res, next) {
   res.send('Brand Router called');
 });
-
+router.get ("/mycampaigns/:id", async(req, res)=>{
+  try{
+    const id = req.params.id
+    const data = await Campaign.find({brand: id}).select('title')
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status:"error"
+    })
+  }
+})
 router.post("/getinvites/", async(req, res)=>{
   const {sender, campaignId} = req.body
   console.log(req.body)
@@ -245,7 +258,7 @@ router.post('/campaigns', (req, res) => {
 })
 
 router.post('/campaigns/:id', (req, res) => {
-  
+  const id = req.params.id
   Campaign.find({_id:id, status: "live"}).then(campaigns => {
     res.send(campaigns);
   }).catch(err => {
@@ -319,6 +332,30 @@ router.get("/inviteinfluencers", async(req,res)=>{
 router.post("/sendinvite", async(req, res)=>{
   try{
     await invites.create(req.body)
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.post ("/sendmultipleinvites", async (req, res)=>{
+  try{
+    const {to, sender, campaignIds} = req.body
+    console.log(req.body)
+    campaignIds.forEach(async item => {
+      
+        await invites.create({
+          to:to,
+          sender: sender,
+          campaignId: item
+        })
+      
+    })
     res.status(200).json({
       status: "success"
     })
