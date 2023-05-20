@@ -4,12 +4,12 @@ import { ListingCard } from "../../Components/brandComponents/listingCard";
 import Pagination from "@mui/material/Pagination";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
+import { Col, InputNumber, Row, Slider, Space, Spin } from "antd";
+
 import {
   Button,
   Modal,
-  Slider,
   Switch,
-  InputNumber,
   Divider,
   Checkbox,
   Select,
@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Marketplace = () => {
   const [minNum, setMinNum] = useState(1000);
-  const [maxNum, setMaxNum] = useState(10000);
+  const [maxNum, setMaxNum] = useState(100000);
   const [dateSort, setDateSort] = useState(true);
   const [priceSort, setPriceSort] = useState(true);
   const [followerSort, setFollowerSort] = useState(true);
@@ -31,7 +31,8 @@ export const Marketplace = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   let search = searchParams.get("search") || "";
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [platform, setPlatform] = useState([]);
+  const [inputValue, setInputValue] = useState(1000);
   const navigate = useNavigate();
 
   const InfluencerListing = (id) => {
@@ -59,6 +60,7 @@ export const Marketplace = () => {
     data: gigsData,
     isLoading: isGigsLoading,
     isGigsSuccess,
+    isError,
     refetch: gigsRefecth,
   } = useQuery(["gigs"], () => {
     let queryParams =
@@ -70,7 +72,13 @@ export const Marketplace = () => {
       "&page=" +
       page +
       "&registered=" +
-      (status.length === 0 ? null : status[0]);
+      (status.length === 0 ? "" : status[0]) +
+      "&category=" +
+      categoriesList +
+      "&platform=" +
+      platform +
+      "&followers=";
+    console.log(decodeURIComponent(queryParams));
     return axios.get(
       "http://localhost:3000/list/getalllisting?" +
         decodeURIComponent(queryParams)
@@ -101,6 +109,7 @@ export const Marketplace = () => {
   // }, [influencer?.data]);
   useEffect(() => {
     setGigsDataArr(gigsData?.data?.data?.docs);
+    console.log(gigsData?.data?.data?.docs);
   }, [gigsData]);
   const showModal = () => {
     setIsModalOpen(true);
@@ -112,11 +121,11 @@ export const Marketplace = () => {
     setIsModalOpen(false);
   };
 
-  const [inputValue, setInputValue] = useState([1000, 10000]);
+  // const [inputValue, setInputValue] = useState([1000, 10000]);
 
   const [minNumPrice, setMinNumPrice] = useState(200);
   const [maxNumPrice, setMaxNumPrice] = useState(1000);
-  const [inputValuePrice, setInputValuePrice] = useState([200, 1000]);
+  // const [inputValuePrice, setInputValuePrice] = useState([200, 1000]);
 
   const countries = [
     { label: "United States", value: "United States" },
@@ -274,22 +283,24 @@ export const Marketplace = () => {
   const handleChangeCountry = (value) => {
     console.log(`selected ${value}`);
   };
-
-  const onChange = (newValue) => {
-    setMinNum(newValue[0]);
-    setMaxNum(newValue[1]);
+  const onChangeFolllowers = (newValue) => {
     setInputValue(newValue);
   };
+  // const onChange = (newValue) => {
+  //   setMinNum(newValue[0]);
+  //   setMaxNum(newValue[1]);
+  //   // setInputValue(newValue);
+  // };
 
-  const onChangePrice = (newValue) => {
-    setMinNumPrice(newValue[0]);
-    setMaxNumPrice(newValue[1]);
-    setInputValuePrice(newValue);
-  };
+  // const onChangePrice = (newValue) => {
+  //   setMinNumPrice(newValue[0]);
+  //   setMaxNumPrice(newValue[1]);
+  //   setInputValuePrice(newValue);
+  // };
 
-  const onChangeTags = (checkedValues) => {
-    console.log("checked = ", checkedValues);
-  };
+  // const onChangeTags = (checkedValues) => {
+  //   console.log("checked = ", checkedValues);
+  // };
 
   const onChangeCategories = (checkedValues) => {
     setCategoriesList(checkedValues);
@@ -298,6 +309,7 @@ export const Marketplace = () => {
 
   const onChangePlatforms = (checkedValues) => {
     console.log("checked = ", checkedValues);
+    setPlatform(checkedValues);
   };
   const onChangeStatus = (checkedValues) => {
     console.log(checkedValues);
@@ -321,7 +333,7 @@ export const Marketplace = () => {
         (followerSort ? "follower:asc" : "follower:dsc") +
         ("," + (dateSort ? "createdAt:asc" : "createdAt:dsc"))
     );
-    refetch();
+    // refetch();
   };
 
   const platforms = [
@@ -406,7 +418,15 @@ export const Marketplace = () => {
         }
         footer={
           <div className="flex justify-between">
-            <div className="btn btn-sm btn-outline btn-warning">
+            <div
+              onClick={() => {
+                setPlatform([]);
+                setCategoriesList([]);
+                setStatus([]);
+                setInputValue(1000);
+              }}
+              className="btn btn-sm btn-outline btn-warning"
+            >
               Reset Filters
             </div>
             <div
@@ -469,22 +489,48 @@ export const Marketplace = () => {
             </div>
 
             <div className="divider divider-vertical "></div> */}
+            <h1 className="text-xl font-bold mb-3">Followers/Subscriber</h1>
+
+            <Row>
+              <Col span={12}>
+                <Slider
+                  min={1000}
+                  max={1000000}
+                  onChange={onChangeFolllowers}
+                  defaultValue={inputValue}
+                  value={typeof inputValue === "number" ? inputValue : 0}
+                />
+              </Col>
+              <Col span={4}>
+                <InputNumber
+                  min={1}
+                  max={20}
+                  style={{
+                    margin: "0 16px",
+                  }}
+                  value={inputValue}
+                  defaultValue={inputValue}
+                  onChange={onChangeFolllowers}
+                />
+              </Col>
+            </Row>
 
             <div className="divider divider-vertical "></div>
 
-            <h1 className="text-xl font-bold mb-3">Tags</h1>
+            <h1 className="text-xl font-bold mb-3">Categories</h1>
             <Checkbox.Group
               style={{
                 width: "100%",
               }}
-              onChange={onChangeTags}
+              value={categoriesList}
+              onChange={onChangeCategories}
             >
               <div className="grid grid-cols-3 w-full">
                 <Checkbox style={{ marginLeft: 8 }} value="Lifestyle">
                   Lifestyle
                 </Checkbox>
 
-                {tags.map((category, index) => {
+                {[...tags, ...categories].map((category, index) => {
                   return (
                     <Checkbox
                       style={{ marginLeft: 8 }}
@@ -498,9 +544,9 @@ export const Marketplace = () => {
               </div>
             </Checkbox.Group>
 
-            <div className="divider divider-vertical "></div>
+            {/* <div className="divider divider-vertical "></div> */}
 
-            <h1 className="text-xl font-bold mb-3">Categories</h1>
+            {/* <h1 className="text-xl font-bold mb-3">Categories</h1>
             <Checkbox.Group
               style={{
                 width: "100%",
@@ -520,7 +566,7 @@ export const Marketplace = () => {
                   );
                 })}
               </div>
-            </Checkbox.Group>
+            </Checkbox.Group> */}
 
             <div className="divider divider-vertical "></div>
 
@@ -530,6 +576,7 @@ export const Marketplace = () => {
                 width: "100%",
               }}
               onChange={onChangePlatforms}
+              value={platform}
             >
               <div className="grid grid-cols-3 w-full">
                 {platforms.map((category, index) => {
@@ -550,7 +597,7 @@ export const Marketplace = () => {
 
             <h1 className="text-xl font-bold mb-3">Status</h1>
 
-            <Checkbox.Group onChange={onChangeStatus}>
+            <Checkbox.Group value={status} onChange={onChangeStatus}>
               <Checkbox style={{ marginLeft: 8 }} key={0} value={true}>
                 Registered
               </Checkbox>
@@ -575,7 +622,13 @@ export const Marketplace = () => {
         <div className="flex bg-[#fcfcf8] h-16 sticky top-16 z-[12] mb-3 align items-center shadow-[0_10px_10px_5px_rgba(255,255,255,0.9)]">
           <div className="flex justify-space-between items-center gap-2">
             <div
-              onClick={() => gigsRefecth()}
+              onClick={() => {
+                setPlatform([]);
+                setCategoriesList([]);
+                setStatus([]);
+                setInputValue(1000);
+                gigsRefecth();
+              }}
               className="flex gap-2 items-center border border-slate-200 hover:shadow-lg btn btn-ghost btn-sm"
             >
               <svg
@@ -607,7 +660,7 @@ export const Marketplace = () => {
               <p className="text-sm">Filter</p>
             </div>
 
-            <div className="flex gap-2 items-center border border-slate-200 hover:shadow-lg btn btn-ghost btn-sm">
+            {/* <div className="flex gap-2 items-center border border-slate-200 hover:shadow-lg btn btn-ghost btn-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
@@ -630,7 +683,7 @@ export const Marketplace = () => {
                   Sort
                 </p>
               </Dropdown>
-            </div>
+            </div> */}
 
             <div className="divider divider-horizontal m-0"></div>
 
@@ -659,11 +712,12 @@ export const Marketplace = () => {
 
         <div className="flex flex-wrap justify-around gap-3">
           {isGigsLoading ? (
-            <div className="flex justify-center items-center">
-              <p>Loading</p>
+            <div className="flex justify-center items-center h-[60vh]">
+              <Spin></Spin>
             </div>
           ) : (
             // isGigsSuccess &&
+
             gigsDataArr?.map((influencer) => (
               <ListingCard
                 onclick={() => InfluencerListing(influencer._id)}

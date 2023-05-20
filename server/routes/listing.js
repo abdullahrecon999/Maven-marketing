@@ -41,15 +41,15 @@ router.get("/getalllisting", async (req, res)=>{
             query.registered = true
           }
           
-          if(followers !== 1000){
-                query.$or = [{
-                    followers_avg: {$gte: followers},
-                    subscribers : {$gte: followers}
-                }]
-            // query.followers_avg = {$gte: followers}
-            // query.subscribers = {$gte: followers}
+        //   if(followers !== "1000" ){
+        //         query.$or = [{
+        //             followers_avg: {$gte: +followers},
+        //             subscribers : {$gte: +followers}
+        //         }]
+        //     //  query.followers_avg = followers
+        //     // query.subscribers = {$gte: followers}
             
-          }
+        //   }
           console.log(query)
 
         const data = await Listing.paginate({...query}, options)

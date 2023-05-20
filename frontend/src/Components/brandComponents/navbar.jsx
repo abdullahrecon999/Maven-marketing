@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import logo from "../../assets/AppLogo.png";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Checkbox } from 'antd';
+import { Checkbox } from "antd";
 export function NavBar({ avatar, name, email, role, id, user }) {
   const navigate = useNavigate();
-  
-  const [categories, setCategories] = useState([])
-  const [platforms, setPlatforms] = useState([])
+
+  const [categories, setCategories] = useState([]);
+  const [platforms, setPlatforms] = useState([]);
   const logout = async () => {
     // const navigate = useNavigate();
     await axios
@@ -27,13 +27,13 @@ export function NavBar({ avatar, name, email, role, id, user }) {
   const handleKeyDownInfluncer = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      var url = "/marketplace" + "?search=" + event.target.value
+      var url = "/marketplace" + "?search=" + event.target.value;
       // Open new tab with search query marketplace page
-      if(categories.length !== 0){
-        url = url +"&category="+categories
+      if (categories.length !== 0) {
+        url = url + "&category=" + categories;
       }
-      if(platforms.length !== 0){
-        url += "&platforms="+platforms
+      if (platforms.length !== 0) {
+        url += "&platforms=" + platforms;
       }
       navigate(url);
     }
@@ -42,47 +42,42 @@ export function NavBar({ avatar, name, email, role, id, user }) {
   const handleKeyDownCampaign = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      var url = "/CampaignMarketPlace" + "?search=" + event.target.value
+      var url = "/CampaignMarketPlace" + "?search=" + event.target.value;
       // Open new tab with search query marketplace page
-      if(categories.length !== 0){
-        url = url +"&category="+categories
+      if (categories.length !== 0) {
+        url = url + "&category=" + categories;
       }
-      if(platforms.length !== 0){
-        url += "&platforms="+platforms
+      if (platforms.length !== 0) {
+        url += "&platforms=" + platforms;
       }
 
       navigate(url);
     }
   };
 
-  const handlePlatforms = (e)=>{
-    if (!e.target.checked){
-      const index = platforms.indexOf(e.target.value)
-      if (index > -1){
-        platforms.splice(index, 1)
+  const handlePlatforms = (e) => {
+    if (!e.target.checked) {
+      const index = platforms.indexOf(e.target.value);
+      if (index > -1) {
+        platforms.splice(index, 1);
       }
     }
-    if (e.target.checked){
-      setPlatforms([...platforms, e.target.value])
-    
-
+    if (e.target.checked) {
+      setPlatforms([...platforms, e.target.value]);
     }
-    console.log(platforms)
-  }
-  const handleCategories = (e)=>{
-  
-    if (!e.target.checked){
-      const index = categories.indexOf(e.target.value)
-      if (index > -1){
-        categories.splice(index, 1)
+    console.log(platforms);
+  };
+  const handleCategories = (e) => {
+    if (!e.target.checked) {
+      const index = categories.indexOf(e.target.value);
+      if (index > -1) {
+        categories.splice(index, 1);
       }
     }
-    if (e.target.checked){
-      setCategories([...categories, e.target.value])
-    
+    if (e.target.checked) {
+      setCategories([...categories, e.target.value]);
     }
-   
-  }
+  };
 
   return (
     <div className="navbar bg-base-100 sticky top-0 z-50 " data-theme="cupcake">
@@ -94,7 +89,7 @@ export function NavBar({ avatar, name, email, role, id, user }) {
           <form class="group relative justify-center items-center hidden lg:flex w-6/12 max-w-sm">
             <div className="dropdown dropdown-end w-full">
               <label tabIndex={0}>
-                <svg 
+                <svg
                   width="20"
                   height="20"
                   fill="currentColor"
@@ -120,76 +115,132 @@ export function NavBar({ avatar, name, email, role, id, user }) {
                       ? "Search Campaigns"
                       : "Search Influencers"
                   }
-                 
                 />
               </label>
 
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-full z-50"
-              >
-                <div className="flex-col p-2">
-                  <p className="text-sm font-bold mb-2">Trending Platforms</p>
-                  <div className="flex gap-2 flex-wrap">
-                    <div >
-                      <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
-                        <img
-                          className="w-8 h-auto p-2"
-                          src="https://www.vectorlogo.zone/logos/instagram/instagram-icon.svg"
-                        />
-                        <p>Instagram <Checkbox value="Instagram" className="mr-2" onChange={handlePlatforms}></Checkbox></p>
+              {role === "influencer" ? null : (
+                <>
+                  <ul
+                    tabIndex={0}
+                    className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-full z-50"
+                  >
+                    <div className="flex-col p-2">
+                      <p className="text-sm font-bold mb-2">
+                        Trending Platforms
+                      </p>
+                      <div className="flex gap-2 flex-wrap">
+                        <div>
+                          <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
+                            <img
+                              className="w-8 h-auto p-2"
+                              src="https://www.vectorlogo.zone/logos/instagram/instagram-icon.svg"
+                            />
+                            <p>
+                              Instagram{" "}
+                              <Checkbox
+                                value="Instagram"
+                                className="mr-2"
+                                onChange={handlePlatforms}
+                              ></Checkbox>
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
+                            <img
+                              className="w-8 h-auto p-2"
+                              src="https://www.vectorlogo.zone/logos/twitter/twitter-official.svg"
+                            />
+                            <p>
+                              Twitter{" "}
+                              <Checkbox
+                                value="Twitter"
+                                className="mr-2"
+                                onChange={handlePlatforms}
+                              ></Checkbox>
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
+                            <img
+                              className="w-8 h-auto p-2"
+                              src="https://www.vectorlogo.zone/logos/youtube/youtube-icon.svg"
+                            />
+                            <p>
+                              Youtube{" "}
+                              <Checkbox
+                                value="Youtube"
+                                className="mr-2"
+                                onChange={handlePlatforms}
+                              ></Checkbox>
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
+                            <img
+                              className="w-8 h-auto p-2"
+                              src="https://www.vectorlogo.zone/logos/snapchat/snapchat-icon.svg"
+                            />
+                            <p>
+                              Snapchat{" "}
+                              <Checkbox
+                                value="Snaphat"
+                                className="mr-2"
+                                onChange={handlePlatforms}
+                              ></Checkbox>
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div >
-                      <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
-                        <img
-                          className="w-8 h-auto p-2"
-                          src="https://www.vectorlogo.zone/logos/twitter/twitter-official.svg"
-                        />
-                        <p>Twitter <Checkbox value="Twitter" className="mr-2" onChange={handlePlatforms}></Checkbox></p>
-                      </div>
-                    </div>
-                    <div >
-                      <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
-                        <img
-                          className="w-8 h-auto p-2"
-                          src="https://www.vectorlogo.zone/logos/youtube/youtube-icon.svg"
-                        />
-                        <p>Youtube <Checkbox value="Youtube" className="mr-2" onChange={handlePlatforms}></Checkbox></p>
-                      </div>
-                    </div>
-                    <div >
-                      <div className="flex py-1 px-2 rounded-full border  text-sm items-center pr-3">
-                        <img
-                          className="w-8 h-auto p-2"
-                          src="https://www.vectorlogo.zone/logos/snapchat/snapchat-icon.svg"
-                        />
-                        <p>Snapchat <Checkbox value="Snaphat" className="mr-2" onChange={handlePlatforms}></Checkbox></p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="divider mt-0 mb-0"></div>
+                      <div className="divider mt-0 mb-0"></div>
 
-                  <p className="text-sm font-bold mb-2">Trending Categories</p>
-                  <div className="flex gap-2 flex-wrap">
-                    <div  >
-                      <div className="flex py-1 px-4 rounded-full border  text-sm items-center bg-slate-200">
-                        <p><Checkbox value="Food" className="mr-2" onChange={handleCategories}></Checkbox>Food</p>
+                      <p className="text-sm font-bold mb-2">
+                        Trending Categories
+                      </p>
+                      <div className="flex gap-2 flex-wrap">
+                        <div>
+                          <div className="flex py-1 px-4 rounded-full border  text-sm items-center bg-slate-200">
+                            <p>
+                              <Checkbox
+                                value="Food"
+                                className="mr-2"
+                                onChange={handleCategories}
+                              ></Checkbox>
+                              Food
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex py-1 px-4 rounded-full border text-sm items-center bg-slate-200">
+                            <p>
+                              <Checkbox
+                                value="Blog"
+                                className="mr-2"
+                                onChange={handleCategories}
+                              ></Checkbox>
+                              Blog
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-center items-center py-1 px-4 rounded-full border  text-sm items-center bg-slate-200">
+                            <p>
+                              <Checkbox
+                                value="Influencer Marketing"
+                                className="mr-2"
+                                onChange={handleCategories}
+                              ></Checkbox>
+                              Influencer Marketing
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div  >
-                      <div className="flex py-1 px-4 rounded-full border text-sm items-center bg-slate-200">
-                        <p><Checkbox value="Blog" className="mr-2" onChange={handleCategories}></Checkbox>Blog</p>
-                      </div>
-                    </div>
-                    <div  >
-                      <div className="flex justify-center items-center py-1 px-4 rounded-full border  text-sm items-center bg-slate-200">
-                        <p><Checkbox value="Influencer Marketing" className="mr-2" onChange={handleCategories}></Checkbox>Influencer Marketing</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ul>
+                  </ul>
+                </>
+              )}
             </div>
           </form>
         </div>
