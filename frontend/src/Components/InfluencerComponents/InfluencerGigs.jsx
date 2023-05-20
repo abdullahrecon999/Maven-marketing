@@ -34,6 +34,7 @@ const InfluencerGigs = () => {
   const [gigsData, setGigsData] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { user, setUser } = useContext(AuthContext);
+
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
@@ -54,26 +55,24 @@ const InfluencerGigs = () => {
   const { isLoading, data, isError, isSuccess, status, refetch } = useQuery(
     ["getmylisting"],
     () => {
-      return axios.get("http://localhost:3000/list/getmylisting/" + user._id, {
+      return axios.get("http://localhost:3000/list/getmylisting/" + user?._id, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
-    }
+    },
+    [user]
   );
 
   useEffect(() => {
-    setGigsData(data.data.data);
+    setGigsData(data?.data?.data);
   }, [data]);
 
   const handleDelete = async (id) => {
     setDeleteLoading(true);
     await axios.get("http://localhost:3000/list/delete/" + id);
-    const newData = gigsData.filter((item) => {
-      return item?._id !== id;
-    });
-    setGigsData(newData);
+    refetch();
     setDeleteLoading(false);
   };
   const handleCancel = () => {
@@ -131,8 +130,9 @@ const InfluencerGigs = () => {
   //   };
   //   console.log(val);
   // };
-  const handleView = () => {
+  const handleView = (id) => {
     // add navigation code here
+    navigate("/listdetails/" + id);
   };
   if (isLoading) {
     return <div>loading</div>;
@@ -172,7 +172,7 @@ const InfluencerGigs = () => {
             </Button>
           </div>
           <div className="h-80 overflow-y-auto">
-            {gigsData.map((item) => {
+            {gigsData?.map((item) => {
               return (
                 <div
                   key={item}
@@ -191,7 +191,9 @@ const InfluencerGigs = () => {
                   <div className="flex flex-[0.25] items-end justify-end">
                     <Button
                       className="mr-1 bg-blue text-white"
-                      onClick={handleView}
+                      onClick={() => {
+                        handleView(item?._id);
+                      }}
                     >
                       View
                     </Button>

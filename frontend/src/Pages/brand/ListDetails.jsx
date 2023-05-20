@@ -9,17 +9,16 @@ import CreateNewGigModal from "../../Components/InfluencerComponents/CreateNewGi
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../../utils/authProvider";
-
+import { WarningOutlined } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 const ListDetails = () => {
   const [data, setData] = useState({});
-
+  const navigate = useNavigate();
   const { id } = useParams();
   // states of delete modal
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState(
-    "are you sure you want to delete the listing"
-  );
+
   // states of edit modal
   const [openEdit, setOpenEdit] = useState(false);
   const [confirmLoadingEdit, setConfirmLoadingEdit] = useState(false);
@@ -81,7 +80,7 @@ const ListDetails = () => {
     isError,
     isSucces,
   } = useQuery(["getmycampaigns"], () => {
-    return axios.get("http://localhost:3000/brand/mycampaigns/" + user["_id"]);
+    return axios.get("http://localhost:3000/brand/mycampaigns/" + user?._id);
   });
 
   const {
@@ -104,6 +103,15 @@ const ListDetails = () => {
     }
 
     //return axios.post("http://localhost:3000/brand/sendmultipleinvites", );
+  });
+
+  const {
+    mutate: deleteGig,
+    isLoading: gigIsDeleting,
+    isSuccess: gigDeleteIsSuccess,
+    isError: gigDeleteIsError,
+  } = useMutation(["deleteGig"], () => {
+    return axios.get("http://localhost:3000/list/delete/" + id);
   });
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
@@ -136,8 +144,44 @@ const ListDetails = () => {
         onOk={handleDeleteOk}
         confirmLoading={confirmLoading}
         onCancel={handleDeleteCancel}
+        footer={[
+          <div className="flex">
+            {gigDeleteIsSuccess && (
+              <Tag color="green">Deleted Successfully</Tag>
+            )}
+            {gigDeleteIsError && (
+              <Tag color="red">something went wrong, Try again later</Tag>
+            )}
+          </div>,
+          <div>
+            {gigDeleteIsSuccess ? (
+              <Button
+                onClick={() => navigate("/influencerHome")}
+                className="text-white bg-blue"
+              >
+                Go to home page
+              </Button>
+            ) : (
+              <Button
+                loading={gigIsDeleting}
+                onClick={() => deleteGig()}
+                className="text-white bg-red-500"
+                disabled={gigDeleteIsSuccess}
+              >
+                Delete
+              </Button>
+            )}
+          </div>,
+        ]}
       >
-        <p>{modalText}</p>
+        <h1 className="text-base text-orange-600">
+          <WarningOutlined className="mr-1" />
+          Are you sure you want to delete this Gig?
+        </h1>
+        <p className="text-xs text-gray-600 px-6 my-1">
+          By deleting this gig will be permanently deleted, you wont pe able to
+          recover it
+        </p>
       </Modal>
 
       <Modal
@@ -290,7 +334,7 @@ const ListDetails = () => {
             <div className="flex  justify-between items-center px-4 py-2 border border-2 rounded-xl space-x-4 shadow-lg px-6 py-6">
               <img className="w-7 h-7" src={Views} />
               <div className="flex flex-col justify-center items-center">
-                {data.registered ? (
+                {data?.registered ? (
                   <Link
                     to={"/influencerListing/" + data?.owner}
                     className="text-base text-gray-600 font-bold "
@@ -364,15 +408,28 @@ const ListDetails = () => {
               </div>
             </div>
           ) : null}
+
+          {data?.registered && (
+            <div>
+              <div className="w-[300px] h-[300px] border rounded shadow">
+                <img
+                  className="object-fill w-full h-full"
+                  src={data.posts[0]}
+                ></img>
+              </div>
+            </div>
+          )}
         </div>
       </section>
-      <section className="px-10 ">
-        <div className="p-4">
-          <Button onClick={showInviteModal} className="text-white bg-blue">
-            Invite For campaign
-          </Button>
-        </div>
-      </section>
+      {user?.role === "brand" ? (
+        <section className="px-10 ">
+          <div className="p-4">
+            <Button onClick={showInviteModal} className="text-white bg-blue">
+              Invite For campaign
+            </Button>
+          </div>
+        </section>
+      ) : null}
 
       <hr></hr>
     </div>

@@ -162,10 +162,7 @@ function App() {
                   path="/influencerlisting/:id"
                   element={<InfluencerListing />}
                 ></Route>
-                <Route
-                  path="/listdetails/:id"
-                  element={<ListDetails />}
-                ></Route>
+
                 <Route
                   path="/influencerprofile/:id"
                   element={<InfluencerProfile />}
@@ -227,6 +224,10 @@ function App() {
               <Route
                 element={<RequireAuth allowedRoles={["influencer", "brand"]} />}
               >
+                <Route
+                  path="/listdetails/:id"
+                  element={<ListDetails />}
+                ></Route>
                 <Route
                   path="/campaigndetails"
                   element={<CampaignDetailInfluencer />}
