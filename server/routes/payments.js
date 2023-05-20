@@ -68,14 +68,20 @@ router.get("/getaccountdetails/:id", async (req, res)=>{
   }
 })
 
+
 router.get("/getbrandaccountdetails/:id", async(req, res)=>{
 
   try{
     const id = req.params.id
     const data = await Account.findOne({userId: id})
+    const cards = await stripe.customers.listPaymentMethods(
+      data.accountId,
+      {type: 'card'}
+    );
     res.status(200).json({
       status: 'success',
-      data: data
+      accountId: data.accountId,
+      data: cards.data
     })
   }catch(e){
     res.status(500).json({
@@ -386,6 +392,46 @@ const cards = await stripe.accounts.listExternalAccounts(
       status: "error",
      
     })
+  }
+})
+
+router.post("/attachpaymentmethod/:id", async( req, res)=>{
+  const id = req.params.id
+  const {number, exp_month,exp_year, cvc} = req.body
+  const data = {
+    body: {
+      type: "card",
+      card: {
+        number,
+        exp_month,
+        exp_year,
+        cvc,
+      },
+    },
+  };
+  console.log(data.body)
+  try{
+
+    let paymentMethod = await stripe.paymentMethods.create(data.body)
+    if(id){
+      
+      paymentMethod = await stripe.paymentMethods.attach(paymentMethod.id,{
+        customer: id
+      })
+      await stripe.customers.update(id,{
+        invoice_settings: {
+          default_payment_method: paymentMethod.id,
+        },
+      })
+    }
+    
+    res.status(200).json({
+      status:"success",
+      data:paymentMethod
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500)
   }
 })
 module.exports = router;
