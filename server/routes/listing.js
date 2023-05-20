@@ -7,7 +7,7 @@ var router = express.Router()
 
 router.get("/getalllisting", async (req, res)=>{
     try{
-        const {page, limit, search, sort, category, country, language, socialMediaHandles, minFollowers, maxFollowers} = req.query
+        const {page,followers, limit, search, sort, category, country, language, socialMediaHandles, minFollowers, maxFollowers, platform, registered} = req.query
         const options = {
             page: parseInt(page, 10) || 1,
             limit: parseInt(limit, 10) || 10,
@@ -17,6 +17,11 @@ router.get("/getalllisting", async (req, res)=>{
             }
           }
           const query = {}
+          if (category){
+            const categories = category.split(",")
+            query.categories = { $in: categories.map(c => new RegExp(c, 'i')) }
+
+          }
           if(search){
             query.$and = [
               {
@@ -28,6 +33,25 @@ router.get("/getalllisting", async (req, res)=>{
               }
             ]
           }
+          if(platform){
+            const platformsList = platform.split(",")
+            query.platform = {$in : platformsList.map(c => new RegExp (c, "i"))}
+          }
+          if (registered){
+            query.registered = true
+          }
+          
+          if(followers !== 1000){
+                query.$or = [{
+                    followers_avg: {$gte: followers},
+                    subscribers : {$gte: followers}
+                }]
+            // query.followers_avg = {$gte: followers}
+            // query.subscribers = {$gte: followers}
+            
+          }
+          console.log(query)
+
         const data = await Listing.paginate({...query}, options)
         res.status(200).json({
             status: "success",
