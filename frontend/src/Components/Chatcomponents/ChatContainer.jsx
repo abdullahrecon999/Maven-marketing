@@ -14,7 +14,8 @@ import messageImage from "../../images/Messaging-rafiki.png";
 import Contract from "./ContractContainer";
 import InfluencerGenaricModel from "../InfluencerComponents/InfluencerGenaricModal";
 import CloseIcon from "@mui/icons-material/Close";
-
+import dayjs from "dayjs";
+import { Modal, Tag, Button, Input } from "antd";
 const FallBack = () => {
   return (
     <div className="h-[80vh] flex flex-col flex-1 mt-10 items-center px-4 py-2 bg-slate-50">
@@ -31,14 +32,14 @@ const ContractModel = () => {
   const { openContract, setOpenContract, Id } = useContext(ChatContext);
 
   const { user, setUser } = useContext(AuthContext);
-  const { data, isLoading } = useQuery(["getContractdetails"], () => {
-    return axios.get("http://localhost:3000/chats/getcontractdetails/" + Id);
-  });
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
   }, []);
+  const { data, isLoading } = useQuery(["getContractdetails"], () => {
+    return axios.get("http://localhost:3000/chats/getcontractdetails/" + Id);
+  });
 
   useEffect(() => {
     setData(data?.data?.data);
@@ -54,93 +55,97 @@ const ContractModel = () => {
     );
   });
   return (
-    <InfluencerGenaricModel>
-      <div className="h-full flex flex-col justify-start ">
-        <div className="flex justify-end bg-slate-200 ">
-          <CloseIcon
-            onClick={() => {
-              setOpenContract(false);
-            }}
-            className=" hover:bg-slate-100"
-          ></CloseIcon>
+    <Modal
+      open={openContract}
+      onCancel={() => {
+        setOpenContract(false);
+      }}
+      footer={[]}
+      title="Contract Details"
+    >
+      <div className=" grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+        <div className="col-span-2">
+          <h1 className="text-base text-gray-800 font-semibold">
+            Campaign Name
+          </h1>
+          <h1 className="text-xl font-bold text-gray-800  ">
+            {Data?.campaignId?.title}
+          </h1>
         </div>
 
-        <div className="px-5 flex justify-between">
-          <div>
-            <h1 className="text-xl text-gray-900 ">Contract Details</h1>
-            <p className="text-sm text-gray-500 ">
-              Enter Contract details to set up the contract between the you and
-              influencer
-            </p>
-          </div>
-          <div>
-            <h1 className="border-green italic text-green">
-              {!Data?.accepted && !Data?.rejected ? "Pending" : null}
-            </h1>
-            <h1 className="border-green italic text-green">
-              {Data?.accepted && !Data?.rejected ? "accepted" : null}
-            </h1>
-            <h1 className="border-green italic text-green">
-              {!Data?.accepted && Data?.rejected ? "rejected" : null}
-            </h1>
-          </div>
+        <p className="text-sm text-gray-600 col-span-2">
+          {Data?.campaignId?.description}
+        </p>
+
+        <div className="col-span-2">
+          <h1 className="text-base  text-gray-800 font-medium">Brand Name</h1>
+          <h1 className="text-xl text-gray-800 font-semibold italic">
+            {Data?.sender?.name}
+          </h1>
         </div>
-        <div className="flex-1 justify-start h-full px-5 mt-4  overflow-y-auto">
-          <div className="space-y-5 mb-3">
-            <h1 className="text-2xl  ">{Data?.campaignId?.title}</h1>
-            <p className="text-sm text-gray-600">
-              {Data?.campaignId?.description}
-            </p>
-          </div>
-          <div className="spa">
-            <h1 className="text-2xl  ">Brand Information</h1>
-            <h1 className="text-xl text-gray-600">{Data?.sender?.name}</h1>
-          </div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              mutate();
-            }}
-            className="flex flex-col  space-y-3"
-          >
-            <div className="flex justify-between w-[50%]">
-              <div>
-                <h1 className="text-xl ">Contract Amount</h1>
-                <h2 className="text-xl  text-gray-700">{Data?.amount}</h2>
-              </div>
-              <div>
-                <h1 className="text-xl ">End Date</h1>
-                <h1 required className="bg-slate-100 rounded-full px-2">
-                  {Data?.expiresAt}
-                </h1>
-              </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            mutate();
+          }}
+          className="flex flex-col col-span-2 "
+        >
+          <div className="  gap-3 px-3 grid grid-cols-2 border rounded">
+            <h1 className="text-base font-semibold text-gray-800 col-span-2">
+              Details
+            </h1>
+
+            <div>
+              <h1 className="text-sm font-semibold">Contract Amount</h1>
+              <h2 className="text-base italic text-gray-800 font-medium">
+                {Data?.amount}
+              </h2>
             </div>
-            <div className="flex h-56 ">
-              {user?.role === "brand" ? null : (
-                <button
-                  type="submit"
-                  className="bg-blue px-2 py-1 hover:opacity-80 shadow-lg h-[50px] text-white  rounded-full"
-                >
-                  Accept Contract
-                  {isAcceptLoading ? (
-                    <TailSpin
-                      height="20"
-                      width="20"
-                      color="white"
-                      ariaLabel="tail-spin-loading"
-                      radius="1"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                    />
-                  ) : null}
-                </button>
-              )}
+            <div>
+              <h1 className="text-sm font-semibold">End Date</h1>
+              <Tag color="volcano">
+                {dayjs(Data?.expiresAt).toDate().toLocaleDateString()}
+              </Tag>
             </div>
-          </form>
-        </div>
+          </div>
+          <div className="flex  ">
+            {user?.role === "brand" ? null : (
+              <Button
+                type="submit"
+                className="bg-blue px-2 py-1 hover:opacity-80 shadow-lg h-[50px] text-white  rounded-full"
+              >
+                Accept Contract
+                {isAcceptLoading ? (
+                  <TailSpin
+                    height="20"
+                    width="20"
+                    color="white"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                ) : null}
+              </Button>
+            )}
+          </div>
+        </form>
       </div>
-    </InfluencerGenaricModel>
+    </Modal>
+    // <InfluencerGenaricModel>
+    //   <div className="h-full flex flex-col justify-start ">
+    //     <div className="flex justify-end bg-slate-200 ">
+    //       <CloseIcon
+    //         onClick={() => {
+    //           setOpenContract(false);
+    //         }}
+    //         className=" hover:bg-slate-100"
+    //       ></CloseIcon>
+    //     </div>
+
+    //   </div>
+    // </InfluencerGenaricModel>
   );
 };
 
@@ -281,17 +286,18 @@ const ChatContainer = () => {
     console.log("in mutation", message);
     var text = message;
     setMessage("");
-    setMessages([
-      ...messages,
-      {
-        message: text,
-        fromSelf: true,
-      },
-    ]);
+
     if (Object.keys(currentUser).length !== 0) {
       console.log("innn");
       if (Fileurl === "") {
         setUrl("");
+        setMessages([
+          ...messages,
+          {
+            message: text,
+            fromSelf: true,
+          },
+        ]);
         return axios.post(
           "http://localhost:3000/chats/addMessage",
 
@@ -306,6 +312,13 @@ const ChatContainer = () => {
         setdisable(false);
 
         setUpload(false);
+        setMessages([
+          ...messages,
+          {
+            message: Fileurl,
+            fromSelf: true,
+          },
+        ]);
         const msg = {
           text: Fileurl,
           users: [currentUser["_id"], user["_id"]],
@@ -325,7 +338,9 @@ const ChatContainer = () => {
       ) : (
         <div className="flex flex-col flex-1  shadow-inner my-0 bg-white">
           <div className="flex flex-col shadow-md w-[100%] px-5 py-2 ">
-            <h1 className="text-sm text-black ">{currentUser?.name}</h1>
+            <h1 className="text-sm text-black font-semibold ">
+              {currentUser?.name}
+            </h1>
             <p
               className={
                 status === "online"
@@ -358,24 +373,36 @@ const ChatContainer = () => {
                       <Contract id={msg?.id} text={msg?.msgType} />
                     </div>
                   ) : (
-                    <div className="flex ">
-                      {console.log(msg)}
-                      <img
-                        src={msg?.sender?.photo}
-                        alt="tomatoes are disgusting"
-                        className="w-[30px] h-[30px] rounded-full object-cover"
-                      />
-                      <div className="flex flex-col justify-start">
-                        <div>
-                          <h1>{msg?.sender?.name}</h1>
-                          <p>{msg?.date}</p>
+                    <div className="flex   ">
+                      <div className="flex flex-col justify-end ">
+                        <div
+                          className={
+                            msg?.fromSelf
+                              ? "px-3 flex justify-end"
+                              : "px-3 flex justify-start "
+                          }
+                        >
+                          <img
+                            src={msg?.sender?.photo}
+                            alt="tomatoes are disgusting"
+                            className="w-[30px] h-[30px] rounded-full object-cover"
+                          />
+                          <div>
+                            <h1 className="text-base text-gray-800 font-semibold">
+                              {msg?.sender?.name}
+                            </h1>
+                            <p className="text-xxs">
+                              {dayjs(msg?.date).toDate().toLocaleTimeString()}{" "}
+                              {dayjs(msg?.date).toDate().toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
                         <h1
                           ref={scrollRef}
                           className={
                             msg?.fromSelf === true
-                              ? " text-gray-700 max-w-[50%] bg-blue rounded-full my-1 px-4 py-1"
-                              : "text-black max-w-[40%] bg-slate-200 rounded-full my-2 px-4 py-1"
+                              ? " text-gray-700 text-sm text-end bg-gray-300  my-1 px-4 py-1"
+                              : "text-black w-full text-sm text-end bg-slate-200  my-2 px-4 py-1"
                           }
                         >
                           {msg?.message}
@@ -407,7 +434,7 @@ const ChatContainer = () => {
                 }}
                 type="file"
               ></input>
-              <input
+              <Input
                 disabled={disable}
                 value={message}
                 size="small"
@@ -420,7 +447,7 @@ const ChatContainer = () => {
                 onChange={(e) => {
                   handleMessageChange(e);
                 }}
-              ></input>
+              ></Input>
               {uploading ? (
                 <TailSpin
                   height="20"

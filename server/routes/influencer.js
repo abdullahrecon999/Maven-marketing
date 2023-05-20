@@ -951,6 +951,47 @@ router.post("/acceptcontract/:id", async (req, res) => {
   }
 })
 
+router.post("/addfile/:id", async(req, res)=>{
+
+  try{
+    const id = req.params.id
+    const {file} = req.body
+    const doc = await contracts.findOne({_id: id})
+    doc.files.push(file)
+    await doc.save()
+    res.status(200).json({
+      status:"success"
+    })
+    
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.post("/removefile/:id", async(req, res)=>{
+
+  try{
+    const id = req.params.id
+    const {file} = req.body
+    const doc = await contracts.findOne({_id: id})
+    doc.files.pull(file)
+    await doc.save()
+    res.status(200).json({
+      status:"success"
+    })
+    
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+
+
+
 router.post("/rejectContract", ()=>{})
 
 

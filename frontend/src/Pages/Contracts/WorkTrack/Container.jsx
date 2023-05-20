@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef, useMemo } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import { ContractContext } from "../ContractProvider";
 import { storage } from "../../../utils/fireBase/fireBaseInit";
@@ -14,17 +14,23 @@ import { v4 } from "uuid";
 import { async } from "@firebase/util";
 import { Button, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { AuthContext } from "../../../utils/authProvider";
+import axios from "axios";
+import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
 
 const length = true;
 const type = 0;
 const Container = () => {
-  const { contract } = useContext(ContractContext);
+  const { contract, setContract } = useContext(ContractContext);
   const [files, setFile] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [file, setUploadFile] = useState(null);
+
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useState(false);
-  const [user, setUser] = useState({});
+
+  const { user, setUser } = useContext(AuthContext);
+  const [uploaded, setUploaded] = useState(false);
+  const { id } = useParams();
   const handleChange = (e) => {
     console.log(e.file);
   };
@@ -98,6 +104,15 @@ const Container = () => {
   //     console.log(e);
   //   }
   // };
+  const { data, isLoading, isError, refetch } = useQuery(["fetchfiles"], () => {
+    return axios.get("http://localhost:3000/brand/getcontractdetails/" + id);
+  });
+
+  useEffect(() => {
+    if (data?.data?.data) {
+      setContract(data?.data?.data);
+    }
+  }, [data?.data]);
 
   const handleDelete = (referenceUrl, name) => {
     if (window.confirm("Are you sure to delete file name")) {
@@ -141,6 +156,11 @@ const Container = () => {
             date: metaData.timeCreated,
             url: url,
           };
+          await axios.post(
+            "http://localhost:3000/influencer/addfile/" + contract?._id,
+            { file: val }
+          );
+          refetch();
           setUploadedFiles([...uploadedFiles, val]);
         } catch (e) {
           console.log("there was some eroorrrr opsiii");
@@ -154,13 +174,23 @@ const Container = () => {
   return (
     <div className="px-4 py-5 space-y-4 border mx-4 my-3">
       <div>
-        <h1 className="font-semibold text-base text-gray-800">
-          Upload your work
-        </h1>
-        <p className="text-sm text-gray-600">
-          Upload files of your work on campaign here, this allows the client to
-          determine the quality of your work
-        </p>
+        {user?.role === "influencer" ? (
+          <div>
+            <h1 className="font-semibold text-base text-gray-800">
+              Upload your work
+            </h1>
+            <p className="text-sm text-gray-600">
+              Upload files of your work on campaign here, this allows the client
+              to determine the quality of your work
+            </p>
+          </div>
+        ) : (
+          <div>
+            <h1 className="font-semibold text-base text-gray-800">
+              View the influencers work
+            </h1>
+          </div>
+        )}
         <div className="flex flex-row-reverse my-3">
           <Button
             className="text-white bg-blue"
@@ -175,7 +205,7 @@ const Container = () => {
             {console.log(uploadedFiles)}
 
             <>
-              {uploadedFiles.map((item) => {
+              {contract?.files?.map((item) => {
                 return (
                   <div
                     className="flex justify-between bg-white px-4 py-2 my-1"

@@ -7,9 +7,11 @@ import { Button, Tag } from "antd";
 const ContractDetails = () => {
   const { contract } = useContext(ContractContext);
   const [user, setUser] = useState({});
+  const [files, setFiles] = useState([]);
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
+  useEffect(() => {}, []);
   return (
     <div className="container mx-auto">
       {console.log(contract)}

@@ -5,24 +5,35 @@ import { ContractContext } from "./ContractProvider";
 import axios from "axios";
 import useFetch from "../../utils/Hooks/useFetch";
 import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { Spin } from "antd";
 const Contract = () => {
   const { setContract, setUser } = useContext(ContractContext);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-    const fetch = async () => {
-      setLoading(true);
-      const data = await axios.get(
-        "http://localhost:3000/brand/getcontractdetails/" + id
-      );
 
-      console.log(data.data.data, "this is the data in the contract");
-      setContract(data.data.data);
-      setLoading(false);
-    };
-    fetch();
-  }, []);
+  const { data, isLoading } = useQuery(["getcontract"], () => {
+    return axios.get("http://localhost:3000/brand/getcontractdetails/" + id);
+  });
+  useEffect(() => {
+    if (data?.data?.data) {
+      setContract(data?.data?.data);
+    }
+  }, [data]);
+  // useEffect(() => {
+  //   setUser(JSON.parse(localStorage.getItem("user")));
+  //   const fetch = async () => {
+  //     setLoading(true);
+  //     const data = await axios.get(
+  //       "http://localhost:3000/brand/getcontractdetails/" + id
+  //     );
+
+  //     console.log(data.data.data, "this is the data in the contract");
+  //     setContract(data.data.data);
+  //     setLoading(false);
+  //   };
+  //   fetch();
+  // }, []);
   // const { data, loading, error } = useFetch(
   //   "http://localhost:3000/influencer/contractDetails/641591be9481d41b80f07ab5"
   // );
@@ -34,6 +45,13 @@ const Contract = () => {
   //   }
   // }, [data]);
 
+  if (isLoading) {
+    return (
+      <div className="flex h-[70vh] justify-center items-center">
+        <Spin></Spin>
+      </div>
+    );
+  }
   return (
     <React.Fragment>
       {loading ? (
