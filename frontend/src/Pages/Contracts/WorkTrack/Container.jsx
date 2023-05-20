@@ -114,23 +114,13 @@ const Container = () => {
     }
   }, [data?.data]);
 
-  const handleDelete = (referenceUrl, name) => {
+  const handleDelete = async (item) => {
     if (window.confirm("Are you sure to delete file name")) {
-      console.log("cnfrm");
-      deleteObject(ref(storage, referenceUrl))
-        .then(async () => {
-          alert("file removed");
-          const temp = uploadedFiles.filter((item) => {
-            return item.name !== name;
-          });
-          setUploadedFiles(temp);
-        })
-        .catch((err) => {
-          console.log("there was an error");
-          alert(err);
-        });
-    } else {
-      console.log("not cnfrm");
+      await axios.post(
+        "http://localhost:3000/influencer/removefile/" + contract?._id,
+        { file: item }
+      );
+      refetch();
     }
   };
 

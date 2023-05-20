@@ -109,8 +109,8 @@ router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) ,
     ])
 
     const NumberActivationRequests = await User.count({role: "influencer", profileActive: 0})
-    const users =await User.find({role:"influencer", profileActive: 0})
-    .select({ "_id": 1,"name": 1, "platforms": 1, "profileActive": 1, "country":1 })
+    const users =await User.find({role:"influencer", profileActive: 0, profileComplete: 1})
+    .select({ "_id": 1,"name": 1, "platforms": 1, "profileActive": 1, "country":1 , "language":1, "category":1})
     
     const val = {
       total: data[1].count + data[2].count,
