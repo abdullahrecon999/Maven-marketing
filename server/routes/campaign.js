@@ -1,8 +1,11 @@
 const Campaign = require("../models/Campaign");
+require('dotenv').config()
 const express = require("express")
 const axios = require('axios');
 var router = express.Router();
+const secretKey = process.env.STRIPE_KEY
 
+const stripe = require('stripe')(secretKey)
 
 router.get("/campaigns", async (req, res, next) => {
   try {

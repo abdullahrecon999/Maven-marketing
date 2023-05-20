@@ -93,6 +93,22 @@ router.post('/register', (req, res) => {
                   user: user["_id"],
                   contacts: []
                 })
+
+                const customer = await stripe.customers.create({
+                  email: user?.email,
+                  name: user?.name,
+                  description: 'testing account',
+                  balance: 0
+                });
+                const val = {
+                  userId: user["_id"],
+                  role : "brand",
+                  accountId: customer.id,
+                 }
+                  await Account.create(val)
+                
+            
+               
                 // Not working
                 // send email verification link
                 const verifyEmailToken = user.createEmailVerificationToken();
@@ -103,6 +119,7 @@ router.post('/register', (req, res) => {
                 const message = `Please verify your email Maven Marketing`;
                 try {
                   await sendEmail(user.email, message, verifyEmailUrl);
+                  
                   res.status(200).json({
                     status: 'success',
                     message: 'Email verification link sent to email'
