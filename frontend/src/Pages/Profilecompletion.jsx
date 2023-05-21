@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -15,6 +15,7 @@ import { AuthContext } from "../utils/authProvider";
 import image from "../images/profile.jpg";
 import { useMutation } from "react-query";
 import { TailSpin } from "react-loader-spinner";
+import { Input, Select, Alert } from "antd";
 // need to add multiple array in coutries language and categories
 const style = {
   width: { md: 600 },
@@ -22,28 +23,51 @@ const style = {
     height: { sm: 35, md: 40 },
   },
 };
-const countries = ["pakistan", "China", "India", "USA", "England", "Russia"];
+const countries = [
+  { label: "Pakistan", value: "Pakistan" },
+  { label: "China", value: "China" },
+  { label: "India", value: "India" },
+  { label: "USA", value: "USA" },
+  { label: "England", value: "England" },
+  { label: "Russia", value: "Russia" },
+];
 
-const languages = ["Urdu", "English", "Hindi", "Chinese", "Russian"];
+const languages = [
+  { label: "Urdu", value: "Urdu" },
+  { label: "English", value: "English" },
+  { label: "Chinese", value: "Chinese" },
+  { label: "Russian", value: "Russian" },
+  { label: "Hindi", value: "Hindi" },
+  { label: "Japanese", value: "Japanese" },
+];
 const platforms = [
-  "Instagram",
-  "Youtube",
-  "Tiktok",
-  "Facebook",
-  "Twitter",
-  "Snapchat",
-  "Linkedin",
-  "Pinterest",
+  { label: "Instagram", value: "Instagram" },
+  { label: "Youtube", value: "Youtube" },
+  { label: "Tiktok", value: "Tiktok" },
+  { label: "Facebook", value: "Facebook" },
+  { label: "Twitter", value: "Twitter" },
+  { label: "Linkedin", value: "Linkedin" },
+  { label: "Pinterest", value: "Pinterest" },
+  { label: "Reddit", values: "Reddit" },
 ];
 
 const categories = [
-  "Influencer Marketing",
-  "Email Marketing",
-  "Blog Writing",
-  "Photography",
-  "Design",
-  "Audio",
+  { label: "Influencer Marketing", value: "Influencer Marketing" },
+  { label: "Email Marketing", value: "Email Marketing" },
+  { label: "Blog Writing", value: "Blog Writing" },
+  { label: "Photography", value: "Photography" },
+  { label: "Design", value: "Design" },
+  { label: "Food", value: "Food" },
+  { label: "Entertainment", value: "Entertainment" },
 ];
+const options = [];
+
+for (let i = 10; i < 36; i++) {
+  options.push({
+    label: i.toString(36) + i,
+    value: i.toString(36) + i,
+  });
+}
 const Profilecompletion = () => {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
@@ -241,7 +265,7 @@ const Profilecompletion = () => {
                       <div className="space-y-3"></div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                      <h2 className=" text-sm md:text-base ">
+                      <h2 className=" text-sm md:text-base text-gray-800 font-medium ">
                         Full name{" "}
                         <span className="text-xl text-red-500">*</span>
                       </h2>
@@ -253,12 +277,55 @@ const Profilecompletion = () => {
                         placeholder="Enter your full name"
                       ></FormTextField>
                     </div>
-                    <h1 className=" text-sm md:text-base ">
-                      Select Country and languages{" "}
-                      <span className="text-xl text-red-500">*</span>
-                    </h1>
-                    <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3">
-                      <FormSelect
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
+                      <div>
+                        <h1 className=" text-sm md:text-base text-gray-800 font-medium ">
+                          Select Country
+                          <span className="text-xl text-red-500">*</span>
+                        </h1>
+                        <Field name="country">
+                          {({ field }) => (
+                            <Select
+                              {...field}
+                              allowClear
+                              style={{ width: "100%" }}
+                              options={countries}
+                              defaultValue=""
+                              placeholder="Please select country"
+                              onChange={(val) => {
+                                const temp = [val];
+                                formik.setFieldValue("country", temp);
+                                console.log(formik.values);
+                              }}
+                            ></Select>
+                          )}
+                        </Field>
+                      </div>
+                      <div>
+                        <h1 className=" text-sm md:text-base text-gray-800 font-medium ">
+                          Select Language
+                          <span className="text-xl text-red-500">*</span>
+                        </h1>
+                        <Field name="language">
+                          {({ field }) => (
+                            <Select
+                              options={languages}
+                              {...field}
+                              allowClear
+                              style={{ width: "100%" }}
+                              placeholder="Please select language"
+                              mode="multiple"
+                              defaultValue={[]}
+                              onChange={(val) => {
+                                formik.setFieldValue("language", val);
+                              }}
+                            ></Select>
+                          )}
+                        </Field>
+                      </div>
+
+                      {/* <FormSelect
                         data={countries}
                         setvalue={formik.setFieldValue}
                         name="country"
@@ -270,48 +337,90 @@ const Profilecompletion = () => {
                         setvalue={formik.setFieldValue}
                         name="language"
                         label="Language"
-                      ></FormSelect>
+                      ></FormSelect> */}
                     </div>
 
                     <div className="flex flex-col space-y-2">
-                      <h1 className=" text-sm md:text-base ">
+                      <h1 className=" text-sm md:text-base text-gray-800 font-medium ">
                         Description{" "}
                         <span className="text-xl text-red-500">*</span>
                       </h1>
                       {/* <textarea name='discription' id="message" rows="5" class=" resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue focus:border-blue dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter discription about your self......"></textarea> */}
-                      <Textarea name="discription"></Textarea>
+                      <Field name="discription">
+                        {({ field }) => (
+                          <Input.TextArea
+                            {...field}
+                            name="discription"
+                          ></Input.TextArea>
+                        )}
+                      </Field>
+                      <ErrorMessage name="discription"></ErrorMessage>
                     </div>
                   </div>
                   <div className="border"></div>
                   <div className="flex flex-col space-y-4">
                     <div>
-                      <h1 className="text-base text-green  md:text-xl">
+                      <h1 className="text-base   md:text-xl font-bold text-gray-800">
                         Platform Information{" "}
                         <span className="text-xl text-red-500">*</span>
                       </h1>
                     </div>
-                    {/* need to add functionality for multiple feilds */}
-                    <FormSelect
-                      data={platforms}
-                      setvalue={formik.setFieldValue}
-                      name="platform"
-                      label="platform"
-                    ></FormSelect>
-                    <div>
-                      <h1 className="text-base text-green  md:text-xl">
-                        Category <span className="text-xl text-red-500">*</span>
-                      </h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
+                      <div>
+                        <h1 className=" text-sm md:text-base text-gray-800 font-medium ">
+                          Select Platfroms
+                          <span className="text-xl text-red-500">*</span>
+                        </h1>
+                        <Field name="platform">
+                          {({ field }) => (
+                            <Select
+                              {...field}
+                              allowClear
+                              style={{ width: "100%" }}
+                              placeholder="Please select platform"
+                              options={platforms}
+                              onChange={(val) => {
+                                console.log(val);
+                                const temp = [val];
+                                formik.setFieldValue("platform", temp);
+                                console.log(formik.values);
+                              }}
+                            ></Select>
+                          )}
+                        </Field>
+                        <ErrorMessage
+                          component="div"
+                          className="text-xs text-red-500"
+                          name="platform"
+                        ></ErrorMessage>
+                      </div>
+                      <div>
+                        <h1 className=" text-sm md:text-base text-gray-800 font-medium ">
+                          Select categories
+                          <span className="text-xl text-red-500">*</span>
+                        </h1>
+                        <Field name="category">
+                          {({ field }) => (
+                            <Select
+                              {...field}
+                              allowClear
+                              options={categories}
+                              style={{ width: "100%" }}
+                              placeholder="Please select category"
+                              defaultValue={[]}
+                              onChange={(value) => {
+                                formik.setFieldValue("category", value);
+                              }}
+                              mode="multiple"
+                            ></Select>
+                          )}
+                        </Field>
+                        <ErrorMessage name="category"></ErrorMessage>
+                      </div>
                     </div>
-                    {/* need to add functionality for multiple feilds */}
-                    <FormSelect
-                      data={categories}
-                      setvalue={formik.setFieldValue}
-                      name="category"
-                      label="category"
-                    ></FormSelect>
 
                     <div className="flex flex-col space-y-2">
-                      <h2 className=" text-sm md:text-base ">
+                      <h2 className=" text-sm md:text-base text-gray-800 font-medium ">
                         Social Media Url{" "}
                         <span className="text-xl text-red-500">*</span>
                       </h2>
@@ -324,26 +433,14 @@ const Profilecompletion = () => {
                   <div>
                     <Button
                       type="submit"
+                      loading={loading}
                       disabled={!formik.isValid}
                       className={
                         formik.isValid ? "bg-blue" : "bg-grey text-white"
                       }
                       variant="contained"
                     >
-                      {loading ? (
-                        <TailSpin
-                          height="20"
-                          width="20"
-                          color="white"
-                          ariaLabel="tail-spin-loading"
-                          radius="1"
-                          wrapperStyle={{}}
-                          wrapperClass=""
-                          visible={true}
-                        />
-                      ) : (
-                        "Submit"
-                      )}
+                      Submit
                     </Button>
                     {/* {console.log(formik)} */}
                     {/* needs to be fixed */}
@@ -352,13 +449,20 @@ const Profilecompletion = () => {
                         isSuccess && !isError ? "flex flex-col mt-2" : "hidden"
                       }
                     >
-                      <h1 className="text-xl  text-red-600">
-                        Profile submitted Successfully
-                      </h1>
-                      <p className="text-base  text-grey">
-                        Pleas wait while our system verfies your profile, try to
-                        login after some time
-                      </p>
+                      <Alert
+                        message="Profile Completed"
+                        description="Please wait our system will verfy your profile. Please login later to check if the profile is verified or not"
+                        type="success"
+                        showIcon
+                      />
+                    </div>
+                    <div className={isError ? "flex flex-col mt-2" : "hidden"}>
+                      <Alert
+                        message="Something went wrong"
+                        description="Check your internet connect or try again later"
+                        type="success"
+                        showIcon
+                      />
                     </div>
                   </div>
                 </div>

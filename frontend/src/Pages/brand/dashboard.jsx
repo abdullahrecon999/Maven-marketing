@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TabComponent } from "../../Components/brandComponents/tabcomponent";
 import { ListingCard } from "../../Components/brandComponents/listingCard";
 import { ProfileStatusCard } from "../../Components/brandComponents/profileStatusCard";
@@ -7,7 +7,7 @@ import { Pagination, Navigation } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, WarningOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -18,6 +18,7 @@ import {
   Row,
   Select,
   Space,
+  Modal,
 } from "antd";
 import { message, Upload, notification } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
@@ -26,6 +27,7 @@ import { v4 } from "uuid";
 import { storage } from "../../utils/fireBase/fireBaseInit";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../utils/authProvider";
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -89,6 +91,11 @@ export function Dashboard({ uid }) {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
+  const [openModal, setOpenModal] = useState(false);
+  const { user, setUser } = useContext(AuthContext);
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
   const {
     data: influencer,
     isLoading,
@@ -111,7 +118,13 @@ export function Dashboard({ uid }) {
   const onClose = () => {
     setOpen(false);
   };
+  const showModal = () => {
+    setOpenModal(true);
+  };
 
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
   const onFinish = (values) => {
     console.log("Success:", values);
     console.log(uid);
@@ -144,9 +157,36 @@ export function Dashboard({ uid }) {
       });
   };
 
+  const checkPaymentCard = () => {
+    console.log("user", user);
+    if (user?.paymentAttached === true) {
+      showDrawer();
+    } else {
+      showModal();
+    }
+  };
   return (
     <div>
       {contextHolder}
+      <Modal
+        open={openModal}
+        onCancel={handleModalClose}
+        title="Payment Method Required"
+        footer={[]}
+      >
+        <div className="flex gap-1 items-center">
+          <WarningOutlined className="text-xl text-orange-500"></WarningOutlined>
+          <h1 className="text-xl  text-orange-500">No Payment Method Found</h1>
+        </div>
+
+        <p className="text-sm text-gray-700">
+          Please attach a payment method before creating a campaign.{" "}
+          <Link to="/brandpayments/manage" className="link text-blue">
+            {" "}
+            Attach PaymentMethod
+          </Link>
+        </p>
+      </Modal>
       <Drawer
         title="Create a new campaign"
         width={720}
@@ -294,7 +334,7 @@ export function Dashboard({ uid }) {
       <div data-theme="cupcake" className="flex-col px-9 h-full bg-transparent">
         <div className="flex justify-between items-center py-3 relative">
           <h1 className="text-xl font-bold text-slate-200">Dashboard</h1>
-          <button className="btn btn-warning gap-1" onClick={showDrawer}>
+          <button className="btn btn-warning gap-1" onClick={checkPaymentCard}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -312,11 +352,11 @@ export function Dashboard({ uid }) {
             <p>Create Campaign</p>
           </button>
         </div>
-
-        <ProfileStatusCard />
+        {/* 
+        <ProfileStatusCard /> */}
 
         <div className="flex justify-between py-10 flex-wrap gap-5">
-          <a onClick={showDrawer}>
+          <a onClick={checkPaymentCard}>
             <div
               className="card w-72 h-40 bg-base-100 shadow-xl rounded-xl"
               data-theme="corporate"
@@ -327,7 +367,9 @@ export function Dashboard({ uid }) {
                   <p className="py-2 text-sm">
                     Create a campaign to attract influencers and creators
                   </p>
-                  <a className="link link-primary">Create Campaign</a>
+                  <a onClick={checkPaymentCard} className="link link-primary">
+                    Create Campaign
+                  </a>
                 </div>
                 <div className="flex-col w-20">
                   <div className="h-20 w-20">
@@ -657,7 +699,7 @@ export function Dashboard({ uid }) {
                   <p className="py-2 text-sm">
                     Automate Social media campaigns
                   </p>
-                  <a className="link link-primary">Create Campaign</a>
+                  <a className="link link-primary">View</a>
                 </div>
                 <div className="flex-col w-20">
                   <div className="h-20 w-20">
@@ -882,7 +924,7 @@ export function Dashboard({ uid }) {
                     to="/brandpayments/manage"
                     className="link link-primary"
                   >
-                    Create Campaign
+                    Manage Finances
                   </Link>
                 </div>
                 <div className="flex-col w-20">

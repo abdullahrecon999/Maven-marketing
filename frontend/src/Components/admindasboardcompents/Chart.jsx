@@ -3,11 +3,15 @@ import { useEffect, useState, useMemo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
-import { Table, Tag } from "antd";
+import { Button, Table, Tag } from "antd";
 
 export default function Users({ data }) {
   const navigate = useNavigate();
   const [resquestData, setRequestData] = useState([]);
+  const handleClick = (id) => {
+    navigate(`influencer/${id}`, { id: id });
+    console.log(id);
+  };
   return (
     <div className="flex flex-col bg-white py-7 px-8 mb-12 mx-6">
       <h1 className="font-railway text-gray-800 text-base mb-2">
@@ -56,7 +60,9 @@ export default function Users({ data }) {
                   {tags.map((item) => {
                     return (
                       <>
-                        <Tag color="volcano">{item}</Tag>
+                        <Tag className="m-[1px]" color="volcano">
+                          {item}
+                        </Tag>
                       </>
                     );
                   })}
@@ -97,6 +103,18 @@ export default function Users({ data }) {
                     );
                   })}
                 </>
+              );
+            }}
+          ></Table.Column>
+          <Table.Column
+            title="Action"
+            dataIndex="_id"
+            key="_id"
+            render={(record) => {
+              return (
+                <Button onClick={() => handleClick(record)}>
+                  View Profile
+                </Button>
               );
             }}
           ></Table.Column>

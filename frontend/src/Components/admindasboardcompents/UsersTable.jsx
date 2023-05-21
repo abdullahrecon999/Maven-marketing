@@ -80,7 +80,7 @@ const UsersTable = ({ type, data }) => {
 
   const handleClick = (params) => {
     console.log(params.row.id);
-    navigate(`influencer/${params.row.id}`, { id: params.row.id });
+    // navigate(`influencer/${params.row.id}`, { id: params.row.id });
   };
 
   return (
@@ -89,9 +89,9 @@ const UsersTable = ({ type, data }) => {
         <DataGrid
           onRowClick={(param) => {
             console.log(param.row["_id"]);
-            navigate(`influencer/${param.row["_id"]}`, {
-              id: param.row["_id"],
-            });
+            // // navigate(`influencer/${param.row["_id"]}`, {
+            //   id: param.row["_id"],
+            // });
           }}
           rows={data}
           getRowId={(row) => row._id}

@@ -5,7 +5,7 @@ const Account = require('../models/Account')
 const Transactions = require('../models/Transaction')
 const Contracts = require("../models/Contracts")
 const secretKey = process.env.STRIPE_KEY
-
+const User = require('../models/User');
 const stripe = require('stripe')(secretKey)
 /* GET home page. */
 
@@ -424,6 +424,10 @@ router.post("/attachpaymentmethod/:id", async( req, res)=>{
         },
       })
     }
+
+    const accountData = await Account.findOne({accountId:id})
+    await User.updateOne({_id:accountData.userId}, {paymentAttached: true})
+    
     
     res.status(200).json({
       status:"success",

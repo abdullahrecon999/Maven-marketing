@@ -97,26 +97,27 @@ router.get('/logout', (req, res) => {
 
 router.get('/dashboard', ensureAuthenticated, utils.checkIsInRole(ROLES.Admin) ,async (req, res, next) => {
   try{
-    const data =await User.aggregate([
-      {
-        $group:{
-          _id: '$role',
-          count: {
-            $sum: 1
-          }
-        }
-      }
-    ])
-
-    const NumberActivationRequests = await User.count({role: "influencer", profileActive: 0})
+    // const data =await User.aggregate([
+    //   {
+    //     $group:{
+    //       _id: '$role',
+    //       count: {
+    //         $sum: 1
+    //       }
+    //     }
+    //   }
+    // ])
+    const numberOfInfluencers = await User.countDocuments({role: "influencer", profileActive: 1})
+    const numberOfBrand = await User.countDocuments ({role:"brand"})
+    const NumberActivationRequests = await User.countDocuments({role: "influencer", profileActive: 0 , profileComplete: 1})
     const users =await User.find({role:"influencer", profileActive: 0, profileComplete: 1})
     .select({ "_id": 1,"name": 1, "platforms": 1, "profileActive": 1, "country":1 , "language":1, "category":1})
     
     const val = {
-      total: data[1].count + data[2].count,
+      total: numberOfBrand + numberOfInfluencers,
       activationRequests: NumberActivationRequests,
-      influencers: data[1].count,
-      brands: data[2].count,
+      influencers: numberOfInfluencers,
+      brands: numberOfBrand,
       
       
     }
@@ -158,7 +159,7 @@ router.get("/getInactiveProfiles", ensureAuthenticated, utils.checkIsInRole(ROLE
 
 router.get('/getInfluencers', async (req, res) => {
   try {
-    const users = await User.find({ role: "influencer" });
+    const users = await User.find({ role: "influencer" , profileActive:1});
     res.status(200).json({
       status: 'success',
       data: {
@@ -197,6 +198,21 @@ router.post("/activateProfile/:id", async(req, res, next)=> {
   const id = req.params.id
   try{
     await User.updateOne({_id: id}, {profileActive:1})
+  
+    res.status(200).json({
+      status: "success"
+    });
+    }
+    catch(e){
+      res.status(500).json({
+        status: "error"
+      })
+    }
+})
+router.post("/deactivateProfile/:id", async(req, res, next)=> { 
+  const id = req.params.id
+  try{
+    await User.updateOne({_id: id}, {profileActive:0})
   
     res.status(200).json({
       status: "success"
