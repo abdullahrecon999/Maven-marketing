@@ -6,7 +6,7 @@ import { InfluencerDashboardContext } from "./InfluencerDashboardContext";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Skeleton } from "antd";
-
+import { useMutation } from "react-query";
 const InfluencerInviteModal = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -96,30 +96,27 @@ const InfluencerInviteModal = () => {
       setDone(false);
     }
   };
-
-  const handleDeclineAccept = async () => {
-    try {
-      await axios.post(
-        `http://localhost:3000/influencer/invite/reject/${id}`,
-        {
-          accepted: false,
-          rejected: true,
+  const {
+    mutate: handleDecline,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useMutation(() => {
+    return axios.post(
+      `http://localhost:3000/influencer/invite/reject/${id}`,
+      {
+        accepted: false,
+        rejected: true,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      setRejecting(true);
-      setDone(true);
-      setSuccessMessage("Rejected successfully");
-    } catch (e) {
-      setRejecting(false);
-      setDone(false);
-    }
-  };
+        withCredentials: true,
+      }
+    );
+  });
+
   return (
     <>
       <Modal
@@ -127,16 +124,16 @@ const InfluencerInviteModal = () => {
         open={openInviteModal}
         onCancel={handleCancel}
         footer={[
-          <Button
-            key="reject"
-            onClick={() => {
-              handleDeclineAccept();
-            }}
-            loading={rejecting}
-            disabled={done}
-          >
-            Reject Invite
-          </Button>,
+          // <Button
+          //   loading={isLoading}
+          //   disabled={isSuccess}
+          //   key="reject"
+          //   onClick={() => {
+          //     handleDecline();
+          //   }}
+          // >
+          //   Reject Invite
+          // </Button>,
           <Button
             key="accept"
             loading={accepting}

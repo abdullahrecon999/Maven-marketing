@@ -23,6 +23,7 @@ var influencerRouter = require('./routes/influencer');
 var MessageRouter = require("./routes/chat");
 var campaign = require("./routes/campaign")
 var socialAutomate = require("./routes/socialAutomate")
+var payment = require("./routes/payments")
 var Media = require("./routes/media")
 var listing = require("./routes/listing")
 
@@ -126,6 +127,7 @@ app.use("/media", Media)
 //     const { filename } = req.params;
 //     res.sendFile(path.join(__dirname, 'uploads', filename));
 // });
+app.use('/payments', payment)
 
 app.all('*', (req, res, next) => {
     res.status(404).json({ 'Error': `Cant Find ${req.originalUrl}` }); // 404 Not Found
@@ -161,6 +163,7 @@ io.on("connection", (socket) => {
         if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieve", data.text)
             console.log("message is", data.text)
+            console.log("the user is in the send user sockect", sendUserSocket)
         }
     })
     socket.on("checkOnline", (userId) => {

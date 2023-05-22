@@ -3,7 +3,7 @@ import Navbar from "../Components/Navbar";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/system";
 import GoogleSignup from "../Components/GoogleSignup";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import profileSchema from "../ValidationSchemas/profileSchema";
 import FormTextField2 from "../Components/FormTextFeild2";
 import { useNavigate } from "react-router-dom";
@@ -287,16 +287,26 @@ const InfluencerLogin = () => {
                       <h1 className="text-gray-800 text-base md:text-xl font-semibold mb-1">
                         Password
                       </h1>
-                      <Input.Password
+                      <Field name="password">
+                        {({ field }) => (
+                          <Input.Password
+                            {...field}
+                            name="password"
+                            label="Password"
+                            type="password"
+                            size="medium"
+                            onChange={(e) => {
+                              formik.setFieldValue("password", e.target.value);
+                            }}
+                            placeholder="Password"
+                          ></Input.Password>
+                        )}
+                      </Field>
+                      <ErrorMessage
                         name="password"
-                        label="Password"
-                        type="password"
-                        size="medium"
-                        onChange={(e) => {
-                          formik.setFieldValue("password", e.target.value);
-                        }}
-                        placeholder="Password"
-                      ></Input.Password>
+                        component="div"
+                        className="text-xs text-red-500"
+                      ></ErrorMessage>
                     </div>
                     <p
                       onClick={handleOpen}

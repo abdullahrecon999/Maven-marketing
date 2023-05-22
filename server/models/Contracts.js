@@ -48,7 +48,17 @@ const contracts = new mongoose.Schema({
     filesRef:{
         type:String,
         unique: true
-    }
+    },
+    files: [
+        {
+            
+                url: String,
+                name : String,
+                date: String,
+                
+            
+        }
+    ]
     
 
 },{

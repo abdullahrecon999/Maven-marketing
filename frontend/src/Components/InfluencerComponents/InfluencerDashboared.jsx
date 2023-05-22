@@ -7,13 +7,12 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Input } from "antd";
+import { Input, Button } from "antd";
 
 function DashboardCard({ title, subtitle, buttonText }) {
   const theme = useTheme();
@@ -155,10 +154,10 @@ const InfluencerDashboared = ({ onCampaignViewClick }) => {
     }
     getData();
   }, []);
-  // const {data, isLoading, isError, isSuccess} = useQuery(["getMyContracts"], ()=>{
+  // // const {data, isLoading, isError, isSuccess} = useQuery(["getMyContracts"], ()=>{
 
-  //   return axios.get("http://localhost:3000/influencer/getmyContracts/")
-  // })
+  // //   return axios.get("http://localhost:3000/influencer/getmyContracts/")
+  // // })
 
   const handleQueryChange = (e) => {
     setQuery(e.target.value);
@@ -198,7 +197,6 @@ const InfluencerDashboared = ({ onCampaignViewClick }) => {
               placeholder="Search contracts"
               allowClear={true}
               onSearch={() => handleSearch()}
-              onClear
             ></Input.Search>
           </div>
         </div>
@@ -223,17 +221,17 @@ const InfluencerDashboared = ({ onCampaignViewClick }) => {
                       </div>
                     </div>
                     <div className="ml-auto">
-                      <label
+                      <Button
                         onClick={() => {
                           console.log("clicked");
                           console.log(item);
-                          navigate("/contract/1234");
+                          navigate("/contract/" + item?._id);
                         }}
                         htmlFor="campaignModal"
-                        className="badge badge-accent text-white btn hover:bg-green"
+                        className="text-white bg-blue"
                       >
                         View
-                      </label>
+                      </Button>
                     </div>
                   </div>
                 </>

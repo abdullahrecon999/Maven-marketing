@@ -1,4 +1,6 @@
 var express = require('express');
+const Transaction = require("../models/Transaction")
+require('dotenv').config()
 const authController = require('../controller/authController');
 var router = express.Router();
 const crypto = require('crypto');
@@ -15,12 +17,30 @@ const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 const invites = require ("../models/Invites");
+const Account = require('../models/Account')
 const { platform } = require('os');
+
+const secretKey = process.env.STRIPE_KEY
+
+const stripe = require('stripe')(secretKey)
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('Brand Router called');
 });
-
+router.get ("/mycampaigns/:id", async(req, res)=>{
+  try{
+    const id = req.params.id
+    const data = await Campaign.find({brand: id}).select('title')
+    res.status(200).json({
+      status: "success",
+      data
+    })
+  }catch(e){
+    res.status(500).json({
+      status:"error"
+    })
+  }
+})
 router.post("/getinvites/", async(req, res)=>{
   const {sender, campaignId} = req.body
   console.log(req.body)
@@ -73,6 +93,22 @@ router.post('/register', (req, res) => {
                   user: user["_id"],
                   contacts: []
                 })
+
+                const customer = await stripe.customers.create({
+                  email: user?.email,
+                  name: user?.name,
+                  description: 'testing account',
+                  balance: 0
+                });
+                const val = {
+                  userId: user["_id"],
+                  role : "brand",
+                  accountId: customer.id,
+                 }
+                  await Account.create(val)
+                
+            
+               
                 // Not working
                 // send email verification link
                 const verifyEmailToken = user.createEmailVerificationToken();
@@ -83,6 +119,7 @@ router.post('/register', (req, res) => {
                 const message = `Please verify your email Maven Marketing`;
                 try {
                   await sendEmail(user.email, message, verifyEmailUrl);
+                  
                   res.status(200).json({
                     status: 'success',
                     message: 'Email verification link sent to email'
@@ -238,7 +275,7 @@ router.post('/campaigns', (req, res) => {
 })
 
 router.post('/campaigns/:id', (req, res) => {
-  
+  const id = req.params.id
   Campaign.find({_id:id, status: "live"}).then(campaigns => {
     res.send(campaigns);
   }).catch(err => {
@@ -312,6 +349,30 @@ router.get("/inviteinfluencers", async(req,res)=>{
 router.post("/sendinvite", async(req, res)=>{
   try{
     await invites.create(req.body)
+    res.status(200).json({
+      status: "success"
+    })
+  }catch(e){
+    console.log(e)
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.post ("/sendmultipleinvites", async (req, res)=>{
+  try{
+    const {to, sender, campaignIds} = req.body
+    console.log(req.body)
+    campaignIds.forEach(async item => {
+      
+        await invites.create({
+          to:to,
+          sender: sender,
+          campaignId: item
+        })
+      
+    })
     res.status(200).json({
       status: "success"
     })
@@ -446,7 +507,7 @@ router.get("/getcurrentworkinginfluencers/:id",async(req, res, next)=>{
   try{
     const id = req.params.id
     const data = await Contract.find({campaignId: id, accepted: true, expired:false}).populate("to")
-      
+      console.log(data)
     res.status(200).json({
       status: "success",
       data
@@ -461,12 +522,62 @@ router.get("/getcurrentworkinginfluencers/:id",async(req, res, next)=>{
 router.get("/getcontractdetails/:id", async (req, res, next)=>{
   try{
     const id = req.params.id
-    const data = await Contract.findOne({_id: id, accepted:true, expired:false}).populate('campaignId').populate("to")
+    const data = await Contract.findOne({_id: id, accepted:true}).populate('campaignId').populate("to")
     res.status(200).json({
       status: "success",
       data
     })
   }catch (e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+router.post("/endcontract/:id", async (req, res, next)=>{
+  try{
+    const id = req.params.id
+    
+    //add code here to pay the influencer
+    const data = await Contract.findOne({_id:id})
+    
+
+    const brandAccount = await Account.findOne({userId:data.sender, role:"brand"})
+    const influencerAccount = await Account.findOne({userId:data.to, role:"influencer"})
+    console.log("this is the brand contract")
+    const paymentMethods = await stripe.paymentMethods.list({
+      customer: brandAccount.accountId,
+      type: 'card',
+    });
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: data.amount*100,
+      currency: 'usd',
+     
+      payment_method: paymentMethods?.data[0]?.id,
+      off_session : true,
+      confirm :true,
+      customer : brandAccount.accountId,
+      transfer_data: {
+        destination: influencerAccount.accountId,
+      },
+    }
+   
+    )
+    await Transaction.create({
+      userFrom: brandAccount.userId,
+      userTo: influencerAccount.userId,
+      amount: data.amount,
+      paymentFor:data._id
+
+    })
+
+    await Contract.updateOne({_id:id}, {expired: true})
+    res.status(200).json({
+      status: "success",
+      data
+      
+    })
+  }catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error"
     })

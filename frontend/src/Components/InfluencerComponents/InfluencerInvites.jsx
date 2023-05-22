@@ -228,7 +228,7 @@ const Bids = () => {
       );
     },
     {
-      refetchInterval: 5000,
+      refetchInterval: 2000,
     }
   );
 
@@ -252,7 +252,7 @@ const Bids = () => {
       console.log(data);
       setData(data);
     }
-  }, [isSuccess, status]);
+  }, [isSuccess, status, bids]);
 
   const handleSetSearch = (value) => {
     setQuery(value);
@@ -268,51 +268,57 @@ const Bids = () => {
   };
 
   if (isError) {
-    return <div>error</div>;
+    return (
+      <div className="px-[10%] justify-center items-center ">
+        <h1 className="text-xl text-red-500 font-medium">
+          Oppss something went wrong
+        </h1>
+        <p className="text-sm text-gray-500">
+          Something went wrong. Check your internet connect or try again later
+        </p>
+      </div>
+    );
   }
   return (
     <>
-      {data.length <= 0 ? (
-        <Initialbids />
-      ) : (
-        <div className=" px-[10%]">
-          {/* {close && <Modal onClose={handleClose} id={id} onOpen={handleOpen} />} */}
+      <div className=" px-[10%]">
+        {/* {close && <Modal onClose={handleClose} id={id} onOpen={handleOpen} />} */}
 
-          {!close && (
-            <>
-              <div className=" flex flex-col items-center shadow-md h-100 p-10 rounded-xl  bg-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2">
-                <div className="flex flex-col self-start items-start mb-2 md:flex-row">
-                  <div className="self-start">
-                    <h1 className="text-xl self-start md:text-2xl text-gray-800  mb-1 pl-4">
-                      Invites
-                    </h1>
-                    <p className="text-xs self-start text-grey mb-6 pl-4 md:text-sm">
-                      {" "}
-                      All the invites that you recieve are displayed here.
-                      Accept the invites to collaborate in the campaign
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-md w-full flex border  ">
-                  <TableAntd
-                    className="w-full"
-                    data={Object.keys(data).length === 0 ? [] : data}
-                    open={handleOpen}
-                    type="invite"
-                  >
-                    <Column
-                      title="Recieved At"
-                      dataIndex="recievedAt"
-                      key="recievedAt"
-                    ></Column>
-                  </TableAntd>
+        {!close && (
+          <>
+            <div className=" flex flex-col items-center shadow-md h-100 p-10 rounded-xl  bg-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2">
+              <div className="flex flex-col self-start items-start mb-2 md:flex-row">
+                <div className="self-start">
+                  <h1 className="text-xl self-start md:text-2xl text-gray-800  mb-1 pl-4">
+                    Invites
+                  </h1>
+                  <p className="text-xs self-start text-grey mb-6 pl-4 md:text-sm">
+                    {" "}
+                    All the invites that you recieve are displayed here. Accept
+                    the invites to collaborate in the campaign
+                  </p>
                 </div>
               </div>
-            </>
-          )}
-        </div>
-      )}
+
+              <div className="bg-white rounded-md w-full flex border  ">
+                <TableAntd
+                  className="w-full"
+                  data={Object.keys(data).length === 0 ? [] : data}
+                  open={handleOpen}
+                  type="invite"
+                  loading={isLoading}
+                >
+                  <Column
+                    title="Recieved At"
+                    dataIndex="recievedAt"
+                    key="recievedAt"
+                  ></Column>
+                </TableAntd>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </>
   );
 };

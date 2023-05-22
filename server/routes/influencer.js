@@ -890,10 +890,10 @@ router.get("/invites/detail/:id", async(req, res)=>{
 router.post("/invite/reject/:id", async(req, res, next)=>{
   const id = req.params.id
   try{
-    const data = await invites.findOne({to: id})
+    const data = await invites.findOne({_id: id})
 
     if(Object.keys(data).length !==0){
-      await invites.updateOne({_id: id}, req.body)
+      await invites.updateOne({_id: id}, {rejected:true})
       res.status(200).json({
         status: "success",
         msg: "an accepted"
@@ -908,6 +908,7 @@ router.post("/invite/reject/:id", async(req, res, next)=>{
     }
   }
   catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error",
       msg: "an error occured"
@@ -924,7 +925,7 @@ router.post("/acceptcontract/:id", async (req, res) => {
     const data = await contracts.findOne({_id: id})
     console.log("data in the contract", data)
     const campaign = await Campaings.findOne({_id: data["campaignId"]}).populate("brand", "name")
-    await contracts.updateOne({_id:id, filesRef:ref}, {accepted:true})
+    await contracts.updateOne({_id:id}, {accepted:true, filesRef:ref})
     console.log(campaign)
     const msg = {
       text: `Accepting the contract for ${campaign["title"]} by ${campaign?.brand.name}`,
@@ -942,6 +943,7 @@ router.post("/acceptcontract/:id", async (req, res) => {
     })
   }catch(e){
     console.log(e)
+
     res.status(500).json({
       status: "error",
       msg: "an error occured",
@@ -950,6 +952,47 @@ router.post("/acceptcontract/:id", async (req, res) => {
     })
   }
 })
+
+router.post("/addfile/:id", async(req, res)=>{
+
+  try{
+    const id = req.params.id
+    const {file} = req.body
+    const doc = await contracts.findOne({_id: id})
+    doc.files.push(file)
+    await doc.save()
+    res.status(200).json({
+      status:"success"
+    })
+    
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+router.post("/removefile/:id", async(req, res)=>{
+
+  try{
+    const id = req.params.id
+    const {file} = req.body
+    const doc = await contracts.findOne({_id: id})
+    doc.files.pull(file)
+    await doc.save()
+    res.status(200).json({
+      status:"success"
+    })
+    
+  }catch(e){
+    res.status(500).json({
+      status: "error"
+    })
+  }
+})
+
+
+
 
 router.post("/rejectContract", ()=>{})
 

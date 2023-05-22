@@ -87,6 +87,10 @@ const userSchema = new mongoose.Schema({
           ref: "Social"
         }
     ],
+  },
+  paymentAttached: {
+    type: Boolean,
+    default: false
   }
 }, { timestamps: true });
 
