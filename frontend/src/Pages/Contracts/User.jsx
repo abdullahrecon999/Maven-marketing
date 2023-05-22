@@ -2,9 +2,10 @@ import React, { useContext } from "react";
 import profileImage from "../../images/profile.jpg";
 import { Button, Tag } from "antd";
 import { ContractContext } from "./ContractProvider";
-import dayjs from "dayjs";
+
 const User = () => {
   const { user, contract } = useContext(ContractContext);
+
   return (
     <>
       {user?.role === "influencer" ? null : (
@@ -41,14 +42,14 @@ const User = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row-reverse gap-3">
+            {/* <div className="flex flex-row-reverse gap-3">
               <Button size="small" rootClassName="text-white bg-blue px-3 py-1">
                 Chat
               </Button>
               <Button size="small" rootClassName=" font-semibold px-3 py-1">
                 View Profile
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       )}

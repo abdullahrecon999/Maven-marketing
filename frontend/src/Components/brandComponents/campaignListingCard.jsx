@@ -41,17 +41,12 @@ export function CampaignListing({ banner, title, date, status, id }) {
     },
     {
       key: "2",
-      label: (
-        <Link target="_blank" to={"/editcampaign/" + id}>
-          Edit
-        </Link>
-      ),
+      label: <Link to={"/editcampaign/" + id}>Edit</Link>,
     },
     {
       key: "3",
       label: (
         <Link
-          target="_blank"
           to={"/managecampaign/" + id}
           state={{
             id: id,

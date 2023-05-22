@@ -1,12 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import User from "./User";
 import ContractInfo from "./ContractInfo";
 import Container from "./WorkTrack/Container";
 import { ContractContext } from "./ContractProvider";
 import { Button, Tag } from "antd";
+import { AuthContext } from "../../utils/authProvider";
 const ContractDetails = () => {
   const { contract } = useContext(ContractContext);
-
+  const { user, setUser } = useContext(AuthContext);
+  const [files, setFiles] = useState([]);
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
+  useEffect(() => {}, []);
   return (
     <div className="container mx-auto">
       {console.log(contract)}
@@ -64,7 +70,7 @@ const ContractDetails = () => {
             <Container></Container>
           </div>
           <div className="flex-[0.45] flex-col space-y-2">
-            <User></User>
+            {user?.role === "brand" ? <User></User> : null}
             <ContractInfo></ContractInfo>
           </div>
         </div>

@@ -60,11 +60,12 @@ const InfluencerBidModal = () => {
   return (
     <>
       <Modal
-        title="Submit a new bid"
+        title=""
         open={openBidModal}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
+        footer={[]}
       >
         <div className=" max-h-96 overflow-y-auto">
           <div className="flex  justify-start">
@@ -125,7 +126,10 @@ const InfluencerBidModal = () => {
                     {" "}
                     Proposal Amount
                   </h1>
-                  <Tag color="red">{bidDetails?.data?.data?.amount}</Tag>
+                  <h1 className="text-blue">
+                    {bidDetails?.data?.data?.amount}
+                  </h1>
+                  {/* <Tag color="red">{bidDetails?.data?.data?.amount}</Tag> */}
                 </div>
                 <div>
                   <h1 className="text-grey-500 font-semibold"> Status</h1>

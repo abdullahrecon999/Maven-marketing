@@ -169,9 +169,23 @@ const Bids = ({ id }) => {
             <div className="py-3">
               <Button className="bg-blue text-white">View Profile</Button>
             </div>
-            <h1 className="text-base col-span-2 text-gray-700 font-semibold">
-              Additional Information
-            </h1>
+            {bidDetails?.file !== "" ? (
+              <React.Fragment>
+                <h1 className="text-base col-span-2 text-gray-700 font-semibold">
+                  Additional Information
+                </h1>
+                <div className="col-span-2 flex justify-between p-2 border rounded">
+                  <h1>File</h1>
+                  <a
+                    target="_blank"
+                    href={bidDetails?.file}
+                    className="text-blue link"
+                  >
+                    View
+                  </a>
+                </div>
+              </React.Fragment>
+            ) : null}
             {/* <div className="col-span-2">
               <h1 className="text-sm text-gray-700 font-semibold">Files</h1>
               <h1>Files</h1>
@@ -559,7 +573,7 @@ const CurrentInfluencers = ({ id }) => {
     const fetch = async () => {
       setLoading(true);
       const data = await axios.get(
-        "http://localhost:3000/brand/getcurrentworkinginfluencers/64078565f1116ce68f3aff06",
+        "http://localhost:3000/brand/getcurrentworkinginfluencers/" + id,
         {
           headers: {
             "Content-Type": "application/json",

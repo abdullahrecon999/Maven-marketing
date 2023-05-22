@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigation , Link} from "react-router-dom";
+import { useLocation, useNavigation, Link } from "react-router-dom";
 import { useQuery, useMutation } from "react-query";
 import axios from "axios";
 import HelpIcon from "@mui/icons-material/Help";
@@ -10,16 +10,21 @@ import { Carousel } from "react-responsive-carousel";
 import BidsTable from "./table";
 import InfluencerGenaricModal from "./InfluencerGenaricModal";
 import CloseIcon from "@mui/icons-material/Close";
-import { Formik, Form, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage, Field } from "formik";
 import { TailSpin } from "react-loader-spinner";
 import CampaignAcceptedList from "../brandComponents/campaignAcceptedList";
 import ContractModel from "../brandComponents/ContractModel";
-import { Image, Input, InputNumber } from "antd";
+import { Image, Input, InputNumber, Spin } from "antd";
 import dayjs from "dayjs";
-import { PlusOneOutlined } from "@mui/icons-material";
+import { PlusOneOutlined, DeleteForever } from "@mui/icons-material";
 import { Collapse, Button, Modal, Tag } from "antd";
 import { storage } from "../../utils/fireBase/fireBaseInit";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  getMetadata,
+} from "firebase/storage";
 import { v4 } from "uuid";
 import bidValidation from "../../ValidationSchemas/bidValidation";
 
@@ -212,7 +217,8 @@ const CampaignDetailInfluencer = () => {
   const [url, setUrl] = useState("");
   const [reference, setRef] = useState(null);
   const [filename, setFileName] = useState("");
-  
+  const [fileUploaded, setFileUploaded] = useState(false);
+  const [fileDelete, setFileDelete] = useState(false);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
@@ -229,6 +235,7 @@ const CampaignDetailInfluencer = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setFileUploaded(false);
   };
   const handleClose = () => {
     setOpen(!open);
@@ -242,7 +249,14 @@ const CampaignDetailInfluencer = () => {
     setId(id);
     setClose(true);
   };
-
+  const handleFileDelete = () => {
+    setFileDelete(true);
+    setTimeout(() => {
+      setFileDelete(false);
+      setFileUploaded(false);
+      setUrl("");
+    });
+  };
   const handleBidClose = () => {
     setClose(!close);
   };
@@ -273,12 +287,12 @@ const CampaignDetailInfluencer = () => {
   const handleSubmit = async (values) => {
     const val = {
       sender: user["_id"],
-      to: data.data.data.brand?.name,
+      to: data.data.data.brand?._id,
       campaignId: data.data.data["_id"],
       file: url,
       ...values,
     };
-
+    console.log(val);
     return await axios.post(
       `http://localhost:3000/influencer/bidCampaign`,
       val,
@@ -297,6 +311,7 @@ const CampaignDetailInfluencer = () => {
     isError: bidSubmitIsError,
     data: status,
   } = useMutation(handleSubmit);
+
   const onFileChange = (file, formik) => {
     console.log(formik);
     const fileRef = ref(storage, `files/${file.name + v4()}`);
@@ -308,8 +323,9 @@ const CampaignDetailInfluencer = () => {
 
         getDownloadURL(fileRef).then((url) => {
           alert("file is uploaded");
-          console.log("this is the file reference");
+          console.log("this is the file url", url);
           setUrl(url);
+          setFileUploaded(true);
           setFileName(file.name);
           return url;
         });
@@ -375,10 +391,7 @@ const CampaignDetailInfluencer = () => {
   if (isLoading) {
     return (
       <div className="h-screen flex justify-center items-center">
-        <Loader
-          title="Please wait"
-          subtitle="Campaign details are being loaded"
-        />
+        <Spin></Spin>
       </div>
     );
   }
@@ -397,11 +410,10 @@ const CampaignDetailInfluencer = () => {
         <Formik
           initialValues={{
             discription: "",
-            amount: "",
+            amount: 1,
             answer1: "",
             answer2: "",
             answer3: "",
-            file: "",
           }}
           validationSchema={bidValidation}
           onSubmit={(values) => {
@@ -413,12 +425,12 @@ const CampaignDetailInfluencer = () => {
               <div className="flex bg-white flex-col h-80  ">
                 <div className="   bg-white p-4  rounded-xl overflow-y-auto ">
                   <div className="space-y-1">
-                    {isSuccess ? (
-                      <Tag className="text-red">
-                        Proposal submitted successfully
-                      </Tag>
+                    {bidSubmitSuccess ? (
+                      <Tag color="green">Proposal submitted successfully</Tag>
                     ) : null}
-                    {isError && null}
+                    {bidSubmitIsError && (
+                      <Tag color="red">Ops snomething went wrong</Tag>
+                    )}
                     <h1 className="text-sm text-gray-800 font-semibold mb-1">
                       Enter Proposal Details
                     </h1>
@@ -428,39 +440,59 @@ const CampaignDetailInfluencer = () => {
                         Cover Letter{" "}
                         <span className="text-xl text-red-500">*</span>
                       </h1>
-                      <Input.TextArea
-                        showCount
-                        autoSize={{
-                          minRows: 2,
-                          maxRows: 10,
-                        }}
-                        maxLength={2000}
-                        placeholder="Add your cover letter here"
-                        allowClear
-                        onChange={(e) => {
-                          formik.setFieldValue("discription", e.target.value);
-                        }}
-                      ></Input.TextArea>
+                      {console.log(formik.values)}
+                      <Field name="discription">
+                        {({ field }) => (
+                          <Input.TextArea
+                            showCount
+                            autoSize={{
+                              minRows: 2,
+                              maxRows: 10,
+                            }}
+                            maxLength={2000}
+                            placeholder="Add your cover letter here"
+                            allowClear
+                            onChange={(e) => {
+                              console.log(formik.values);
+                              formik.setFieldValue(
+                                "discription",
+                                e.target.value
+                              );
+                            }}
+                            {...field}
+                          ></Input.TextArea>
+                        )}
+                      </Field>
                       <ErrorMessage
                         component="div"
-                        className="text-sm text-red-600"
+                        className="text-xs text-red-600"
                         name="discription"
-                      >
-                        error
-                      </ErrorMessage>
+                      ></ErrorMessage>
                     </div>
                     <div>
                       <h1 className="text-base text-gray-800 font-semibold">
                         Amount <span className="text-xl text-red-500">*</span>
                       </h1>
-                      <InputNumber
-                        required
-                        onChange={(value) => {
-                          formik.setFieldValue("amount", value.toString());
-                          console.log(formik.values);
-                        }}
-                        min={1}
-                      ></InputNumber>
+                      <Field name="amount">
+                        {({ field }) => (
+                          <Input
+                            required
+                            onChange={(value) => {
+                              formik.setFieldValue("amount", value);
+                              console.log(value);
+                            }}
+                            placeholder="Enter Amount"
+                            min={1}
+                            style={{ width: "50%" }}
+                            {...field}
+                          ></Input>
+                        )}
+                      </Field>
+                      <ErrorMessage
+                        component="div"
+                        className="text-xs text-red-600"
+                        name="amount"
+                      ></ErrorMessage>
                     </div>
                     <div>
                       <h1 className="text-base text-gray-800 font-semibold">
@@ -480,16 +512,26 @@ const CampaignDetailInfluencer = () => {
                                 key={i}
                                 i={i}
                               ></CampaignQuestions>
-                              <Input
-                                onchange={(e) => console.log(e)}
-                                placeholder="your response"
-                                onChange={(e) => {
-                                  formik.setFieldValue(
-                                    `answer${i + 1}`,
-                                    e.target.value
-                                  );
-                                }}
-                              ></Input>
+                              <ErrorMessage
+                                component="div"
+                                className="text-xs text-red-600"
+                                name={`answer${i + 1}`}
+                              ></ErrorMessage>
+                              <Field name={`answer${i + 1}`}>
+                                {({ field }) => (
+                                  <Input
+                                    {...field}
+                                    onchange={(e) => console.log(e)}
+                                    placeholder="your response"
+                                    onChange={(e) => {
+                                      formik.setFieldValue(
+                                        `answer${i + 1}`,
+                                        e.target.value
+                                      );
+                                    }}
+                                  ></Input>
+                                )}
+                              </Field>
                             </div>
                           );
                         })}
@@ -509,46 +551,72 @@ const CampaignDetailInfluencer = () => {
                             Attact your work here to show your skills to brand
                           </p>
                         </div>
-                        <div className="border px-5 py-5">
-                          <div class="max-w-xl">
-                            <label class="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
-                              <span class="flex items-center space-x-2">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  class="w-6 h-6 text-gray-600"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                  stroke-width="2"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                  />
-                                </svg>
-                                <span class="font-medium text-gray-600">
-                                  <span class="text-blue-600 underline">
-                                    browse
+                        {fileUploaded ? (
+                          <div className="flex justify-between p-2 border my-1 rounded">
+                            <h1 className="text-base text-gray-800 font-medium">
+                              File
+                            </h1>
+                            <div>
+                              <a
+                                href={url}
+                                className="link text-blue"
+                                target="_blank"
+                              >
+                                view
+                              </a>
+                              {fileDelete ? (
+                                <Spin className="text-red-500 mx-1 hover:text-red-600"></Spin>
+                              ) : (
+                                <DeleteForever
+                                  onClick={handleFileDelete}
+                                  className="text-red-500 mx-1 hover:text-red-600"
+                                ></DeleteForever>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="border px-5 py-5">
+                            <div class="max-w-xl">
+                              <label class="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+                                <span class="flex items-center space-x-2">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-6 h-6 text-gray-600"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                    />
+                                  </svg>
+                                  <span class="font-medium text-gray-600">
+                                    <span class="text-blue-600 underline">
+                                      browse
+                                    </span>
                                   </span>
                                 </span>
-                              </span>
-                              <input
-                                onChange={async (e) => {
-                                  const url = await onFileChange(
-                                    e.target.files[0]
-                                  );
-                                }}
-                                type="file"
-                                name="file_upload"
-                                class="hidden"
-                              ></input>
-                            </label>
+                                <input
+                                  onChange={async (e) => {
+                                    onFileChange(e.target.files[0]);
+                                    console.log(url);
+                                    //formik.setValues("file", url);
+                                  }}
+                                  type="file"
+                                  name="file_upload"
+                                  class="hidden"
+                                ></input>
+                              </label>
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                     <Button
+                      loading={bidsubmitting}
                       onClick={() => {
                         bidSubmitMutate(formik.values);
                       }}
@@ -565,7 +633,7 @@ const CampaignDetailInfluencer = () => {
         </Formik>
       </Modal>
 
-      {state?.invite && (
+      {/* {state?.invite && (
         <div className="fixed w-[100%] bg-white shadow-xl flex justify-end items-center -mx-5 px-9 py-4 space-x-1">
           <h1 className="text-base text-grey ">
             Accept or decline the invite?
@@ -579,7 +647,7 @@ const CampaignDetailInfluencer = () => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-gray-900">
@@ -699,7 +767,7 @@ const CampaignDetailInfluencer = () => {
 
           {user?.role === "brand" ? (
             <div className="flex flex-[0.1] w-[30%]">
-              <div >
+              <div>
                 <Link to="managecampaign/"></Link>
                 {/* <ul
                   tabIndex={0}
@@ -740,7 +808,7 @@ const CampaignDetailInfluencer = () => {
                 </ul> */}
               </div>
             </div>
-          ) : (
+          ) : state?.invite ? null : (
             <div className="hidden md:flex flex-[0.1]    mr-2">
               <div className="flex flex-col items-center  px-4 py-6 w-[300px] h-[160px] border shadow rounded-lg space-y-3">
                 <p className="text-gray-500 text-sm text-center ">

@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { InfluencerDashboardContext } from "./InfluencerDashboardContext";
 const { Column } = Table;
 
-const TableAntd = ({ data, open, type = "bid", children }) => {
+const TableAntd = ({ data, open, type = "bid", children, loading }) => {
   const {
     setId,
     setInviteModal,
@@ -14,11 +14,7 @@ const TableAntd = ({ data, open, type = "bid", children }) => {
     bidCounter,
   } = useContext(InfluencerDashboardContext);
   return (
-    <Table
-      className="w-full"
-      dataSource={data}
-      loading={data.length === 0 ? true : false}
-    >
+    <Table className="w-full" dataSource={data} loading={loading}>
       <Column
         title="Campaign Name"
         dataIndex="campaignName"

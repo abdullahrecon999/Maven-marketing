@@ -1,8 +1,11 @@
 const Campaign = require("../models/Campaign");
+require('dotenv').config()
 const express = require("express")
 const axios = require('axios');
 var router = express.Router();
+const secretKey = process.env.STRIPE_KEY
 
+const stripe = require('stripe')(secretKey)
 
 router.get("/campaigns", async (req, res, next) => {
   try {
@@ -41,7 +44,7 @@ router.get("/campaigns/limit", async (req, res, next) => {
 //get all camapigns with search query and pagination
 router.get("/allcampaigns", async (req, res, next) => {
   try {
-    const { page, limit, search, category, platforms } = req.query;
+    const { page, limit, search, category, platforms , country} = req.query;
     const options = {
       page: parseInt(page, 10) || 1,
       limit: parseInt(limit, 10) || 10,
@@ -59,6 +62,8 @@ router.get("/allcampaigns", async (req, res, next) => {
             { name: { $regex: search, $options: "i" } },
             { description: { $regex: search, $options: "i" } },
             { category: { $regex: search, $options: "i" } },
+            { title: { $regex: search, $options: "i" } },
+            
           ],
         },
       ];
@@ -69,8 +74,11 @@ router.get("/allcampaigns", async (req, res, next) => {
     if (platforms) {
       query["platform"] = { $in: platforms.split(",") };
     }
+    if(country){
+      query.country = {$in:country.split(",")}
+    }
     const data = await Campaign.paginate(
-      query,
+      {status: "live", ...query},
       options
     );
     res.status(200).json({
