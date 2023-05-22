@@ -890,10 +890,10 @@ router.get("/invites/detail/:id", async(req, res)=>{
 router.post("/invite/reject/:id", async(req, res, next)=>{
   const id = req.params.id
   try{
-    const data = await invites.findOne({to: id})
+    const data = await invites.findOne({_id: id})
 
     if(Object.keys(data).length !==0){
-      await invites.updateOne({_id: id}, req.body)
+      await invites.updateOne({_id: id}, {rejected:true})
       res.status(200).json({
         status: "success",
         msg: "an accepted"
@@ -908,6 +908,7 @@ router.post("/invite/reject/:id", async(req, res, next)=>{
     }
   }
   catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error",
       msg: "an error occured"
@@ -942,6 +943,7 @@ router.post("/acceptcontract/:id", async (req, res) => {
     })
   }catch(e){
     console.log(e)
+
     res.status(500).json({
       status: "error",
       msg: "an error occured",

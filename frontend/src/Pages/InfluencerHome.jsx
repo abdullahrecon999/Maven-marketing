@@ -420,7 +420,15 @@ const Home = () => {
                     <p className="py-2 text-sm">
                       Your current work is displayed here
                     </p>
-                    <a className="link link-primary self-end">view</a>
+                    <Link
+                      to="/influencerhome"
+                      onClick={() => {
+                        window.location.reload();
+                      }}
+                      className="link link-primary self-end"
+                    >
+                      view
+                    </Link>
                   </div>
                   <div className="flex-col w-20">
                     <div className="h-20 w-20">

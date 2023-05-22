@@ -341,6 +341,7 @@ const BusinessLogin = () => {
                         ) : (
                           <Button
                             type="submit"
+                            loading
                             disabled={!formik.isValid}
                             className={
                               formik.isValid ? "bg-blue" : "bg-grey text-white"

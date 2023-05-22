@@ -17,6 +17,7 @@ const Contract = () => {
   });
   useEffect(() => {
     if (data?.data?.data) {
+      console.log("thisis the contract fdata", data?.data?.data);
       setContract(data?.data?.data);
     }
   }, [data]);

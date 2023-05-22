@@ -49,6 +49,7 @@ const ContractModel = () => {
     mutate,
     isLoading: isAcceptLoading,
     isSuccess,
+    isError,
   } = useMutation(() => {
     return axios.post(
       "http://localhost:3000/influencer/acceptcontract/" + Data["_id"]
@@ -108,26 +109,31 @@ const ContractModel = () => {
               </Tag>
             </div>
           </div>
-          <div className="flex  ">
+          <div className="flex flex-row-reverse ">
             {user?.role === "brand" ? null : (
-              <Button
-                type="submit"
-                className="bg-blue px-2 py-1 hover:opacity-80 shadow-lg h-[50px] text-white  rounded-full"
-              >
-                Accept Contract
-                {isAcceptLoading ? (
-                  <TailSpin
-                    height="20"
-                    width="20"
-                    color="white"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                  />
-                ) : null}
-              </Button>
+              <>
+                <Button
+                  loading={isAcceptLoading}
+                  disabled={isSuccess}
+                  className="bg-blue text-white my-3"
+                  onClick={() => {
+                    mutate();
+                  }}
+                  type="submit"
+                >
+                  Accept Contract
+                </Button>
+                {isSuccess && (
+                  <div className="flex justify-center items-center">
+                    <Tag color="green">Contract Accepted</Tag>
+                  </div>
+                )}
+                {isError && (
+                  <div>
+                    <Tag color="red">ops something went wrong</Tag>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </form>
@@ -171,7 +177,6 @@ const ChatContainer = () => {
     setUser(JSON.parse(localStorage.getItem("user")));
     console.log("this is the socket", socket);
   }, []);
-
   useEffect(() => {
     const fetchMessages = async () => {
       if (Object.keys(currentUser).length !== 0) {
@@ -213,9 +218,9 @@ const ChatContainer = () => {
     }
   }, []);
 
-  // useEffect(()=>{
-  //     scrollRef.current?.scrollIntoView({behaviou: 'smooth'})
-  // }, [messages])
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behaviou: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     const handleTabClose = (e) => {
@@ -255,18 +260,20 @@ const ChatContainer = () => {
       });
   };
 
-  // const {data, isLoading} = useQuery(["getAllMessages"], ()=>{
-  //     if(Object.keys(currentUser).length !== 0 )
-  //     console.log(currentUser["_id"])
-  //     return axios.post("http://localhost:3000/chats/getMessages",{
-
-  //             to: currentUser["_id"],
-  //             from: user["_id"]
-
-  //     })
-  // },{
-  //     refetchInterval: 100000
-  // })
+  const { data, isLoading } = useQuery(
+    ["getAllMessages"],
+    () => {
+      if (Object.keys(currentUser).length !== 0)
+        console.log(currentUser["_id"]);
+      return axios.post("http://localhost:3000/chats/getMessages", {
+        to: currentUser["_id"],
+        from: user["_id"],
+      });
+    },
+    {
+      refetchInterval: 100000,
+    }
+  );
   const { mutate } = useMutation(() => {
     console.log(socket, "the socket is");
     socket.current.emit("send-msg", {

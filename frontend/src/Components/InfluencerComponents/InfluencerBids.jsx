@@ -128,7 +128,7 @@ const Bids = () => {
     status,
   } = useQuery(["getbids"], () => {
     console.log(user["_id"]);
-    return axios.get(`http://localhost:3000/influencer/myBids/${user["_id"]}`, {
+    return axios.get(`http://localhost:3000/influencer/mybids/${user["_id"]}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -148,6 +148,7 @@ const Bids = () => {
           status: item?.rejected ? "Rejected" : "Pending",
         };
       });
+      console.log(data);
       setData(data);
     }
   }, [bids?.data?.data, isSuccess]);
@@ -169,7 +170,16 @@ const Bids = () => {
   };
 
   if (isError) {
-    return <div>error</div>;
+    return (
+      <div className="px-[10%] justify-center items-center ">
+        <h1 className="text-xl text-red-500 font-medium">
+          Oppss something went wrong
+        </h1>
+        <p className="text-sm text-gray-500">
+          Something went wrong. Check your internet connect or try again later
+        </p>
+      </div>
+    );
   }
   return (
     <div className=" px-[10%]">
@@ -197,6 +207,7 @@ const Bids = () => {
               className="w-full"
               data={Object.keys(data).length === 0 ? [] : data}
               open={handleOpen}
+              loading={isLoading}
             >
               <Column
                 title="Submited At"

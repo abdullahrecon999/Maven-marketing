@@ -6,8 +6,10 @@ import { WarningOutlined } from "@mui/icons-material";
 import { ContractContext } from "./ContractProvider";
 import dayjs from "dayjs";
 import axios from "axios";
+import { AuthContext } from "../../utils/authProvider";
 const ContractInfo = () => {
   const { contract } = useContext(ContractContext);
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +26,7 @@ const ContractInfo = () => {
   };
   const handleEndContract = async () => {
     setLoading(true);
+
     const data = await axios.post(
       "http://localhost:3000/brand/endcontract/" + contract?._id
     );
@@ -82,7 +85,7 @@ const ContractInfo = () => {
           <h1 className="text-sm">
             Expires At{" "}
             <span className="text-xs text-green opacity-70">
-              {dayjs(contract?.createdAt).toDate().toLocaleDateString()}
+              {dayjs(contract?.expiresAt).toDate().toLocaleDateString()}
             </span>
           </h1>
           <Link
@@ -93,16 +96,20 @@ const ContractInfo = () => {
             View Original Campaign
           </Link>
         </div>
-        <div className="flex flex-row-reverse">
-          <Button
-            onClick={() => {
-              showModal();
-            }}
-            rootClassName="text-white bg-blue px-2 py-1 "
-          >
-            End Contract
-          </Button>
-        </div>
+        {contract?.expired === true ? null : (
+          <div className="flex flex-row-reverse">
+            {user?.role !== "brand" ? null : (
+              <Button
+                onClick={() => {
+                  showModal();
+                }}
+                rootClassName="text-white bg-blue px-2 py-1 "
+              >
+                End Contract
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -42,14 +42,14 @@ const User = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row-reverse gap-3">
+            {/* <div className="flex flex-row-reverse gap-3">
               <Button size="small" rootClassName="text-white bg-blue px-3 py-1">
                 Chat
               </Button>
               <Button size="small" rootClassName=" font-semibold px-3 py-1">
                 View Profile
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       )}

@@ -633,7 +633,7 @@ const CampaignDetailInfluencer = () => {
         </Formik>
       </Modal>
 
-      {state?.invite && (
+      {/* {state?.invite && (
         <div className="fixed w-[100%] bg-white shadow-xl flex justify-end items-center -mx-5 px-9 py-4 space-x-1">
           <h1 className="text-base text-grey ">
             Accept or decline the invite?
@@ -647,7 +647,7 @@ const CampaignDetailInfluencer = () => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-gray-900">
@@ -808,7 +808,7 @@ const CampaignDetailInfluencer = () => {
                 </ul> */}
               </div>
             </div>
-          ) : (
+          ) : state?.invite ? null : (
             <div className="hidden md:flex flex-[0.1]    mr-2">
               <div className="flex flex-col items-center  px-4 py-6 w-[300px] h-[160px] border shadow rounded-lg space-y-3">
                 <p className="text-gray-500 text-sm text-center ">

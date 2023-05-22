@@ -281,7 +281,7 @@ export function NavBar({ avatar, name, email, role, id, user }) {
       </div>
 
       <div className="flex-none hidden lg:flex">
-        <div>
+        {/* <div>
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -298,9 +298,9 @@ export function NavBar({ avatar, name, email, role, id, user }) {
               />
             </svg>
           </label>
-        </div>
+        </div> */}
 
-        <div>
+        {/* <div>
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -317,9 +317,9 @@ export function NavBar({ avatar, name, email, role, id, user }) {
               />
             </svg>
           </label>
-        </div>
+        </div> */}
 
-        <div className="dropdown dropdown-end">
+        {/* <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle">
             <div className="indicator">
               <svg
@@ -352,7 +352,7 @@ export function NavBar({ avatar, name, email, role, id, user }) {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="dropdown dropdown-end ml-1">
           <label tabIndex={0} className=" avatar">

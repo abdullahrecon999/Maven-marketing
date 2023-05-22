@@ -1,4 +1,4 @@
-import { Button, Modal } from "antd";
+import { Button, Modal, Spin } from "antd";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "antd";
@@ -135,10 +135,23 @@ const InfluencerGigs = () => {
     navigate("/listdetails/" + id);
   };
   if (isLoading) {
-    return <div>loading</div>;
+    return (
+      <div className="w-full h-[70vh] flex justify-center items-center bg-white">
+        <Spin></Spin>
+      </div>
+    );
   }
   if (isError) {
-    return <div>Error</div>;
+    return (
+      <div className="px-[10%] justify-center items-center ">
+        <h1 className="text-xl text-red-500 font-medium">
+          Oppss something went wrong
+        </h1>
+        <p className="text-sm text-gray-500">
+          Something went wrong. Check your internet connect or try again later
+        </p>
+      </div>
+    );
   }
   return (
     <div className="w-[full]">

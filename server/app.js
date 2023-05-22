@@ -156,6 +156,7 @@ io.on("connection", (socket) => {
         if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieve", data.text)
             console.log("message is", data.text)
+            console.log("the user is in the send user sockect", sendUserSocket)
         }
     })
     socket.on("checkOnline", (userId) => {

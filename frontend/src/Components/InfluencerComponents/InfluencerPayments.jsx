@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PaidIcon from "@mui/icons-material/Paid";
 import masterCardPng from "../../images/mastercard-26161.png";
 import { TextField } from "@mui/material";
@@ -12,6 +12,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import mastercard from "../../images/mastercard-26161.png";
 import visaCard from "../../images/visa.png";
+import { useQuery } from "react-query";
+import { AuthContext } from "../../utils/authProvider";
 dayjs.extend(customParseFormat);
 
 const dateFormat = "YYYY/MM/DD";
@@ -118,7 +120,7 @@ const ManageModal = () => {
 
 const InfluencerPayments = () => {
   const [paymentTabs, setPaymentTabs] = useState(true);
-  const [user, setUser] = useState({});
+  const { user, setUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [accountExists, setAccountExists] = useState(false);
   const [accountData, setAccountData] = useState({});
@@ -127,28 +129,39 @@ const InfluencerPayments = () => {
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
+
+  const {
+    data: transactions,
+    isLoading,
+    isError,
+  } = useQuery(["getinfluencerhistory"], () => {
+    return axios.get(
+      "http://localhost:3000/payments/getinfluencerhistory/" + user?._id
+    );
+  });
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
-    const fetch = async () => {
-      setLoading(true);
-      const data = await axios.get(
-        "http://localhost:3000/payments/getinfluencerhistory/" + user?._id
-      );
+    // const fetch = async () => {
+    //   setLoading(true);
+    //   const data = await axios.get(
+    //     "http://localhost:3000/payments/getinfluencerhistory/" + user?._id
+    //   );
 
-      const history = data.data.data.map((item) => {
-        return {
-          key: item?._id,
-          name: item?.userFrom.name,
-          date: dayjs(item?.createAt).toDate().toLocaleDateString(),
-          amount: item?.amount,
-        };
-      });
-      setData(history);
-      setLoading(false);
-    };
+    const history = transactions?.data?.data?.map((item) => {
+      return {
+        key: item?.paymentFor,
+        name: item?.userFrom.name,
+        date: dayjs(item?.createAt).toDate().toLocaleDateString(),
+        amount: item?.amount,
+      };
+    });
+    //   setData(history);
+    //   setLoading(false);
+    // };
+    setData(history);
 
-    fetch();
-  }, []);
+    //fetch();
+  }, [transactions]);
   useEffect(() => {
     const fetch = async () => {
       const data = await axios.get(
@@ -159,11 +172,12 @@ const InfluencerPayments = () => {
         setAccountData(data.data.data);
         console.log(data.data.data);
         setMainPageLoading(false);
+      } else {
+        setMainPageLoading(false);
       }
     };
-    if (Object.keys(user).length !== 0) {
-      fetch();
-    }
+
+    fetch();
   }, [user]);
 
   const handleSetUp = () => {
@@ -365,45 +379,57 @@ const InfluencerPayments = () => {
                     Transactions
                   </h1>
                   <div className="p-2 ">
-                    <Table
-                      className="border rounded"
-                      loading={loading}
-                      dataSource={data}
-                    >
-                      <Table.Column
-                        title="Brand Name"
-                        dataIndex="name"
-                        key="name"
-                      ></Table.Column>
+                    {isError ? (
+                      <div className="flex justify-center items-center">
+                        <h1 className="text-xl text-red-500 font-medium">
+                          Something Went wrong
+                        </h1>
+                        <p className="text-sm text-gray-500">
+                          Please check your internet connection or try again
+                          later
+                        </p>
+                      </div>
+                    ) : (
+                      <Table
+                        className="border rounded"
+                        loading={isLoading}
+                        dataSource={data}
+                      >
+                        <Table.Column
+                          title="Brand Name"
+                          dataIndex="name"
+                          key="name"
+                        ></Table.Column>
 
-                      <Table.Column
-                        title="Amount"
-                        dataIndex="amount"
-                        key="amount"
-                      ></Table.Column>
+                        <Table.Column
+                          title="Amount"
+                          dataIndex="amount"
+                          key="amount"
+                        ></Table.Column>
 
-                      <Table.Column
-                        title="Date"
-                        key="date"
-                        dataIndex="date"
-                      ></Table.Column>
-                      <Table.Column
-                        title="View Contract"
-                        key="action"
-                        render={(record) => {
-                          return (
-                            <Space size="middle">
-                              <Link
-                                to={`/contract/${record.key}`}
-                                className="link text-blue"
-                              >
-                                View Contract
-                              </Link>
-                            </Space>
-                          );
-                        }}
-                      ></Table.Column>
-                    </Table>
+                        <Table.Column
+                          title="Date"
+                          key="date"
+                          dataIndex="date"
+                        ></Table.Column>
+                        <Table.Column
+                          title="View Contract"
+                          key="action"
+                          render={(record) => {
+                            return (
+                              <Space size="middle">
+                                <Link
+                                  to={`/contract/${record.key}`}
+                                  className="link text-blue"
+                                >
+                                  View Contract
+                                </Link>
+                              </Space>
+                            );
+                          }}
+                        ></Table.Column>
+                      </Table>
+                    )}
                   </div>
                 </div>
               </section>

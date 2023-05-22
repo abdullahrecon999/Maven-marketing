@@ -8,7 +8,26 @@ const secretKey = process.env.STRIPE_KEY
 const User = require('../models/User');
 const stripe = require('stripe')(secretKey)
 /* GET home page. */
-
+router.get("/createcustomer", async(req, res)=>{
+  try{
+    const customer = await stripe.customers.create({
+      email: "branduser4@gmail.com",
+      name: "branduser4",
+      description: 'testing account',
+      balance: 0
+    });
+    const val = {
+      userId: '64180cea09878a11f84d9b98',
+      role : "brand",
+      accountId: customer.id,
+     }
+      await Account.create(val)
+      res.status(200).send("success")
+  }
+  catch(e){
+    res.status(500).send("success")
+  }
+})
 router.get("/loginlink", async (req, res)=>{
   try{
     const loginLink = await stripe.accounts.createLoginLink(
@@ -24,7 +43,7 @@ router.get("/getaccountdetails/:id", async (req, res)=>{
   try{
     const id = req.params.id
     const data = await Account.findOne({userId: id})
-    if(Object.keys(data) !== 0){
+    if(data){
       const balance = await stripe.balance.retrieve({
         stripeAccount: data?.accountId,
       });
@@ -56,6 +75,11 @@ router.get("/getaccountdetails/:id", async (req, res)=>{
 
         }
     })
+  }else{
+    res.status(200).json({
+      status:"success",
+      data: {}
+    })
   }
     
     
@@ -84,6 +108,7 @@ router.get("/getbrandaccountdetails/:id", async(req, res)=>{
       data: cards.data
     })
   }catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error",
       
@@ -144,7 +169,7 @@ router.post("/create", async(req, res, next)=>{
       accountId: account.id,
      }
 
-      Account.create(val)
+     
     
      
       
@@ -154,7 +179,7 @@ router.post("/create", async(req, res, next)=>{
         return_url: 'http://localhost:5173/payments/manage/',
         type: 'account_onboarding',
       });
-
+      Account.create(val)
      
     res.status(200).json({
       status: 'success',
@@ -344,6 +369,7 @@ router.get("/getinfluencerhistory/:id", async(req, res)=>{
       data
     })
   }catch(e){
+    console.log(e)
     res.status(500).json({
       status: "error",
      
@@ -359,7 +385,8 @@ router.get("/getpendingPayment/:id", async(req, res)=>{
         amount : item.amount,
         date: item.expiresAt,
         name: item.to.name,
-        campaign: item.campaignId.title
+        campaign: item.campaignId.title,
+        key: item?._id
       }
     })
     res.status(200).json({

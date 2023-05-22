@@ -4,9 +4,10 @@ import ContractInfo from "./ContractInfo";
 import Container from "./WorkTrack/Container";
 import { ContractContext } from "./ContractProvider";
 import { Button, Tag } from "antd";
+import { AuthContext } from "../../utils/authProvider";
 const ContractDetails = () => {
   const { contract } = useContext(ContractContext);
-  const [user, setUser] = useState({});
+  const { user, setUser } = useContext(AuthContext);
   const [files, setFiles] = useState([]);
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
