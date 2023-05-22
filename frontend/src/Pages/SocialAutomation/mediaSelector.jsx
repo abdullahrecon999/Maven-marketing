@@ -30,10 +30,10 @@ export function MediaSelector(props) {
                     {media.map(file => (
                         <div className='flex flex-col m-2 hover:shadow-2xl hover:scale-110'>
                             <img
-                                src={media}
+                                src={file.url}
                                 style={{ cursor: 'pointer' }}
                                 width="150"
-                                onClick={() => handleSelectMedia(file)}
+                                onClick={() => handleSelectMedia(file.url)}
                             />
                         </div>
                     ))}

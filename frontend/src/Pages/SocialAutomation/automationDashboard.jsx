@@ -1,13 +1,13 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef, useEffect, useCallback } from "react";
 import { NavBar } from "../../Components/brandComponents/navbar";
 import { motion, AnimatePresence } from "framer-motion"
-import { Select, Dropdown, Button, Modal, Avatar, Popover, DatePicker, Menu, Drawer } from 'antd';
+import { Select, Dropdown, Button, Modal, Avatar, Popover, DatePicker, Menu, Drawer, Input, Switch } from 'antd';
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { marked } from 'marked';
-import _ from 'lodash';
+import debounce from 'lodash.debounce';
 import { InboxOutlined } from '@ant-design/icons';
-import { message, Upload, Image, Checkbox, Tabs, Spin } from 'antd';
+import { message, Upload, Image, Checkbox, Tabs, Spin, notification } from 'antd';
 import LazyLoad from 'react-lazy-load';
 import { GifSelector } from "./gifSelector";
 import { MediaSelector } from "./mediaSelector";
@@ -16,8 +16,11 @@ import { Typewriter } from 'react-simple-typewriter'
 import { MyCalendar } from "./calenderComponent";
 import { AddPages } from "./addPageModal";
 import axios from "axios";
+import { RenderOptions } from "./textOptions";
+import { EditorMDE } from "./editorComponent";
 const { TabPane } = Tabs;
 const { Dragger } = Upload;
+import moment from 'moment';
 
 import {
     RedditCircleFilled,
@@ -38,28 +41,6 @@ import {
 } from '@ant-design/icons';
 import { useQuery } from "react-query";
 
-
-
-const props = {
-    name: 'file',
-    multiple: true,
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    onChange(info) {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-    onDrop(e) {
-        console.log('Dropped files', e.dataTransfer.files);
-    },
-};
-
 const items = [
     {
         label: <div className="flex gap-2 items-center">
@@ -68,7 +49,7 @@ const items = [
                 viewBox="0 0 16 16">
                 <path d="M 3.1679688 1.25 C 2.7179687 1.25 2.2847969 1.4381563 1.9667969 1.7851562 C 1.6707969 2.1071563 1.5 2.544 1.5 3 L 1.5 13 C 1.5 13.456 1.6707969 13.892844 1.9667969 14.214844 C 2.2847969 14.561844 2.7179687 14.75 3.1679688 14.75 L 12.332031 14.75 C 12.782031 14.75 13.215203 14.561844 13.533203 14.214844 C 13.829203 13.892844 14 13.456 14 13 L 14 12 C 14 11.586 13.664 11.25 13.25 11.25 C 12.836 11.25 12.5 11.586 12.5 12 L 12.5 13 C 12.5 13.075 12.477688 13.147219 12.429688 13.199219 C 12.403688 13.228219 12.369031 13.25 12.332031 13.25 L 3.1679688 13.25 C 3.1309688 13.25 3.0963125 13.228219 3.0703125 13.199219 C 3.0223125 13.147219 3 13.075 3 13 L 3 3 C 3 2.925 3.0223125 2.8527813 3.0703125 2.8007812 C 3.0963125 2.7717813 3.1309687 2.75 3.1679688 2.75 L 12.332031 2.75 C 12.369031 2.75 12.403688 2.7717813 12.429688 2.8007812 C 12.477688 2.8527813 12.5 2.925 12.5 3 L 12.5 4 C 12.5 4.414 12.836 4.75 13.25 4.75 C 13.664 4.75 14 4.414 14 4 L 14 3 C 14 2.544 13.829203 2.1071562 13.533203 1.7851562 C 13.215203 1.4381563 12.782031 1.25 12.332031 1.25 L 3.1679688 1.25 z M 8.75 5.25 C 8.558 5.25 8.3667031 5.3242031 8.2207031 5.4707031 L 6.2207031 7.4707031 C 5.9277031 7.7637031 5.9277031 8.2362969 6.2207031 8.5292969 L 8.2207031 10.529297 C 8.5127031 10.822297 8.9872969 10.822297 9.2792969 10.529297 C 9.5722969 10.237297 9.5722969 9.7627031 9.2792969 9.4707031 L 8.5585938 8.75 L 13.75 8.75 C 14.164 8.75 14.5 8.414 14.5 8 C 14.5 7.586 14.164 7.25 13.75 7.25 L 8.5585938 7.25 L 9.2792969 6.5292969 C 9.5722969 6.2372969 9.5722969 5.7627031 9.2792969 5.4707031 C 9.1332969 5.3242031 8.942 5.25 8.75 5.25 z"></path>
             </svg>
-            Import Posts
+            Bulk Scheduling
         </div>,
         key: '0',
     },
@@ -84,176 +65,6 @@ const items = [
         key: '1',
     },
 ];
-
-const optionsSubmit = [
-    {
-        label: <div className="flex gap-2 items-center">
-            <ClockCircleOutlined />
-            Schedule
-        </div>,
-        key: '0',
-    },
-    {
-        label: <div className="flex gap-2 items-center">
-            <SendOutlined />
-            Publish Now
-        </div>,
-        key: '1',
-    },
-];
-
-const images = [
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-    "https://i.imgur.com/LHIooMv.jpeg",
-];
-
-const renderOptions = (item) => {
-    const [selectedGif, setSelectedGif] = useState(null);
-    const [selectedMedia, setSelectedMedia] = useState(null);
-
-    const handleGifSelect = (gif) => {
-        console.log(gif);
-        setSelectedGif(gif);
-    };
-
-    const handleMediaSelect = (media) => {
-        console.log(media);
-        setSelectedMedia(media);
-    };
-
-    switch (item) {
-        case "0":
-            return (
-                // Images / Videos
-                <div className="flex flex-col gap-2 justify-center">
-                    <p className="font-railway mr-auto mb-2">Add an Image or a Video</p>
-                    <Upload
-                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                        listType="picture"
-                        maxCount={1}
-                    >
-                        <Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
-                    </Upload>
-                </div>
-            )
-
-        case "1":
-            return (
-                // Media Library
-                <div className="flex flex-col gap-2 justify-center">
-                    <p className="font-railway mr-auto mb-2">Import from Media</p>
-                    <Button danger onClick={() => setSelectedMedia('')} className="mb-2">Clear</Button>
-                    <MediaSelector data={images} onSelect={handleMediaSelect} />
-                    {selectedMedia && (
-                        <div className='flex justify-center align-middle items-center'>
-                            <img width={200} height={200} src={selectedMedia} />
-                        </div>
-                    )}
-                </div>
-            )
-
-        case "2":
-            return (
-                // Add Gif
-                <div className="flex flex-col gap-2 justify-center">
-                    <p className="font-railway mr-auto mb-2">Add a Gif</p>
-                    <GifSelector onSelect={handleGifSelect} />
-                    {selectedGif && (
-                        <div className='flex justify-center align-middle items-center'>
-                            <img width={200} height={200} src={selectedGif.images.original.url} alt="Selected Gif" />
-                        </div>
-                    )}
-                </div>
-            )
-
-        case "3":
-            return (
-                // AI
-                <div>
-                    <div className="flex gap-2 flex-wrap justify-center">
-                        <div className="rounded-full  pl-2 pr-2 border-dashed border-[1px] border-zinc-400 flex gap-1 items-center cursor-pointer group hover:border-[#d094ff]">
-                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                width="15" height="15"
-                                viewBox="0,0,256,256">
-                                <g fill="#802ebe" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(9.84615,9.84615)"><path d="M4,0c-1.09375,0 -2,0.90625 -2,2v22c0,1.09375 0.90625,2 2,2h18c1.09375,0 2,-0.90625 2,-2v-22c0,-1.09375 -0.90625,-2 -2,-2zM4,2h18v22h-18zM7,5c-0.55078,0 -1,0.44922 -1,1v1c0,0.55078 0.44922,1 1,1h11.96875c0.55078,0 1,-0.44922 1,-1v-1c0,-0.55078 -0.44922,-1 -1,-1zM6,11v2h10v-2zM18,11v2h2v-2zM6,15v2h6v-2zM18,15v2h2v-2zM6,19v2h8v-2zM18,19v2h2v-2z"></path></g></g>
-                            </svg>
-                            <p className="text-lg group-hover:text-[#a258da]">Summarize</p>
-                        </div>
-
-                        <div className="rounded-full  pl-2 pr-2 border-dashed border-[1px] border-zinc-400 flex gap-1 items-center cursor-pointer group hover:border-[#d094ff]">
-                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                width="15" height="15"
-                                viewBox="0,0,256,256">
-                                <g fill="#802ebe" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(10.66667,10.66667)"><path d="M2.5,0c-1.378,0 -2.5,1.121 -2.5,2.5v16c0,1.379 1.122,2.5 2.5,2.5h6.92969c0.277,0 0.5,-0.224 0.5,-0.5c0,-0.276 -0.224,-0.5 -0.5,-0.5h-6.92969c-0.827,0 -1.5,-0.673 -1.5,-1.5v-16c0,-0.827 0.673,-1.5 1.5,-1.5h12c0.827,0 1.5,0.673 1.5,1.5v9.32031c0,0.276 0.224,0.5 0.5,0.5c0.276,0 0.5,-0.224 0.5,-0.5v-9.32031c0,-1.379 -1.122,-2.5 -2.5,-2.5zM3.5,4c-0.276,0 -0.5,0.224 -0.5,0.5c0,0.276 0.224,0.5 0.5,0.5h5c0.276,0 0.5,-0.224 0.5,-0.5c0,-0.276 -0.224,-0.5 -0.5,-0.5zM3.5,8c-0.276,0 -0.5,0.224 -0.5,0.5c0,0.276 0.224,0.5 0.5,0.5h10c0.276,0 0.5,-0.224 0.5,-0.5c0,-0.276 -0.224,-0.5 -0.5,-0.5zM21.08594,11.41016c-0.38887,0 -0.77805,0.14083 -1.06055,0.42383l-7.7793,7.77734c-0.07,0.069 -0.11672,0.15786 -0.13672,0.25586l-0.70703,3.53516c-0.032,0.163 0.01872,0.33317 0.13672,0.45117c0.095,0.094 0.22447,0.14648 0.35547,0.14648c0.032,0 0.06466,-0.00377 0.09766,-0.00977l3.53516,-0.70703c0.096,-0.02 0.18391,-0.06672 0.25391,-0.13672l7.7793,-7.77734c0.585,-0.585 0.585,-1.53609 0,-2.12109l-1.41406,-1.41406c-0.283,-0.283 -0.67167,-0.42383 -1.06055,-0.42383zM3.5,12c-0.276,0 -0.5,0.224 -0.5,0.5c0,0.276 0.224,0.5 0.5,0.5h6c0.276,0 0.5,-0.224 0.5,-0.5c0,-0.276 -0.224,-0.5 -0.5,-0.5zM21.08398,12.39844c0.1295,0 0.26047,0.04612 0.35547,0.14062l1.41406,1.41406c0.195,0.195 0.195,0.51203 0,0.70703l-7.67187,7.67188l-2.65039,0.5293l0.5293,-2.65039l7.67188,-7.67188c0.094,-0.0945 0.22206,-0.14062 0.35156,-0.14062z"></path></g></g>
-                            </svg>
-                            <p className="text-lg group-hover:text-[#a258da]">Rephrase</p>
-                        </div>
-
-                        <div className="rounded-full  pl-2 pr-2 border-dashed border-[1px] border-zinc-400 flex gap-1 items-center cursor-pointer group hover:border-[#d094ff]">
-                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                width="15" height="15"
-                                viewBox="0,0,256,256">
-                                <g fill="#802ebe" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(5.12,5.12)"><path d="M13.59961,4c-4.73754,0 -8.59961,3.86206 -8.59961,8.59961v18.80078v7c0,4.73754 3.86206,8.59961 8.59961,8.59961h22.80078c4.73754,0 8.59961,-3.86207 8.59961,-8.59961v-7.80078v-18c0,-4.73754 -3.86207,-8.59961 -8.59961,-8.59961zM13.59961,6h22.80078c3.65646,0 6.59961,2.94315 6.59961,6.59961v18v0.80078c0,3.65646 -2.94315,6.59961 -6.59961,6.59961h-22.80078c-3.65645,0 -6.59961,-2.94315 -6.59961,-6.59961v-0.80078v-18c0,-3.65645 2.94315,-6.59961 6.59961,-6.59961zM20.95703,13l-0.33789,4h-3.76172l-0.10742,2h3.69922l-0.50586,6h-3.83594l-0.10742,2h3.77344l-0.33789,4h2.00586l0.33789,-4h6.0293l-0.33789,4h2.00781l0.33789,-4h3.32617l0.10742,-2h-3.26367l0.50586,-6h3.40039l0.10742,-2h-3.33789l0.33789,-4h-2.00781l-0.33789,4h-6.02734l0.33789,-4zM22.45703,19h6.02734l-0.50586,6h-6.0293zM7,36.90234c1.57946,1.89041 3.95257,3.09766 6.59961,3.09766h22.80078c2.64704,0 5.02015,-1.20724 6.59961,-3.09766v1.49805c0,3.65646 -2.94315,6.59961 -6.59961,6.59961h-22.80078c-3.65645,0 -6.59961,-2.94315 -6.59961,-6.59961z"></path></g></g>
-                            </svg>
-                            <p className="text-lg group-hover:text-[#a258da]">Add Hashtags</p>
-                        </div>
-
-                        <div className="rounded-full  pl-2 pr-2 border-dashed border-[1px] border-zinc-400 flex gap-1 items-center cursor-pointer group hover:border-[#d094ff]">
-                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                width="15" height="15"
-                                viewBox="0,0,256,256">
-                                <g fill="#802ebe" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(5.12,5.12)"><path d="M19.2793,4c-0.414,0 -0.78459,0.25462 -0.93359,0.64063l-14.2793,37c-0.119,0.308 -0.07662,0.65378 0.10938,0.92578c0.187,0.272 0.49422,0.43359 0.82422,0.43359h4.98242c0.42,0 0.79545,-0.26225 0.93945,-0.65625l3.76953,-10.34375h14.27148l0.91406,2.55078c0.393,-0.726 0.86639,-1.40144 1.40039,-2.02344l-0.66797,-1.86523c-0.143,-0.397 -0.51941,-0.66211 -0.94141,-0.66211h-15.67578c-0.42,0 -0.79545,0.26225 -0.93945,0.65625l-3.77148,10.34375h-2.82422l13.50781,-35h4.02148l9.5,24.5332c0.553,-0.382 1.14472,-0.71119 1.76172,-0.99219l-9.64453,-24.90234c-0.15,-0.385 -0.51864,-0.63867 -0.93164,-0.63867zM21.84766,8.45703c-0.42,0 -0.79545,0.2632 -0.93945,0.6582l-6.39648,17.54297c-0.112,0.307 -0.06591,0.64802 0.12109,0.91602c0.187,0.268 0.49236,0.42578 0.81836,0.42578h12.7832c0.325,0 0.63236,-0.15878 0.81836,-0.42578c0.188,-0.266 0.23205,-0.60611 0.12305,-0.91211l-6.28516,-17.54297c-0.142,-0.397 -0.51941,-0.66211 -0.94141,-0.66211zM21.89063,12.25586l4.92188,13.74414h-9.93164zM40,30c-5.511,0 -10,4.489 -10,10c0,5.511 4.489,10 10,10c5.511,0 10,-4.489 10,-10c0,-5.511 -4.489,-10 -10,-10zM40,32c4.43012,0 8,3.56988 8,8c0,4.43012 -3.56988,8 -8,8c-4.43012,0 -8,-3.56988 -8,-8c0,-4.43012 3.56988,-8 8,-8zM40,34.09961c-0.15,0 -0.28828,0.02539 -0.41016,0.07227c-0.12188,0.04688 -0.22695,0.11563 -0.31445,0.20313c-0.0875,0.0875 -0.15625,0.19453 -0.20312,0.31641c-0.04687,0.12188 -0.07227,0.2582 -0.07227,0.4082v3.90039h-3.90039c-0.15,0 -0.28633,0.02539 -0.4082,0.07227c-0.12188,0.04688 -0.22891,0.11563 -0.31641,0.20313c-0.0875,0.0875 -0.15625,0.19258 -0.20312,0.31445c-0.04687,0.12188 -0.07227,0.26016 -0.07227,0.41016c0,0.15 0.02539,0.28828 0.07227,0.41016c0.09375,0.24375 0.27578,0.42383 0.51953,0.51758c0.12188,0.04688 0.2582,0.07227 0.4082,0.07227h3.90039v3.90039c0,0.6 0.4,1 1,1c0.6,0 1,-0.4 1,-1v-3.90039h3.90039c0.6,0 1,-0.4 1,-1c0,-0.6 -0.4,-1 -1,-1h-3.90039v-3.90039c0,-0.6 -0.4,-1 -1,-1z"></path></g></g>
-                            </svg>
-                            <p className="text-lg group-hover:text-[#a258da]">Expand</p>
-                        </div>
-                    </div>
-
-                    <div className="p-2 pt-3 flex">
-                        <input
-                            type="text"
-                            className="w-full p-1 pl-3 text-lg rounded-lg border-[1px] border-purple-500 bg-purple-100 focus:outline-none focus:border-purple-600"
-                            placeholder="✨ Describe what to write about..."
-                        />
-                    </div>
-
-                    <div className="flex justify-end pr-3 items-center gap-3 pb-2">
-                        <p className="text-xs font-thin">Generating Text</p>
-                        <Spin size="small" />
-                    </div>
-
-                    <div className="rounded-xl border-dashed border-[1px] border-[#c16fff] p-3">
-                        <Typewriter onLoopDone={console.log} typeSpeed={20} words={["Step out of your comfort zone and onto the trails! Whether you're a beginner or a seasoned hiker, there's nothing quite like the feeling of conquering a mountain. Take in the breathtaking views, breathe in the fresh air and feel the burn in your legs as you climb higher and higher. Hiking is not just a physical activity, it's a mental escape from the hustle and bustle of everyday life. So grab your backpack, lace up your boots and let's hit the trails! From peaceful forest paths to challenging peaks, there's a hike out there for everyone. So what are you waiting for? Let's explore the great outdoors and discover the beauty that nature has to offer. #hikingadventures #naturelover #getoutdoors #hikingtrail #mountainclimbing #adventureawaits #explore #tiktokhiking"]} />
-                        {/* <p className="text-lg">Step out of your comfort zone and onto the trails! Whether you're a beginner or a seasoned hiker, there's nothing quite like the feeling of conquering a mountain. Take in the breathtaking views, breathe in the fresh air and feel the burn in your legs as you climb higher and higher. Hiking is not just a physical activity, it's a mental escape from the hustle and bustle of everyday life. So grab your backpack, lace up your boots and let's hit the trails! From peaceful forest paths to challenging peaks, there's a hike out there for everyone. So what are you waiting for? Let's explore the great outdoors and discover the beauty that nature has to offer. #hikingadventures #naturelover #getoutdoors #hikingtrail #mountainclimbing #adventureawaits #explore #tiktokhiking</p> */}
-                    </div>
-                    <div className="flex justify-end gap-3 pt-1">
-                        <p className="text-[15px] text-purple-600 cursor-pointer hover:text-purple-800">Retry</p>
-                        <div className="flex rounded-sm pl-1 pr-1 justify-center cursor-pointer items-center bg-purple-600 gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                width="15" height="15"
-                                viewBox="0,0,256,256">
-                                <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(5.12,5.12)"><path d="M42.875,8.625c-0.03125,0.00781 -0.0625,0.01953 -0.09375,0.03125c-0.26172,0.06641 -0.48828,0.23438 -0.625,0.46875l-20.4375,31.6875l-14.0625,-12.6875c-0.24609,-0.3125 -0.65625,-0.44922 -1.04297,-0.34766c-0.38672,0.10156 -0.67187,0.42578 -0.73047,0.82031c-0.05859,0.39453 0.12109,0.78516 0.46094,0.99609l14.90625,13.5c0.21875,0.19141 0.51172,0.27734 0.80078,0.23438c0.28906,-0.04297 0.54297,-0.20703 0.69922,-0.45312l21.09375,-32.6875c0.23047,-0.32812 0.24219,-0.76172 0.03125,-1.10156c-0.21094,-0.33984 -0.60547,-0.51953 -1,-0.46094z"></path></g></g>
-                            </svg>
-                            <p className="text-white">Accept</p>
-                        </div>
-                    </div>
-                </div >
-            )
-
-        default:
-            return (
-                <div className="flex gap-2 items-center">
-                    <p>Default</p>
-                </div>
-            )
-    }
-};
 
 const ImageCheckbox = ({ src, checked, onChange }) => {
     const handleCheckboxChange = (e) => {
@@ -277,89 +88,142 @@ const ImageCheckbox = ({ src, checked, onChange }) => {
     );
 };
 
+const loadMedia = async () => {
+    console.log("Loading Media");
+    try {
+        const response = await axios.get("http://localhost:3000/media/getMedia", {
+            withCredentials: true,
+        });
+        if (response.status !== 200) {
+            console.log("Error while fetching data");
+        }
+        console.log("RESPONSE: ", response.data)
+        return response.data.data[0].media;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Error while fetching data");
+    }
+};
+
 const loadDashboard = async () => {
     console.log("Loading Dashboard");
-    const response = await axios.get("http://localhost:3000/automate/reddit");
-    console.log(response.data);
-    return response.data;
+    return axios.get("http://localhost:3000/automate/reddit")
+        .then(response => {
+            if (response.status !== 200) {
+                console.log("Error while fetching data");
+                throw new Error("Error while fetching data");
+            }
+            console.log(response.data);
+            return response.data;
+        })
+        .catch(error => {
+            console.log(error);
+            throw new Error("Error while fetching data");
+        });
 };
 
 const AutomationDashboard = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedTab, setSelectedTab] = useState('0');
-    const [postText, setPostText] = useState('');
     const [addPagesOpen, setaddPagesOpen] = useState(false);
-    // const [activeKey, setActiveKey] = useState('1');
-    // const [pageVisible, setPageVisible] = useState(false);
-    const [value, setValue] = useState('');
-    const [composeOptions, setComposeOptions] = useState("1");
     const [selectedPage, setSelectedPage] = useState(0);
 
     const [selectedKeys, setSelectedKeys] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [body, setBody] = useState('feed');
+    const [title, setTitle] = useState('');
+    const [images, setImages] = useState([]);
+
+    const [composeOpen, setComposeOpen] = useState(false);
+    const [mediaOpen, setMediaOpen] = useState(false);
+    const editorRef = useRef(null);
+    const [postText, setPostText] = useState("");
+    const [selectedMedia, setSelectedMedia] = useState(null);
+    const [selectedSubreddits, setSelectedSubreddits] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [api, contextHolder] = notification.useNotification();
+    const [connectedPages, setConnectedPages] = useState([])
+
+    const openNotificationWithIcon = (type, msg, description) => {
+        api[type]({
+            message: msg,
+            description:
+                description,
+        });
+    };
 
     const { data: subreddits, isLoading, isError, isSuccess } = useQuery("subreddits", loadDashboard, { fetchPolicy: "network-only" });
+    const { data: media, isLoading: isMediaLoading, isSuccess: isMediaSuccess } = useQuery("media", loadMedia, { fetchPolicy: "network-only" });
 
-    // const [connectedPages, setConnectedPages] = useState([
-    //     {
-    //       id: 0,
-    //       name: "MavenMarketing",
-    //       platform: "Reddit",
-    //       visible: true,
-    //     },
-    //     {
-    //       id: 1,
-    //       name: "TestReddit",
-    //       platform: "Reddit",
-    //       visible: true,
-    //     },
-    //     {
-    //       id: 3,
-    //       name: "TestReddit",
-    //       platform: "Reddit",
-    //       visible: true,
-    //     },
-    //     {
-    //       id: 4,
-    //       name: "TestReddit",
-    //       platform: "Reddit",
-    //       visible: true,
-    //     },
-    //     {
-    //       id: 5,
-    //       name: "TestReddit",
-    //       platform: "Reddit",
-    //       visible: true,
-    //     },
-    // ]);
-
-    const [connectedPages, setConnectedPages] = useState([])
+    const props = {
+        name: 'files',
+        multiple: true,
+        action: 'http://localhost:3000/media/upload',
+        withCredentials: true,
+        onChange(info) {
+            const { status } = info.file;
+            console.log('Selected files:', info.fileList);
+            if (status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully.`);
+                console.log(info.file.response);
+                setImages([...images, { url: info.file.response.data.link }]);
+            } else if (status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+        onDrop(e) {
+            console.log('Dropped files', e.dataTransfer.files);
+        },
+    };
 
     useEffect(() => {
         if (isSuccess && subreddits) {
-          setConnectedPages(subreddits.subreddits.map((subreddit, index) => ({
-            id: subreddit.subredditid,
-            ...subreddit
-          })));
+            setConnectedPages(subreddits.subreddits.map((subreddit, index) => ({
+                id: subreddit.subredditid,
+                ...subreddit
+            })));
+            //   set selected tab to be the first of the list if is_visible is true
+            // setSelectedPage(subreddits?.subreddits[0]?.subredditid);
+            // get subredditid for the first visible page
+            let sid = subreddits.subreddits.filter((subreddit) => {
+                if (subreddit.is_visible) {
+                    return subreddit.subredditid;
+                }
+            });
+            console.log("sid: ", sid);
+            setSelectedPage(sid[0].subredditid);
         }
     }, [isSuccess, subreddits]);
 
-    const setPageVisible = (id, bool) => {
-        console.log(id, bool);
-        setConnectedPages((prevPages) =>
-            prevPages.map((page) => {
-                if (page.id == id) {
-                    console.log(page);
-                    return {
-                        ...page,
-                        visible: bool,
-                    };
-                }
-                return page;
-            })
-        );
-        console.log(connectedPages);
+    useEffect(() => {
+        if (isMediaSuccess && media) {
+            setImages([...images, ...media]);
+            console.log(media);
+        }
+    }, [isMediaSuccess, media]);
+
+    const handleTitle = (event) => {
+        event.preventDefault();
+        setTitle(event.target.value);
+    };
+
+    const callError = (type, msg, desc) => {
+        openNotificationWithIcon(type, msg, desc);
+    }
+
+    const handleSelectedAccount = (username) => {
+        setSelectedSubreddits((prevSelectedDivs) => {
+            if (prevSelectedDivs.includes(username)) {
+                // If the div is already selected, remove it from the selectedDivs array
+                return prevSelectedDivs.filter((id) => id !== username);
+            } else {
+                // If the div is not selected, add it to the selectedDivs array
+                return [...prevSelectedDivs, username];
+            }
+        });
     };
 
     const handleImageCheckboxChange = (index, checked) => {
@@ -389,38 +253,170 @@ const AutomationDashboard = () => {
 
     const deleteFiles = () => {
         console.log(selectedKeys);
+        const selectedImages = selectedKeys.map((key) => images[key]);
+        console.log("selectedImages: ", selectedImages);
+        // get array of only urls
+        const urls = selectedImages.map((image) => image.url);
+        console.log("urls: ", urls);
+
+        // delete from db by sending array of urls
+        axios.delete("http://localhost:3000/media/deleteMultipleMedia", {
+            data: {
+                mediaUrls: urls,
+            },
+        }).then((res) => {
+            console.log(res);
+            // delete from state
+            setImages(images.filter((image) => !urls.includes(image.url)));
+            setSelectedKeys([]);
+            setSelectAll(false);
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
-    const [open, setOpen] = useState(false);
-    const showDrawer = () => {
-        setOpen(true);
+    const publishPost = () => {
+        console.log("Publishing post...");
+        console.log("Title: ", title);
+        const editorInstance = editorRef.current;
+        const text1 = editorInstance.value();
+        console.log("Body: ", text1);
+        console.log("Selected subreddits: ", selectedSubreddits);
+        console.log("Selected date: ", selectedDate);
+        console.log("Selected Media: ", selectedMedia);
+
+        if (!title) {
+            callError("error", "Error", "Please enter a title");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("text", text1);
+        formData.append("subreddits", selectedSubreddits.map(element => "r/" + element).join(","));
+        console.log("selectedMedia: ", selectedMedia)
+
+        if (selectedMedia === null) {
+            formData.append("media", "");
+            formData.append("mediaUrl", "");
+            formData.append("mediaType", "");
+        } else if (selectedMedia.type === "file") {
+            formData.append("media", selectedMedia.media);
+            formData.append("mediaUrl", "");
+            formData.append("mediaType", selectedMedia.mimeType);
+        } else {
+            formData.append("media", "");
+            formData.append("mediaUrl", selectedMedia.media);
+            formData.append("mediaType", selectedMedia.mimeType);
+        }
+
+        const config = {
+            headers: {
+                "content-type": "multipart/form-data",
+            },
+        };
+
+        axios.post("http://localhost:3000/automate/reddit/v2/createPost", formData, config).then((res) => {
+            console.log("RESPONSE: ", res);
+            if (res.status === 200) {
+                callError("success", "Success", "Post created successfully");
+            }
+        }
+        ).catch((err) => {
+            console.log(err);
+        });
     };
-    const onClose = () => {
-        setOpen(false);
+
+    const schedulePost = () => {
+        console.log("Scheduling post...");
+        console.log("Title: ", title);
+        const editorInstance = editorRef.current;
+        const text1 = editorInstance.value();
+        console.log("Body: ", text1);
+        console.log("Selected subreddits: ", selectedSubreddits);
+        console.log("Selected date: ", selectedDate.$d);
+        console.log("Selected Media: ", selectedMedia);
+
+        if (!title) {
+            callError("error", "Error", "Please enter a title");
+            return;
+        }
+
+        if (!selectedDate) {
+            callError("error", "Error", "Please select a date");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("text", text1);
+        formData.append("subreddits", selectedSubreddits.map(element => "r/" + element).join(","));
+        formData.append("scheduledAt", selectedDate);
+        console.log("selectedMedia: ", selectedMedia)
+
+        if (selectedMedia === null) {
+            formData.append("media", "");
+            formData.append("mediaUrl", "");
+            formData.append("mediaType", "");
+        } else if (selectedMedia.type === "file") {
+            formData.append("media", selectedMedia.media);
+            formData.append("mediaUrl", "");
+            formData.append("mediaType", selectedMedia.mimeType);
+        } else {
+            formData.append("media", "");
+            formData.append("mediaUrl", selectedMedia.media);
+            formData.append("mediaType", selectedMedia.mimeType);
+        }
+
+        const config = {
+            headers: {
+                "content-type": "multipart/form-data",
+            },
+        };
+
+        axios.post("http://localhost:3000/automate/reddit/v2/schedulePost", formData, config).then((res) => {
+            console.log("RESPONSE: ", res);
+            if (res.status === 200) {
+                callError("success", "Success", "Post scheduled successfully");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
     };
+
+    const optionsSubmit = [
+        {
+            label: <div onClick={() => schedulePost()} className="flex gap-2 items-center">
+                <ClockCircleOutlined />
+                Schedule
+            </div>,
+            key: '0',
+        },
+        {
+            label: <div onClick={() => publishPost()} className="flex gap-2 items-center">
+                <SendOutlined />
+                Publish Now
+            </div>,
+            key: '1',
+        },
+    ];
 
     const handleClick = () => {
         setIsExpanded(true);
     };
+
     const handleMouseLeave = () => {
         if (isExpanded) {
             setIsExpanded(false);
         }
     };
-    const [selectedDate, setSelectedDate] = useState(null);
+
+    const handleMediaSelect = (media) => {
+        setSelectedMedia(media);
+    };
 
     const handleDateChange = (value) => {
         setSelectedDate(value);
-    };
-
-    const customMarkdownParser = (plainText) => {
-        const html = marked(plainText);
-        return html;
-    };
-
-    const setTextPost = (e) => {
-        e.preventDefault();
-        setPostText(e.target.value);
     };
 
     const handleBody = (e) => {
@@ -428,11 +424,47 @@ const AutomationDashboard = () => {
         setBody(e);
     };
 
-    const [composeOpen, setComposeOpen] = useState(false);
-    const [mediaOpen, setMediaOpen] = useState(false);
+    const getMdeInstance = (instance) => {
+        editorRef.current = instance;
+    };
+
+    const acceptText = (text) => {
+        const editorInstance = editorRef.current;
+        const text1 = editorInstance.value();
+        console.log("EDITOR TEXT: ", text1);
+
+        const codemirror = editorRef.current.codemirror;
+        const doc = codemirror.getDoc();
+        const cursor = doc.getCursor();
+
+        const selection = doc.getSelection();
+
+        if (selection) {
+            doc.replaceSelection(text);
+        } else {
+            doc.replaceRange(text, cursor);
+            const startPos = { line: cursor.line, ch: cursor.ch };
+            const endPos = { line: cursor.line, ch: cursor.ch + text.length };
+            doc.setSelection(startPos, endPos);
+        }
+
+        codemirror.focus(); // Ensure the editor has focus after inserting text
+    };
+
+    const disabledTime = (current) => {
+        if (current && current.isSame(moment(), 'day')) {
+          // Disable hours before the current hour and minutes before the current minute plus 30
+          return {
+            disabledHours: () => Array.from({ length: moment().hour() }).map((_, index) => index),
+            // disabledMinutes: () => Array.from({ length: moment().minute() + 10 }).map((_, index) => index),
+          };
+        }
+        return {};
+    };
 
     return (
         <div className="min-h-screen flex flex-col flex-grow bg-[#E9EBEE]">
+            {contextHolder}
             {/* Navbar with dynamic tabs */}
             <motion.div whileInView={{ animation: "fadeIn" }} >
                 <NavBar isSticky={false} />
@@ -441,7 +473,8 @@ const AutomationDashboard = () => {
             <Modal
                 title="Compose a Post"
                 style={{
-                    top: 40,
+                    top: 20,
+                    marginBottom: 50,
                     backgroundColor: "#FFFFFF",
                     borderRadius: '4px',
                     padding: 0,
@@ -459,9 +492,14 @@ const AutomationDashboard = () => {
                         <DatePicker
                             showTime
                             suffixIcon={<ClockCircleOutlined />}
-                            style={{ border: "none", minWidth: 120, maxWidth: '25%', fontSize: 20, fontWeight: 'bolder', backgroundColor: "transparent" }}
+                            style={{ border: "none", minWidth: 120, maxWidth: '32%', fontSize: 20, fontWeight: 'bolder', backgroundColor: "transparent" }}
                             value={selectedDate}
                             onChange={handleDateChange}
+                            placeholder="Select Date and Time"
+                            allowClear={true}
+                            className="custom-class"
+                            disabledDate={(current) => current && current <= moment().startOf('day')}
+                            disabledTime={disabledTime}
                         />
                         <Dropdown.Button
                             className="rounded-lg w-fit"
@@ -476,7 +514,7 @@ const AutomationDashboard = () => {
                                 </Menu>
                             }
                         >
-                            Save
+                            Save Draft
                         </Dropdown.Button>
                     </div>
                 }
@@ -493,21 +531,42 @@ const AutomationDashboard = () => {
                         {
                             isExpanded ? (
                                 <div className="flex flex-col gap-2 pt-3 pl-1">
-                                    <div className="flex border-[1px] rounded-lg p-2 gap-1 justify-center group hover:border-orange-500 cursor-pointer">
-                                        <Avatar size={25} icon={<UserOutlined />} />
-                                        <p className="text-xs font-light mr-2">r/MavenMarketing</p>
-                                        <RedditCircleFilled className="text-gray-500 group-hover:text-orange-500" style={{ fontSize: 25 }} />
-                                    </div>
+                                    {
+                                        connectedPages.map((page, id) => (
+                                            (page.is_visible) ? (
+                                                <div key={id} onClick={() => handleSelectedAccount(page.subreddit)} className={`flex border-[1px] rounded-lg p-2 gap-1 justify-between group hover:border-orange-300 cursor-pointer ${(selectedSubreddits.includes(page.subreddit)) ? "border-orange-500" : ""} `}>
+                                                    <Avatar size={25} icon={(page.icon == '') ? <img src="https://b.thumbs.redditmedia.com/iTldIIlQVSoH6SPlH9iiPZZVzFWubJU7cOM__uqSOqU.png" /> : <img src={page?.icon?.split('?')[0]} />} />
+                                                    <p className="text-xs font-light mr-2">{page.subreddit}</p>
+                                                    <RedditCircleFilled className={`text-gray-500 group-hover:text-orange-300 ${(selectedSubreddits.includes(page.subreddit)) ? "border-orange-500 text-orange-500" : ""}`} style={{ fontSize: 25 }} />
+                                                </div>
+                                            ) : (
+                                                <></>
+                                            )
+                                        ))
+                                    }
                                 </div>
                             )
                                 : (
-                                    <div className="grid grid-cols-2 h-full transition-all ease-linear">
+                                    <div className="grid grid-cols-2 pl-1 h-full transition-all ease-linear">
                                         <div className="col-span-1 pt-6 gap-2 flex flex-col">
-                                            <RedditCircleFilled style={{ fontSize: 35, color: "grey" }} />
-                                            <RedditCircleFilled style={{ fontSize: 35, color: "#FF4500" }} />
-                                            <LinkedinFilled style={{ fontSize: 35, color: "#0077b5" }} />
+                                            {
+                                                connectedPages.map((page, id) => (
+                                                    (page.is_visible) ? (
+                                                        <div key={id} className="" data-tip={page.subreddit}>
+                                                            <RedditCircleFilled
+                                                                style={{
+                                                                    fontSize: 35,
+                                                                    color: selectedSubreddits.includes(page.subreddit) ? "#FF4500" : "grey",
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <></>
+                                                    )
+                                                ))
+                                            }
                                         </div>
-                                        <div className="col-span-1 flex flex-col gap-5 mb-auto mt-auto">
+                                        <div className="col-span-1 flex flex-col justify-end items-end gap-5 mb-auto mt-auto">
                                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                                                 transform="rotate(90 0 0)"
                                                 width="15" height="15"
@@ -520,31 +579,12 @@ const AutomationDashboard = () => {
                         }
                     </motion.div>
                     <div className="flex flex-col gap-2 w-full border-1 p-3">
-                        <SimpleMDE
-                            options={{
-                                autofocus: true,
-                                spellChecker: false,
-                                placeholder: "Create a post",
-                                minHeight: "100px",
-                                maxHeight: "180px",
-                                showIcons: ["code", "table", "horizontal-rule", "strikethrough", "heading", "quote", "unordered-list", "ordered-list", "clean-block", "link", "image", "redo", "undo"],
-                                renderingConfig: {
-                                    singleLineBreaks: false,
-                                    codeSyntaxHighlighting: true,
-                                },
-                                previewRender: function (plainText) {
-                                    const html = customMarkdownParser(plainText);
-                                    return `<div class="prose-sm">${html}</div>`;
-                                },
-                            }}
-                            value={postText}
-                            onChange={(value) => setTextPost(value)}
-                        />
-                        {/* <Button onClick={handleButtonClick} >Click</Button> */}
-
+                        <Input required placeholder="Title" showCount maxLength={300} value={title} onChange={(e) => setTitle(e.target.value)} />
+                        <EditorMDE editorRef={editorRef} getMdeInstance={getMdeInstance} postText={postText} setPostText={setPostText} />
                         <div className="h-full">
                             {/* Selected Option -Image / Video, -GIF, -File, -AI */}
-                            {renderOptions(selectedTab)}
+                            {/* {renderOptions(selectedTab)} */}
+                            <RenderOptions images={images} onSelectGif={handleMediaSelect} onImageSelect={handleMediaSelect} onSelectMedia={handleMediaSelect} editorRef={editorRef} selectedTab={selectedTab} addText={(e) => acceptText(e)} />
                         </div>
 
                     </div>
@@ -617,7 +657,7 @@ const AutomationDashboard = () => {
                     </Select>
                 </div>
 
-                <div className="hidden w-full border-2 lg:flex justify-center">
+                <div className="hidden w-full lg:flex justify-center">
                     {/* Add Pages Button */}
                     {
                         isLoading ? (
@@ -629,10 +669,10 @@ const AutomationDashboard = () => {
                                 </div>
                             </div>
                         ) : (
-                            isSuccess? (
+                            isSuccess ? (
                                 connectedPages?.map((page, index) => (
                                     page.is_visible ? (
-                                        <div key={page.id} onClick={() => setSelectedPage(page.id)} className="flex flex-col justify-between w-[80px] border-2 items-center group cursor-pointer ml-1">
+                                        <div key={page.id} onClick={() => { setSelectedPage(page.id); setSelectedSubreddits([page.subreddit]) }} className="flex flex-col justify-between w-[80px] items-center group cursor-pointer ml-1">
                                             {
                                                 // page.platform === 'Reddit' ? (
                                                 //     <RedditCircleFilled className={(selectedPage === page.id) ? "text-[#FF4500]" : "text-zinc-300 group-hover:text-gray-500 transition-all"} style={{ fontSize: 28 }} />
@@ -643,23 +683,23 @@ const AutomationDashboard = () => {
                                             }
                                             <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600 max-w-[80px] text-ellipsis truncate">{page.subreddit}</p>
                                             {/* <div className={`${(selectedPage === page.id) ? (page.platform === "Reddit") ? "bg-[#FF4500]" : "bg-[#0077b5]" : ""} h-[6px] w-20 top-[64px] absolute rounded-t-sm`}></div> */}
+                                            {console.log("Selected Page: ", selectedPage)}
                                             <div className={`${(selectedPage === page.id) ? "bg-[#FF4500]" : ""} h-[6px] w-20 top-[64px] absolute rounded-t-sm`}></div>
                                         </div>
                                     ) : null
                                 ))
                             ) : (
-                                <div className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
-                                    <div onClick={() => setaddPagesOpen(true)} className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                            className="stroke-zinc-300 group-hover:stroke-gray-500 transition-all"
-                                            width="27" height="27"
-                                            viewBox="0 0 50 50">
-                                            <path d="M 9 4 C 6.2545455 4 4 6.2545455 4 9 L 4 41 C 4 43.745455 6.2545455 46 9 46 L 41 46 C 43.745455 46 46 43.745455 46 41 L 46 9 C 46 6.2545455 43.745455 4 41 4 L 9 4 z M 9 6 L 41 6 C 42.654545 6 44 7.3454545 44 9 L 44 41 C 44 42.654545 42.654545 44 41 44 L 9 44 C 7.3454545 44 6 42.654545 6 41 L 6 9 C 6 7.3454545 7.3454545 6 9 6 z M 24 13 L 24 24 L 13 24 L 13 26 L 24 26 L 24 37 L 26 37 L 26 26 L 37 26 L 37 24 L 26 24 L 26 13 L 24 13 z"></path>
-                                        </svg>
-                                        <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600">ADD PAGES</p>
-                                        {/* <div className="bg-green h-[6px] w-20 top-[64px] absolute rounded-t-sm"></div> */}
+                                isError ? (
+                                    <></>
+                                ) : (
+                                    <div className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
+                                        <div className="flex flex-col justify-between items-center group cursor-pointer ml-2 mr-2">
+                                            <div className="bg-zinc-300 h-[28px] w-[28px] rounded-full"></div>
+                                            <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600 max-w-[80px] text-ellipsis truncate">No Pages</p>
+                                            <div className="bg-zinc-300 h-[6px] w-20 top-[64px] absolute rounded-t-sm"></div>
+                                        </div>
                                     </div>
-                                </div>
+                                )
                             )
                         )
                     }
@@ -672,7 +712,6 @@ const AutomationDashboard = () => {
                             <path d="M 9 4 C 6.2545455 4 4 6.2545455 4 9 L 4 41 C 4 43.745455 6.2545455 46 9 46 L 41 46 C 43.745455 46 46 43.745455 46 41 L 46 9 C 46 6.2545455 43.745455 4 41 4 L 9 4 z M 9 6 L 41 6 C 42.654545 6 44 7.3454545 44 9 L 44 41 C 44 42.654545 42.654545 44 41 44 L 9 44 C 7.3454545 44 6 42.654545 6 41 L 6 9 C 6 7.3454545 7.3454545 6 9 6 z M 24 13 L 24 24 L 13 24 L 13 26 L 24 26 L 24 37 L 26 37 L 26 26 L 37 26 L 37 24 L 26 24 L 26 13 L 24 13 z"></path>
                         </svg>
                         <p className="text-xs transition-all font-light text-zinc-400 group-hover:text-gray-600">ADD PAGES</p>
-                        {/* <div className="bg-green h-[6px] w-20 top-[64px] absolute rounded-t-sm"></div> */}
                     </div>
 
                 </div>
@@ -704,7 +743,7 @@ const AutomationDashboard = () => {
                         </svg>
                         <p className="text-[14px]">Media</p>
                     </div>
-                    <div onClick={() => setComposeOpen(true)} className="cursor-pointer h-9 btn-sm flex justify-center items-center gap-1 btn btn-success">
+                    <div onClick={() => setComposeOpen(true)} className="animate-pulse cursor-pointer h-9 btn-sm flex justify-center items-center gap-1 btn btn-success">
                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                             width="15" height="15"
                             viewBox="0,0,256,256">
@@ -716,131 +755,20 @@ const AutomationDashboard = () => {
             </div>
 
             <div className="h-full min-h-[900px]">
-
-                {/* Add Page Modal */}
-
-                {/* <Modal
-                    style={{
-                        top: 40,
-                        backgroundColor: "#FFFFFF",
-                        borderRadius: '4px',
-                        padding: 0,
-                        overflow: 'hidden',
-                        boxShadow: "0px 5px 10px rgba(0, 1, 1, 0.5)",
-                    }}
-                    footer={null}
-                    open={addPagesOpen}
-                    width={'45%'}
-                    className="modalStyle"
-                    title={
-                        <div className="flex justify-center items-center">
-                            <p className="text-[20px] font-medium">Add Social Media Pages</p>
-                        </div>
-                    }
-                    onOk={() => setaddPagesOpen(false)}
-                    onCancel={() => setaddPagesOpen(false)}
-                    cancelButtonProps={{ style: { display: 'none' } }}
-                >
-
-                    <Tabs
-                        centered
-                        defaultActiveKey="1"
-                        activeTabClassName="custom-active-tab"
-                        onChange={(e) => setActiveKey(e)}
-                    >
-                        <TabPane
-                            tab={
-                                <div className="flex rounded-t-lg justify-center items-center align-middle">
-                                    <RedditCircleFilled style={{ fontSize: 35, margin: 'auto' }} className={(activeKey == '1') ? "text-[#FF4500]" : "text-gray-400"} />
-                                </div>
-                            }
-                            key="1"
-                        >
-                            <div className="flex flex-col h-80">
-                                <div className=" h-full p-2">
-                                    <div className="w-28 h-28 border-[2px] border-dashed flex flex-col justify-center hover:shadow-2xl  hover:border-solid rounded-md transition-all duration-100 cursor-pointer">
-                                        <RedditCircleFilled style={{ fontSize: 35, margin: 'auto' }} className="text-[#FF4500]" />
-                                        <p className="text-zinc-800 font-railway text-center">Add Reddit Profile</p>
-                                    </div>
-                                </div>
-                                <span className="border-[1px] ml-2 mr-2 border-[#838383] opacity-20"></span>
-
-                                <span className="flex items-center ml-2">
-                                    <div className="rounded-xl w-2 h-2 bg-lime-600"></div>
-                                    <p className="ml-2 font-extralight mt-1 text-[#838383] opacity-80">Connected Communities</p>
-                                </span>
-
-                                <div className="h-full p-2 flex gap-3">
-                                    {
-                                        connectedPages.map((page, id) => (
-                                            (page.platform === "Reddit") ? (
-                                                <div className="w-36 h-36 border-[1px] flex flex-col justify-between transition-all duration-100">
-                                                    <div className="h-7 justify-between items-center align-middle pl-2 flex">
-                                                        <div className="tooltip tooltip-right" data-tip="Page visible">
-                                                            {
-                                                                (page.visible) ? (
-                                                                    <EyeOutlined onClick={() => setPageVisible(id, false)} className="cursor-pointer" style={{ fontSize: 17, color: "gray" }} />
-                                                                ) :
-                                                                    (
-                                                                        <EyeInvisibleOutlined onClick={() => setPageVisible(id, true)} className="cursor-pointer" style={{ fontSize: 17, color: "gray" }} />
-                                                                    )
-                                                            }
-                                                        </div>
-                                                        <div className="pr-2 tooltip" data-tip="Disconnect">
-                                                            <CloseCircleOutlined className={`text-[16px] transition-colors duration-200 text-red-500 hover:text-red-700`} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col justify-center items-center ">
-                                                        <Avatar size={35} style={{ margin: 5 }} icon={<UserOutlined />} />
-                                                        <p className="text-zinc-800 font-railway text-center text-xs mb-5">r/{page.name}</p>
-                                                        <p className="rounded-full pl-2 pr-2 bg-purple-800 text-zinc-50 font-railway text-sm">mod</p>
-                                                        <p className="text-xs font-mono text-lime-600">CONNECTED</p>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div>
-                                                </div>
-                                            )
-                                        ))
-                                    }
-
-
-                                    <div className="w-36 h-36 border-[1px] flex flex-col justify-center items-center hover:shadow-lg transition-all duration-100 cursor-pointer">
-                                        <Avatar size={35} style={{ margin: 5 }} icon={<UserOutlined />} />
-                                        <p className="text-zinc-800 font-railway text-center text-xs mb-5">User</p>
-                                        <p className="text-xs font-mono text-lime-600">CONNECTED</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </TabPane>
-                        <TabPane
-                            tab={ // Custom tab header with bold title in the middle
-                                <div className="flex rounded-t-lg justify-center items-center align-middle">
-                                    <LinkedinFilled style={{ fontSize: 35, margin: 'auto' }} className={(activeKey == '2') ? "text-[#0077b5]" : "text-gray-400"} />
-                                </div>
-                            }
-                            key="2"
-                        >
-                            Tab 2 content
-                        </TabPane>
-                    </Tabs>
-
-                </Modal> */}
-
                 {/* Add Page Modal */}
                 {
                     isLoading ? (
                         <></>
                     ) : (
-                    isSuccess ? (
-                        connectedPages.length > 0 ? (
-                            <AddPages data={connectedPages} addPagesOpen={addPagesOpen} setaddPagesOpen={setaddPagesOpen} />
+                        isSuccess ? (
+                            connectedPages.length > 0 ? (
+                                <AddPages profile={subreddits.profile} data={connectedPages} addPagesOpen={addPagesOpen} setaddPagesOpen={setaddPagesOpen} notifyError={callError} />
+                            ) : (
+                                <AddPages profile={subreddits.profile} data={connectedPages} addPagesOpen={addPagesOpen} setaddPagesOpen={setaddPagesOpen} notifyError={callError} />
+                            )
                         ) : (
-                            <></>
-                        )
-                    ) : (
-                        <></>
-                    ))
+                            <AddPages data={connectedPages} addPagesOpen={addPagesOpen} setaddPagesOpen={setaddPagesOpen} notifyError={callError} />
+                        ))
                 }
 
                 <Modal
@@ -879,16 +807,29 @@ const AutomationDashboard = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 gap-y-10 overflow-y-auto p-3">
                             {/* Display the files with lazy loading */}
-                            {images.map((image, index) => (
-                                <LazyLoad key={index} width={200} height={200}>
-                                    <ImageCheckbox
-                                        key={index}
-                                        src={image}
-                                        checked={selectedKeys.includes(index)}
-                                        onChange={(checked) => handleImageCheckboxChange(index, checked)}
-                                    />
-                                </LazyLoad>
-                            ))}
+                            {
+                                (isMediaLoading) ? (
+                                    <div className="flex justify-center items-center h-full">
+                                        <Spin size="large" />
+                                    </div>
+                                ) : (
+                                    (isMediaSuccess) ? (
+                                        images?.map((image, index) => (
+                                            <LazyLoad key={index} width={200} height={200}>
+                                                <ImageCheckbox
+                                                    key={index}
+                                                    src={image.url}
+                                                    checked={selectedKeys.includes(index)}
+                                                    onChange={(checked) => handleImageCheckboxChange(index, checked)}
+                                                />
+                                            </LazyLoad>
+                                        )
+                                        )) : (
+                                        <div className="flex justify-center items-center h-full">
+                                            <p className="text-gray-400 text-lg">No Images Found</p>
+                                        </div>
+                                    )
+                                )}
                         </div>
                     </div>
                 </Modal>
@@ -902,8 +843,11 @@ const AutomationDashboard = () => {
                                 </div>
                             ) : (
                                 isError ? (
-                                    <div className="flex justify-center items-center h-full">
-                                        <p className="text-2xl font-bold">Something went wrong</p>
+                                    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-[#1a237e] via-indigo-800 to-[#2196f3]">
+                                        <div className="bg-white bg-opacity-20 p-8 rounded-lg shadow-md">
+                                            <h1 className="text-3xl font-bold text-gray-100 mb-4 text-center">No Social Media Connected</h1>
+                                            <p className="text-gray-200 text-lg mb-8 text-center">Connect your social media accounts to start sharing your content with the world.</p>
+                                        </div>
                                     </div>
                                 ) : (
                                     isSuccess ? (
@@ -915,7 +859,7 @@ const AutomationDashboard = () => {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <RedditUI />
+                                            <RedditUI profile={subreddits.profile} data={subreddits.subreddits} selectedPage={selectedPage} />
                                         )
                                     ) : (
                                         <div className="flex justify-center items-center h-full">

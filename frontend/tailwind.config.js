@@ -22,7 +22,7 @@ module.exports = {
       green: "hsl(159,99%,41%)",
       black : "black",
       grey: "hsl(227,10%,64%)",
-      blue: "hsl(214,100%,55%)"
+      blue: "hsl(214,100%,55%)",
     },
     fontFamily:{
       railway : ['Raleway', 'sans-serif'],

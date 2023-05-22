@@ -10,6 +10,7 @@ from pymongo.errors import OperationFailure
 from flask import Flask
 from concurrent.futures import ThreadPoolExecutor
 import requests
+import pytz
 
 app = Flask(__name__)
 client = MongoClient('mongodb+srv://root:root@cluster0.trpwg.mongodb.net/?retryWrites=true&w=majority')
@@ -38,9 +39,9 @@ def my_task(task_id):
         print(f"Task {task_id} executed at {datetime.now()}")
         # remove task from database after execution
         # db.schedules.delete_one({'_id': ObjectId(task_id)})
-        url = "http://localhost:3000/automate/reddit/sendScheduledPost"
+        url = "http://localhost:3000/automate/reddit/v2/sendScheduledPost"
         data = {
-            "userid": task['userid'],
+            "userid": str(task['userid']),
             "subreddit": task['subreddit'],
             "postid": task['postid'],
         }
@@ -56,6 +57,8 @@ def my_task(task_id):
 for task in db.schedules.find():
     task_id = str(task['_id'])
     task_date = task['sendTime']
+    task_date = task_date.replace(tzinfo=pytz.utc)  # Set the timezone of task_date to UTC
+    task_date = task_date.astimezone(pytz.timezone('Asia/Karachi'))  # Convert to 'Asia/Karachi' timezone
     print("-----------------------------------------")
     print("TASK ", task_id, "DATE ", task_date)
     print("-----------------------------------------")
@@ -76,6 +79,8 @@ def on_change(change):
         task = change['fullDocument']
         task_id = str(task['_id'])
         task_date = task['sendTime']
+        task_date = task_date.replace(tzinfo=pytz.utc)  # Set the timezone of task_date to UTC
+        task_date = task_date.astimezone(pytz.timezone('Asia/Karachi'))  # Convert to 'Asia/Karachi' timezone
         scheduler.add_job(
             misfire_grace_time=60,
             func=my_task, 
@@ -97,6 +102,8 @@ def on_change(change):
         task = change['fullDocument']
         task_id = str(task['_id'])
         task_date = task['sendTime']
+        task_date = task_date.replace(tzinfo=pytz.utc)  # Set the timezone of task_date to UTC
+        task_date = task_date.astimezone(pytz.timezone('Asia/Karachi'))  # Convert to 'Asia/Karachi' timezone
         try:
             scheduler.remove_job(task_id)
         except:

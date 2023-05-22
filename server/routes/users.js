@@ -240,7 +240,7 @@ const RREDIRECT_URI = 'http://localhost:3000/users/reddit/callback';
 
 router.get('/auth/reddit', (req, res) => {
   //const state = Math.random().toString(36).substring(7);
-  var state = req.query.user;
+  var state = req.user._id;
   const url = `https://www.reddit.com/api/v1/authorize?client_id=${RCLIENT_ID}&response_type=code&state=${state}&redirect_uri=${RREDIRECT_URI}&duration=permanent&scope=identity,edit,flair,history,livemanage,modconfig,modflair,modlog,modposts,modwiki,mysubreddits,privatemessages,read,report,save,submit,subscribe,vote,wikiedit,wikiread`;
 
   res.redirect(url);
@@ -300,7 +300,7 @@ router.get('/reddit/callback', async (req, res) => {
           accessToken: accessToken,
           refreshToken: refreshToken,
           profilePic: userData.data.icon_img,
-          bannerPic: userData.data.banner_img,
+          bannerPic: userData.data.subreddit.banner_img,
         });
         newSocial.save();
         // add this to user's socials array
@@ -310,7 +310,7 @@ router.get('/reddit/callback', async (req, res) => {
       }
     });
 
-    res.redirect('http://localhost:5173/brandhome')
+    res.redirect('http://localhost:5173/socialautomation')
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

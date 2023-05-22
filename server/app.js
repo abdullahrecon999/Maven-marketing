@@ -23,7 +23,7 @@ var influencerRouter = require('./routes/influencer');
 var MessageRouter = require("./routes/chat");
 var campaign = require("./routes/campaign")
 var socialAutomate = require("./routes/socialAutomate")
-
+var Media = require("./routes/media")
 var listing = require("./routes/listing")
 
 
@@ -119,6 +119,13 @@ app.use("/chats", MessageRouter)
 app.use("/campaign", campaign)
 app.use("/automate", socialAutomate)
 app.use("/list", listing)
+app.use("/media", Media)
+
+// serve local image and video files
+// app.get('/uploads/:filename', (req, res) => {
+//     const { filename } = req.params;
+//     res.sendFile(path.join(__dirname, 'uploads', filename));
+// });
 
 app.all('*', (req, res, next) => {
     res.status(404).json({ 'Error': `Cant Find ${req.originalUrl}` }); // 404 Not Found

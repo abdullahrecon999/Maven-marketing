@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Reddit = new mongoose.Schema({
     // define schema fields for model 1
@@ -46,7 +47,36 @@ const Reddit = new mongoose.Schema({
                 },
                 postStatus: {
                     type: String,
-                    enum : ['scheduled','posted', 'failed'],
+                    enum : ['scheduled','posted', 'failed', 'draft'],
+                },
+                imgPath: {
+                    type: String,
+                },
+                imgUrl: {
+                    type: String,
+                },
+                videoPath: {
+                    type: String,
+                },
+                videoUrl: {
+                    type: String,
+                },
+                file: {
+                    path: {
+                        type: String,
+                    },
+                    url: {
+                        type: String,
+                    },
+                    mimetype: {
+                        type: String,
+                    },
+                },
+                postedAt: {
+                    type: Date,
+                },
+                scheduledAt: {
+                    type: Date,
                 },
             }
         ]
@@ -85,6 +115,7 @@ const Linkedin = new mongoose.Schema({
     }
 });
 
+Reddit.plugin(mongoosePaginate);
 const RedditModel = mongoose.model('Reddit', Reddit);
 const LinkedinModel = mongoose.model('Linkedin', Linkedin);
 

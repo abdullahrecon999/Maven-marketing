@@ -52,6 +52,8 @@ import AutomationDashboard from "./Pages/SocialAutomation/automationDashboard";
 import ListDetails from "./Pages/brand/ListDetails";
 import ManageCampaignPage from "./Components/brandComponents/ManageCampaignPage";
 
+import { BulkSchedule } from "./Pages/bulkSchedule/BulkScheduler";
+
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
 // const Whyus = lazy(import('./Pages/Whyus'))
@@ -99,6 +101,10 @@ function App() {
                 <Route
                   path="/socialautomation"
                   element={<AutomationDashboard />}
+                ></Route>
+                <Route
+                  path="/socialautomation/bulkload"
+                  element={<BulkSchedule />}
                 ></Route>
                 <Route
                   path="/businesslogin"

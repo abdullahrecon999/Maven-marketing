@@ -16,7 +16,7 @@ export function ExpandableParagraph({ text }) {
   };
 
   return (
-    <div className='flex flex-col justify-end items-end'>
+    <div className='flex flex-col'>
       <AnimatePresence>
         <motion.p
           className="text-sm text-stone-600"

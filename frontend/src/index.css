@@ -53,3 +53,10 @@ code {
   border-top-left-radius: 10px !important;
   border-top-right-radius: 10px !important;
 }
+
+.ant-btn-primary,
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
