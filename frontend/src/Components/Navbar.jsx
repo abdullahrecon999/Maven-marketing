@@ -39,27 +39,18 @@ const Navbar = () => {
             onClick={() => {
               navigate("/");
             }}
-            className="text-black font-railway"
+            className="text-black "
           >
             Maven Marketing
           </h1>
           <div className="hidden space-x-6 md:flex">
-            <Link
-              to="/services"
-              className="text-grey font-railway hover:text-blue"
-            >
+            <Link to="/services" className="text-grey text-xl  hover:text-blue">
               Services
             </Link>
-            <Link
-              to="/aboutus"
-              className="text-grey font-railway hover:text-blue"
-            >
+            <Link to="/aboutus" className="text-grey text-xl  hover:text-blue">
               about us
             </Link>
-            <Link
-              to="/whyus"
-              className="text-grey font-railway hover:text-blue"
-            >
+            <Link to="/whyus" className="text-grey text-xl  hover:text-blue">
               why us?
             </Link>
           </div>
@@ -102,7 +93,7 @@ const Navbar = () => {
                       : "/businesshome"
                   )
                 }
-                className="p-3 text-grey baseline font-railway text-sm hover:text-blue"
+                className="p-3 text-grey baseline text-xl  font-medium hover:text-blue"
               >
                 Dashboard
               </button>
@@ -110,14 +101,14 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => navigate("/influencerlogin")}
-                  className="p-3 text-grey baseline font-railway text-sm hover:text-blue"
+                  className="p-3 text-grey baseline text-xl  font-medium hover:text-blue"
                 >
                   {" "}
                   Influencer login
                 </button>
                 <button
                   onClick={() => navigate("/businesslogin")}
-                  className="p-3 text-grey baseline font-railway text-sm hover:text-blue"
+                  className="p-3 text-grey baseline text-xl  font-medium hover:text-blue"
                 >
                   {" "}
                   Brand login
@@ -136,10 +127,10 @@ const Navbar = () => {
         </div>
         {open && <DropdownMenu></DropdownMenu>}
       </nav>
-      <SignupModal
+      {/* <SignupModal
         visible={openSignupModal}
         onClose={handleClose}
-      ></SignupModal>
+      ></SignupModal> */}
     </>
   );
 };
