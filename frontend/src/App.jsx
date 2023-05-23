@@ -51,7 +51,7 @@ import MainScreen from "./Pages/MarketAutomation/MainScreen";
 import ListDetails from "./Pages/brand/ListDetails";
 import ManageCampaignPage from "./Components/brandComponents/ManageCampaignPage";
 import BrandPayments from "./Pages/brand/BrandPayments";
-
+import RequireAuthChat from "./Components/ChatWrapper";
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
 // const Whyus = lazy(import('./Pages/Whyus'))
@@ -81,7 +81,16 @@ function App() {
           <Suspense fallback={<div>loading</div>}>
             <Routes>
               {/* Public Routes */}
-
+              <Route
+                element={
+                  <RequireAuthChat
+                    allowedRoles={["brand", "influencer"]}
+                  ></RequireAuthChat>
+                }
+              >
+                <Route path="/brandchat" element={<Chat />}></Route>
+                <Route path="/influencerchat" element={<Chat />}></Route>
+              </Route>
               <Route element={<Wrapper />}>
                 <Route path="/" element={<Home />}></Route>
                 <Route
@@ -171,7 +180,7 @@ function App() {
                   path="managecampaign/:id"
                   element={<ManageCampaignPage></ManageCampaignPage>}
                 ></Route>
-                <Route path="/brandchat" element={<Chat />}></Route>
+
                 <Route path="/brandprofile" element={<BrandProfile />}></Route>
                 <Route
                   path="/brand/linkedin"
@@ -202,7 +211,7 @@ function App() {
                   path="/SocialProfile"
                   element={<SocialProfile />}
                 ></Route>
-                <Route path="/influencerchat" element={<Chat />}></Route>
+
                 <Route
                   path="/accountnotverified"
                   element={<AccountNotVerified />}

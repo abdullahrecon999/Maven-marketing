@@ -83,14 +83,19 @@ const ChatSideBar = ({ setCurrent }) => {
                 return (item.contact.name)
             }))} */}
             {data?.data?.data[0]?.contacts.map((item, i) => {
+              console.log(item);
               return (
                 <div
                   onClick={() => {
                     setCurrentUser(item.contact);
                   }}
                   key={i}
-                  className="flex flex-col items-start p-3 px-5 py-5 border w-[100%] hover:bg-grey"
+                  className="flex justify-start p-3 px-5 py-5 border w-[100%] gap-3 hover:bg-gray-200 hover:cursor-pointer"
                 >
+                  <img
+                    src={item?.contact?.photo}
+                    className="w-[30px] h-[30px] rounded-full border "
+                  ></img>
                   <h1 className="text-base font-semibold">
                     {item.contact.name}
                   </h1>
