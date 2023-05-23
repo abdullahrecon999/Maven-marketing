@@ -24,6 +24,17 @@ const items = [
     label: <Link to="/BusinessSignup">As Brand</Link>,
   },
 ];
+
+const LoginItems = [
+  {
+    key: "1",
+    label: <Link to="/InfluencerSignup">As Influencer</Link>,
+  },
+  {
+    key: "2",
+    label: <Link to="/BusinessSignup">As Brand</Link>,
+  },
+];
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -39,18 +50,27 @@ const Navbar = () => {
             onClick={() => {
               navigate("/");
             }}
-            className="text-black "
+            className="text-white font-bold text-xl "
           >
             Maven Marketing
           </h1>
           <div className="hidden space-x-6 md:flex">
-            <Link to="/services" className="text-grey text-xl  hover:text-blue">
+            <Link
+              to="/services"
+              className="text-white text-xl  hover:text-gray-800"
+            >
               Services
             </Link>
-            <Link to="/aboutus" className="text-grey text-xl  hover:text-blue">
+            <Link
+              to="/aboutus"
+              className="text-white text-xl  hover:text-gray-800"
+            >
               about us
             </Link>
-            <Link to="/whyus" className="text-grey text-xl  hover:text-blue">
+            <Link
+              to="/whyus"
+              className="text-white text-xl  hover:text-gray-800"
+            >
               why us?
             </Link>
           </div>
@@ -70,14 +90,14 @@ const Navbar = () => {
                 menu={{
                   items,
                 }}
-                className=" px-2 py-1 rounded-lg hover:bg-gray-100 "
+                className=" px-2 py-1 rounded-lg  "
               >
                 <a onClick={(e) => e.preventDefault()}>
                   <Space>
-                    <label className="text-xl text-blue font-bold  ">
+                    <label className="text-xl text-white  font-medium  ">
                       Get Started
                     </label>
-                    <DownOutlined className="text-blue " />
+                    <DownOutlined className="text-white " />
                   </Space>
                 </a>
               </Dropdown>

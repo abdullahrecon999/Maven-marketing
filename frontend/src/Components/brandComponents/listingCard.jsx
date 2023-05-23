@@ -41,7 +41,7 @@ export const ListingCard = ({
             </div>
           </div>
           <div className="flex-col ml-2">
-            <h2 className="font-bold">{name?.slice(0, 20) + "..."}</h2>
+            <h2 className="font-bold">{name?.slice(0, 10) + "..."}</h2>
             <div className="flex gap-1 items-center w-full">
               {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +123,9 @@ export const ListingCard = ({
         </Tag>
       </div>
       <div className="w-full p-1">
-        <p className="text-sm line-clamp-2">{description}</p>
+        <p className="text-sm line-clamp-2">
+          {description?.slice(0, 50) + "..."}
+        </p>
       </div>
     </div>
   );

@@ -61,6 +61,7 @@ export const Marketplace = () => {
     isLoading: isGigsLoading,
     isGigsSuccess,
     isError,
+    isRefetching,
     refetch: gigsRefecth,
   } = useQuery(["gigs"], () => {
     let queryParams =
@@ -410,6 +411,14 @@ export const Marketplace = () => {
       return nFormatter(data.followers_avg) + " Followers";
     }
   };
+
+  if (isRefetching) {
+    return (
+      <div className="h-[60vh] flex justify-center items-center">
+        <Spin size="large"></Spin>
+      </div>
+    );
+  }
   return (
     <>
       <Modal
@@ -424,6 +433,7 @@ export const Marketplace = () => {
                 setCategoriesList([]);
                 setStatus([]);
                 setInputValue(1000);
+                handleCancel();
               }}
               className="btn btn-sm btn-outline btn-warning"
             >
@@ -709,8 +719,8 @@ export const Marketplace = () => {
         <div className="mb-2">
           <h1 className="font-bold">All Influencer Listing</h1>
         </div>
-
-        <div className="flex flex-wrap justify-around gap-3">
+        {/* flex flex-wrap justify-around gap-3 */}
+        <div className="grid grid-cols-4 gap-3">
           {isGigsLoading ? (
             <div className="flex justify-center items-center h-[60vh]">
               <Spin></Spin>
