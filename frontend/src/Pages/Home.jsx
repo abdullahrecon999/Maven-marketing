@@ -14,8 +14,8 @@ const Home = () => {
     <>
       <Navbar></Navbar>
       <section className="container mx-auto">
-        <div className="flex flex-col-reverse h-screen items-center justify-between px-10 pt-10 mx-auto space-x-2 space-y-0 md:flex-row ">
-          <div className="flex flex-col justify-start mb-10 space-y-8 sm:justify-start ">
+        <div className="flex flex-col-reverse h-screen items-center justify-evenly px-10  mx-auto space-x-1 space-y-0 md:flex-row ">
+          <div className="flex flex-col justify-start  space-y-8 sm:justify-start ">
             <div className="flex flex-col space-y-1">
               <h1 className="text-xs font-bold text-blue font-Andika">
                 {" "}
@@ -29,9 +29,9 @@ const Home = () => {
                 <br /> You Want
               </h1>
             </div>
-            <p className="text-xs text-grey font-Andika">
+            <p className="text-sm text-grey font-Andika">
               Providing best plateform for brands <br />
-              to promote their brand and for <br />
+              to promote their business and for <br />
               content creators to earn online through
               <br />
               Influencer Marketing
@@ -52,6 +52,7 @@ const Home = () => {
           ></img>
         </div>
       </section>
+      <section></section>
       {/* <SignupModal
         visible={openSignupModal}
         onClose={handleClose}

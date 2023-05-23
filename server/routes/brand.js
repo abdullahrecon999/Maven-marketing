@@ -18,7 +18,9 @@ const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
 const invites = require ("../models/Invites");
 const Account = require('../models/Account')
+const Listing = require("../models/listing")
 const { platform } = require('os');
+const axios = require('axios')
 
 const secretKey = process.env.STRIPE_KEY
 
@@ -332,15 +334,29 @@ router.get("/getallbids/:id", async (req, res)=>{
   }
 })
 
-router.get("/inviteinfluencers", async(req,res)=>{
+router.get("/inviteinfluencers/:id", async(req,res)=>{
   try{
-    const data= await User.find({role: "influencer"}).limit(5)
+    const id = req.params.id
+    const campaign = await Campaign.findOne({_id: id}).select({tags:1, platform: 1})
+    console.log(campaign.platform)
+    const query = {}
+    if(campaign.tags.length !== 0){
+      query.categories = {$in: campaign.tags.map(t=> new RegExp(t, "i"))}
+    
+    }
+    if(campaign.platform.length !==0 && campaign.platform[0] !== "Any"){
+      query.platform =  {$in: campaign.platform.map(t=> new RegExp(t, "ig"))}
+    }
+    const data = await Listing.find({...query}).limit(5)
+    
+    const dataRegistered = await Listing.find({registered:true}).limit(5)
     res.status(200).json({
       status: "success",
-      data
+      data: [...data, ...dataRegistered]
     })
   }catch(e){
-    res.status(502).json({
+    console.log(e)
+    res.status(500).json({
       status: "error"
     })
   }
@@ -581,6 +597,22 @@ router.post("/endcontract/:id", async (req, res, next)=>{
     res.status(500).json({
       status: "error"
     })
+  }
+})
+
+router.get("/getinviteinfluencerlist/:id",async(req, res)=>{
+  try{
+    const id = req.params.id
+    const campaignData = await Campaign.findOne({_id:id})
+    const keywords = await axios.get("http://localhost:3939/getkeywords", {description: campaignData.description})
+    res.json({
+      data: keywords.data.keyWords
+    })
+
+  }catch(e){
+    console.log(e)
+    res.send("error")
+
   }
 })
 

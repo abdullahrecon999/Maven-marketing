@@ -7,7 +7,8 @@ app = Flask(__name__)
 
 def call(data):
     keyWords = Extractor(data)
-    requests.post("/url heere", json={"keyWord":keyWords })
+    print(keyWords)
+    # requests.post("/url heere", json={"keyWord":keyWords })
     
 
 @app.route('/', methods = ["POST"])
@@ -17,4 +18,11 @@ def method_name():
     thread.start()
     return "ok", 200
 
-app.run()
+@app.route("/getkeywords",methods = ["POST"])
+def getKeyWords():
+    data = request.json
+    keyWords = Extractor(data['description'])
+    return {
+        "keyWords": keyWords
+    }
+app.run('0.0.0.0', port=3939)
