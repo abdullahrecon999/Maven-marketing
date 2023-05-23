@@ -316,7 +316,7 @@ const Profile = ({ onEdit }) => {
                 Categories{" "}
               </h1>
               <div className="flex flex-wrap">
-                {user?.category.map((item) => {
+                {user?.category?.map((item) => {
                   return <Tag>{item}</Tag>;
                 })}
               </div>
@@ -508,10 +508,6 @@ const SocialProfile = () => {
       {/* {open ? <EditProfile onSave={setOpen} /> :  */}
       <Profile onEdit={handleEdit} />
       <InitialOtherDetails></InitialOtherDetails>
-
-      <div className="flex-[0.75] bg-slate-50 border-l-2 shadow ">
-        <AddConnection id={user._id}></AddConnection>
-      </div>
     </div>
   );
 };

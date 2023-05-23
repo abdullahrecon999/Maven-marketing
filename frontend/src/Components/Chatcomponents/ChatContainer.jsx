@@ -15,7 +15,7 @@ import Contract from "./ContractContainer";
 import InfluencerGenaricModel from "../InfluencerComponents/InfluencerGenaricModal";
 import CloseIcon from "@mui/icons-material/Close";
 import dayjs from "dayjs";
-import { Modal, Tag, Button, Input } from "antd";
+import { Modal, Tag, Button, Input, Spin } from "antd";
 const FallBack = () => {
   return (
     <div className="h-[80vh] flex flex-col flex-1 mt-10 items-center px-4 py-2 bg-slate-50">
@@ -64,26 +64,27 @@ const ContractModel = () => {
       footer={[]}
       title="Contract Details"
     >
-      <div className=" grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-        <div className="col-span-2">
-          <h1 className="text-base text-gray-800 font-semibold">
-            Campaign Name
-          </h1>
-          <h1 className="text-xl font-bold text-gray-800  ">
+      <div className=" grid grid-cols-2 gap-4 max-h-[50vh] overflow-y-auto border p-5">
+        <div className="col-span-1">
+          <h1 className="text-xl text-gray-800 font-semibold">Campaign Name</h1>
+          <h1 className="text-base text-gray-800 font-medium ">
             {Data?.campaignId?.title}
           </h1>
         </div>
-
-        <p className="text-sm text-gray-600 col-span-2">
-          {Data?.campaignId?.description}
-        </p>
-
-        <div className="col-span-2">
-          <h1 className="text-base  text-gray-800 font-medium">Brand Name</h1>
-          <h1 className="text-xl text-gray-800 font-semibold italic">
+        <div className="col-span-1">
+          <h1 className="text-xl  text-gray-800 font-semibold">Brand Name</h1>
+          <h1 className="text-base text-gray-800 font-medium ">
             {Data?.sender?.name}
           </h1>
         </div>
+
+        <div className="col-span-2">
+          <h1 className="text-gray-800 font-medium">Description</h1>
+          <p className="text-sm text-gray-600 col-span-2">
+            {Data?.campaignId?.description}
+          </p>
+        </div>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -167,7 +168,7 @@ const ChatContainer = () => {
   const [messages, setMessages] = useState([]);
   const [arrivalMessages, setArrivalMessages] = useState(null);
   const [status, setStatus] = useState("offline");
-
+  const [messageLoading, setMessageLoading] = useState(false);
   const scrollRef = useRef();
   const handleMessageChange = (e) => {
     setUpload(false);
@@ -180,6 +181,7 @@ const ChatContainer = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       if (Object.keys(currentUser).length !== 0) {
+        setMessageLoading(true);
         const response = await axios.post(
           "http://localhost:3000/chats/getMessages",
           {
@@ -191,6 +193,7 @@ const ChatContainer = () => {
       }
     };
     fetchMessages();
+    setMessageLoading(false);
     if (socket.current) {
       socket.current.emit("checkOnline", currentUser["_id"]);
       socket.current.on("userOnline", (text) => {
@@ -219,7 +222,7 @@ const ChatContainer = () => {
   }, []);
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behaviou: "smooth" });
+    scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [messages]);
 
   useEffect(() => {
@@ -344,82 +347,123 @@ const ChatContainer = () => {
         <FallBack />
       ) : (
         <div className="flex flex-col flex-1  shadow-inner my-0 bg-white">
-          <div className="flex flex-col shadow-md w-[100%] px-5 py-2 ">
-            <h1 className="text-sm text-black font-semibold ">
-              {currentUser?.name}
-            </h1>
-            <p
-              className={
-                status === "online"
-                  ? "text-xs text-blue-600"
-                  : "text-xs text-green-500"
-              }
-            >
-              {status}
-            </p>
+          <div className="flex  shadow-md w-[100%] px-5 py-2  gap-2">
+            <img
+              src={currentUser?.photo}
+              className="w-[30px] h-[30px] rounded-full"
+            ></img>
+            <div>
+              <h1 className="text-sm text-black font-semibold ">
+                {currentUser?.name}
+              </h1>
+              <p
+                className={
+                  status === "online"
+                    ? "text-xs text-blue-600"
+                    : "text-xs text-green-500"
+                }
+              >
+                {status}
+              </p>
+            </div>
           </div>
 
           <div className=" flex-col  overflow-y-auto  w-full h-[68vh] px-6">
-            {messages.map((msg) => {
-              return (
-                <div
-                  className={
-                    msg?.fromSelf === true
-                      ? "flex justify-end my-1"
-                      : "justify-start my-1"
-                  }
-                >
-                  {msg?.msgType === "contract" ? (
+            {messageLoading ? (
+              <div>
+                <Spin></Spin>
+              </div>
+            ) : (
+              <>
+                {messages.map((msg) => {
+                  return (
                     <div
-                      className={
-                        msg?.fromSelf === true
-                          ? " text-white max-w-[50%] rounded-full my-1 px-4 py-1"
-                          : "text-black max-w-[50%] rounded-full my-2 px-4 py-1"
-                      }
+                      className={`chat ${
+                        msg?.fromSelf === true ? "chat-end " : "chat-start"
+                      }`}
                     >
-                      <Contract id={msg?.id} text={msg?.msgType} />
-                    </div>
-                  ) : (
-                    <div className="flex   ">
-                      <div className="flex flex-col justify-end ">
-                        <div
-                          className={
-                            msg?.fromSelf
-                              ? "px-3 flex justify-end"
-                              : "px-3 flex justify-start "
-                          }
-                        >
+                      <div className="chat-image avatar">
+                        <div className="w-10 rounded-full">
                           <img
                             src={msg?.sender?.photo}
-                            alt="tomatoes are disgusting"
-                            className="w-[30px] h-[30px] rounded-full object-cover"
+                            className="object-fill"
                           />
-                          <div>
-                            <h1 className="text-base text-gray-800 font-semibold">
-                              {msg?.sender?.name}
-                            </h1>
-                            <p className="text-xxs">
-                              {dayjs(msg?.date).toDate().toLocaleTimeString()}{" "}
-                              {dayjs(msg?.date).toDate().toLocaleDateString()}
-                            </p>
-                          </div>
                         </div>
-                        <h1
+                      </div>
+                      <div className="chat-header ">{msg?.sender?.name}</div>
+                      {msg.msgType === "contract" ? (
+                        <Contract id={msg?.id} text={msg?.msgType} />
+                      ) : (
+                        <div
                           ref={scrollRef}
-                          className={
-                            msg?.fromSelf === true
-                              ? " text-gray-700 text-sm text-end bg-gray-300  my-1 px-4 py-1"
-                              : "text-black w-full text-sm text-end bg-slate-200  my-2 px-4 py-1"
-                          }
+                          className={`"chat-bubble chat-bubble ${
+                            msg?.fromSelf ? "bg-gray-300" : "bg-base-300"
+                          }  text-gray-800 break-words "`}
                         >
                           {msg?.message}
-                        </h1>
-                      </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    // <div
+                    //   className={
+                    //     msg?.fromSelf === true
+                    //       ? "flex justify-end my-1"
+                    //       : "justify-start my-1"
+                    //   }
+                    // >
+                    //   {msg?.msgType === "contract" ? (
+                    //     <div
+                    //       className={
+                    //         msg?.fromSelf === true
+                    //           ? " text-white max-w-[50%] rounded-full my-1 px-4 py-1"
+                    //           : "text-black max-w-[50%] rounded-full my-2 px-4 py-1"
+                    //       }
+                    //     >
+                    //       <Contract id={msg?.id} text={msg?.msgType} />
+                    //     </div>
+                    //   ) : (
+                    //     <div className="flex   ">
+                    //       <div className="flex flex-col justify-end ">
+                    //         <div
+                    //           className={
+                    //             msg?.fromSelf
+                    //               ? "px-3 flex justify-end"
+                    //               : "px-3 flex justify-start "
+                    //           }
+                    //         >
+                    //           <img
+                    //             src={msg?.sender?.photo}
+                    //             alt="tomatoes are disgusting"
+                    //             className="w-[30px] h-[30px] rounded-full object-cover"
+                    //           />
+                    //           <div>
+                    //             <h1 className="text-base text-gray-800 font-semibold">
+                    //               {msg?.sender?.name}
+                    //             </h1>
+                    //             <p className="text-xxs">
+                    //               {dayjs(msg?.date).toDate().toLocaleTimeString()}{" "}
+                    //               {dayjs(msg?.date).toDate().toLocaleDateString()}
+                    //             </p>
+                    //           </div>
+                    //         </div>
+                    //         <h1
+                    //           ref={scrollRef}
+                    //           className={
+                    //             msg?.fromSelf === true
+                    //               ? " text-gray-700 text-sm text-end bg-gray-300  my-1 px-4 py-1"
+                    //               : "text-black w-full text-sm text-end bg-slate-200  my-2 px-4 py-1"
+                    //           }
+                    //         >
+                    //           {msg?.message}
+                    //         </h1>
+                    //       </div>
+                    //     </div>
+                    //   )}
+                    // </div>
+                  );
+                })}
+              </>
+            )}
           </div>
 
           <div>
