@@ -138,6 +138,7 @@ const InfluencerAllCampaigns = () => {
   const [categoriesList, setCategoriesList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [countries, SetSelectedCountries] = useState([]);
+  const [page, setPage] = useState(1);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -161,7 +162,9 @@ const InfluencerAllCampaigns = () => {
             "&category=" +
             categoriesList +
             "&country=" +
-            countries
+            countries +
+            "&page=" +
+            page
         )
     );
     return res.json();
@@ -244,6 +247,12 @@ const InfluencerAllCampaigns = () => {
 
   const onChangeCountries = (checkedValues) => {
     SetSelectedCountries(checkedValues);
+  };
+
+  const handleChange = (event, value) => {
+    setPage(value);
+    refetch();
+    // refetch();
   };
 
   if (isError) {
@@ -513,6 +522,8 @@ const InfluencerAllCampaigns = () => {
           <hr></hr>
           <div className="flex justify-center p-5">
             <Pagination
+              page={page}
+              onChange={handleChange}
               count={campaign?.data?.totalPages}
               showFirstButton
               showLastButton

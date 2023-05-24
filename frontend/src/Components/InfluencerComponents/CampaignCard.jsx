@@ -32,14 +32,15 @@ const CampaignCard = ({
     >
       <div className="p-3">
         <div className="flex">
-          <div className="avatar online placeholder">
+          {/* <div className="avatar online placeholder">
             <div className="bg-neutral-focus text-neutral-content rounded-full w-11 h-11">
-              {/* <img src="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" /> */}
               <img src={avatar} />
             </div>
-          </div>
+          </div> */}
           <div className="flex-col ml-2">
-            <h3 className="font-semibold text-sm text-gray-800">{title}</h3>
+            <h3 className="font-semibold text-sm text-gray-800">
+              {title?.slice(0, 20) + "..."}
+            </h3>
           </div>
         </div>
       </div>
