@@ -210,13 +210,13 @@ const InfluencerPayments = () => {
   return (
     <>
       {isMainPageloading ? (
-        <div className="container mx-auto px-3 h-[70vh]">
+        <div className="container mx-auto px-3 h-[90vh]">
           <Skeleton className="h-full" active></Skeleton>
         </div>
       ) : (
         <>
           {accountExists ? (
-            <div className="container mx-auto grid grid-col-1  md:grid-cols-3 gap-3 my-4">
+            <div className="container mx-auto grid grid-col-1 h-[90vh]  md:grid-cols-3 gap-3 my-4">
               <div className="col-span-2 grid grid-cols-1 gap-3">
                 {/* top header */}
                 <section className="grid grid-cols-3 bg-white rounded-lg p-5">
@@ -435,7 +435,7 @@ const InfluencerPayments = () => {
               </section>
             </div>
           ) : (
-            <div className="container mx-auto">
+            <div className="container mx-auto h-[90vh] bg-white border">
               <div className="grid grid-cols-2 p-4">
                 <div className="col-span-2">
                   <h1 className="text-xl text-gray-800 font-semibold">

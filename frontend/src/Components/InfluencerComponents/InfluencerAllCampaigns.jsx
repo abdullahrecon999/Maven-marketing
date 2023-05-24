@@ -227,8 +227,8 @@ const InfluencerAllCampaigns = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center h-[60vh]">
-        <div className="flex justify-center item-center h-[60vh]">
+      <div className="flex flex-col justify-center items-center h-[85vh]">
+        <div className="flex justify-center item-center">
           <Spin></Spin>
         </div>
       </div>

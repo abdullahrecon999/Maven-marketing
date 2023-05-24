@@ -83,7 +83,7 @@ const SignUpPageInfluencer = () => {
         <Form>
           <div>
             <Navbar></Navbar>
-            <section className="container mx-auto">
+            <section className="container mx-auto h-[85vh]">
               <div className="px-4 pt-8 mb-6 space-x-8 flex justify-center flex-col-reverse md:flex-row ">
                 <div className="flex flex-col justify-center  px-10 space-y-6 md:w-[30%] ">
                   <div>

@@ -277,12 +277,12 @@ const InfluencerLogin = () => {
           {console.log(formik)}
           <div>
             <Navbar></Navbar>
-            <section className="">
+            <section className="h-[85vh]">
               <div className="px-4 pt-2  mb-6 space-x-8 sm:flex justify-center flex-col-reverse md:flex-row md:pt-1">
                 <div className="flex flex-col justify-center  px-10 space-y-6 md:w-[30%] ">
                   <div>
                     <h1 className="text-left sm:text-lg md:text-xl font-railway">
-                      Login
+                      <span className="text-blue">Influencer</span> Login
                     </h1>
                     <p className="text-sm text-grey">
                       Its good to see you back

@@ -748,7 +748,7 @@ const ManageCampaignPage = () => {
         )}
       </Modal>
       {loading ? null : (
-        <div className="gap-4">
+        <div className="gap-4 h-[90vh]">
           <section className="container mx-auto px-[10%] gap-5">
             <div className="flex flex-col">
               <div className="flex gap-3">
