@@ -321,7 +321,7 @@ export function RedditUI(props) {
     return (
         <div className='h-full flex flex-col'>
 
-            <AnalyticsPost post={selectedPost} visible={showModal} onClose={() => setShowModal(false)} />
+            <AnalyticsPost subreddit={pageInfo[0].subreddit} post={selectedPost} visible={showModal} onClose={() => setShowModal(false)} />
 
             <div className='grid grid-rows-2 h-52 min-h-28 w-full'>
                 <div className='row-span-1 bg-[#318be6] flex w-full h-full'>

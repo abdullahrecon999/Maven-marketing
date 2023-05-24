@@ -4,7 +4,7 @@ tokenizer = AutoTokenizer.from_pretrained("okho0653/distilbert-base-uncased-fine
 
 model = AutoModelForSequenceClassification.from_pretrained("okho0653/distilbert-base-uncased-finetuned-sst-2-english-zero-shot-sentiment-model")
 
-input_text = "I Love you"
+input_text = "Are you sure these are nice shoes, like i brought some yesterday and they were trash. What about the size variations? do you have them? I dont know, bit worried they might runout quickly like last time. I havent like any more shoes than these. thank you."
 
 candidate_labels = ["positive", "negative"]
 

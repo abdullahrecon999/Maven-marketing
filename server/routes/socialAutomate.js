@@ -85,20 +85,396 @@ router.post('/gpt', async function (req, res, next) {
 
 //----------------------------- REDIT -----------------------------
 
-// Get post details
-router.get('/reddit/v2/getPostDetails', async function (req, res, next) {
-    const { postid } = req.query;
-    console.log("POST ID: ", postid);
+// Heatmap data
 
-    let data = await axios.get(`https://www.reddit.com/comments/${postid}.json`)
-    
-    if (data.status != 200) {
-        console.log(data.data);
-        res.status(500).send({ error: data.data });
+// Function to generate the necessary data
+function generateData(posts) {
+    const data = {};
+
+    // Initialize all hours of the day with 0 count
+    for (let day = 0; day < 7; day++) {
+        data[day] = {};
+        for (let hour = 0; hour < 24; hour++) {
+        data[day][hour] = 0;
+        }
     }
-    console.log(data.data);
+
+    // Iterate over the posts and update the data object
+    posts.forEach(post => {
+        const createdTime = moment.unix(post.data.created_utc);
+        const createdTimeKarachi = moment.tz(createdTime, 'Asia/Karachi')
+        const hour = createdTimeKarachi.hours();
+        const day = createdTimeKarachi.day();
+        const numComments = post.data.num_comments || 0;
+
+        data[day][hour] += numComments;
+    });
+
+    return data;
+}
+
+// Function to fetch data from Reddit search endpoint
+async function fetchData(subreddits, username) {
+    const url = `https://old.reddit.com/search.json?q=(subreddit:${subreddits.join('+OR+subreddit:')})+AND+author:${username}&limit=100`;
+    const response = await axios.get(url);
+    return response.data.data.children;
+}
+
+router.post('/reddit/v2/getHeatmap', async function (req, res, next) {
+    const { subreddits, profile } = req.body;
+    console.log("SUBREDDITS: ", subreddits);
+    console.log("USERNAME: ", profile.username);
+    const subredditList = subreddits.map(item => item.subreddit);
+
+    let posts = await fetchData(subredditList, profile.username);
+    const data = generateData(posts);
+    console.log("DATA GENERATED: ", data);
+
+    res.status(200).send({ response: data });
+});
+
+// get subreddit members and online members
+const getSubredditStats = async (subredditName) => {
+    try {
+        const url = `https://www.reddit.com/r/${subredditName}/about.json`;
+        const response = await axios.get(url);
+        const data = response.data.data;
+
+        return {
+            subreddit: subredditName,
+            numMembers: data.subscribers,
+            numOnlineMembers: data.active_user_count
+        };
+    } catch (error) {
+        console.log(error);
+        throw new Error('Error while fetching subreddit stats');
+    }
+};
+
+const getSubredditStatsList = async (sublist) => {
+    const subredditStats = [];
+
+    for (const subredditName of sublist) {
+        try {
+            const stats = await getSubredditStats(subredditName);
+            subredditStats.push(stats);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    return subredditStats;
+};
+
+// get avg up and comments per post
+async function getAverageUpvotesAndComments(username, subreddits) {
+    const baseUrl = 'https://old.reddit.com/search.json';
+    const query = `(subreddit:${subreddits.join('+OR+subreddit:')})+AND+author:${username}`;
+    const url = `${baseUrl}?q=${query}`;
+
+    try {
+        const response = await axios.get(url);
+        const data = response.data;
+
+        const posts = data.data.children.filter(item => item.kind === 't3').map(item => item.data);
+
+        if (posts.length === 0) {
+            console.log('No posts found for the given user and subreddits.');
+            return {
+                averageUpvotesPerPost: 0,
+                averageCommentsPerPost: 0
+            };
+        }
+
+        const totalUpvotes = posts.reduce((sum, post) => sum + post.ups, 0);
+        const totalComments = posts.reduce((sum, post) => sum + post.num_comments, 0);
+        const averageUpvotesPerPost = totalUpvotes / posts.length;
+        const averageCommentsPerPost = totalComments / posts.length;
+
+        return {
+            averageUpvotesPerPost,
+            averageCommentsPerPost
+        };
+    } catch (error) {
+        console.log('Error while fetching data:', error);
+        return {
+            averageUpvotesPerPost: 0,
+            averageCommentsPerPost: 0
+        };
+    }
+}
+
+// get subreddit, posts and comments for a particular user
+async function getPostsAndCommentsByUser(subreddits, username) {
+    const baseUrl = 'https://old.reddit.com/search.json';
+    const query = `(subreddit:${subreddits.join('+OR+subreddit:')})+AND+author:${username}&limit=100`;
+    const url = `${baseUrl}?q=${query}`;
+
+    try {
+        const response = await axios.get(url);
+        const data = response.data;
+
+        // Group posts, comments, and upvotes by subreddit
+        const groupedData = data.data.children.reduce((result, item) => {
+            const subreddit = item.data.subreddit;
+
+            if (!result[subreddit]) {
+                result[subreddit] = {
+                    subreddit,
+                    numPosts: 0,
+                    numComments: 0,
+                    numUpvotes: 0
+                };
+            }
+
+            if (item.kind === 't3') {
+                result[subreddit].numPosts++;
+                result[subreddit].numUpvotes += item.data.ups;
+                result[subreddit].numComments += item.data.num_comments;
+            }
+
+            return result;
+        }, {});
+
+        // Convert the grouped data into an array
+        const result = Object.values(groupedData);
+
+        return result;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Error while fetching data');
+    }
+}
+
+// Analytics: get subreddit members and online members
+router.post('/reddit/v2/getAnalyticsSubreddits', async function (req, res, next) {
+    const { subreddits } = req.body;
+    console.log("SUBREDDITS: ", subreddits);
+    const subredditList = subreddits.map(item => item.subreddit);
+
+    let data = await getSubredditStatsList(subredditList);
+    console.log("DATA: ", data);
+
+    res.status(200).send({ response: data });
+});
+
+// Analytics: avg upvotes and comments per post
+router.post('/reddit/v2/getAnalyticsAvg', async function (req, res, next) {
+    const { subreddits, profile } = req.body;
+    console.log("SUBREDDITS: ", subreddits);
+    console.log("USERNAME: ", profile.username);
+    const subredditList = subreddits.map(item => item.subreddit);
+
+    let data = await getAverageUpvotesAndComments(profile.username, subredditList);
+    console.log("DATA: ", data);
+
+    res.status(200).send({ response: data });
+});
+
+// Analytics: using subreddits, get the number of post, upvotes and its comments made by a user
+router.post('/reddit/v2/getAnalyticsReddits', async function (req, res, next) {
+    const { subreddits, profile } = req.body;
+    console.log("SUBREDDITS: ", subreddits);
+    console.log("USERNAME: ", profile.username);
+    const subredditList = subreddits.map(item => item.subreddit);
+
+    let data = await getPostsAndCommentsByUser(subredditList, profile.username);
+    console.log("DATA: ", data);
+
+    res.status(200).send({ response: data });
+});
+
+// Analytics: using subreddits, get number of post made in each subreddit and the total number of posts
+router.post('/reddit/v2/getAnalyticsPosts', async function (req, res, next) {
+    const { subreddits } = req.body;
+    console.log("SUBREDDITS: ", subreddits);
+    console.log("USER ID: ", req.user._id);
+
+    const subredditList = subreddits.map(item => item.subreddit);
+
+    let data = await RedditModel.aggregate([
+        {
+            $match: {
+                userid: ObjectId(req.user._id),
+                subreddit: { $in: subredditList }
+            }
+        },
+        {
+            $addFields: {
+                totalPosts: {
+                    $cond: [
+                        { $isArray: '$posts' },
+                        { $size: '$posts' },
+                        0
+                    ]
+                }
+            }
+        },
+        {
+            $group: {
+                _id: '$subreddit',
+                totalPosts: { $sum: '$totalPosts' }
+            }
+        }
+    ])
+
+    console.log("DATA: ", data);
+
+    res.status(200).send({ response: data });
+});
+
+
+// perform sentiment analysis on a post
+const sentimentAnalysis = async (comments) => {
+    let prompt = "Analyze the average sentiment of the following list. just return one word as response.\n\n" + comments.join("\n\n");
+    const response = await axios.post('http://localhost:6000/generate', { prompt: prompt })
+
+    if (response.status != 200) {
+        console.log(response.data);
+        return response.data;
+    }
+    console.log(response.data);
+    return response.data;
+}
+
+// Get post details
+router.post('/reddit/v2/getPostDetails', async function (req, res, next) {
+    const { postid } = req.body;
+
+    console.log("POST ID: ", postid);
+    let data = await axios.get(`https://www.reddit.com/comments/${postid}.json`)
 
     res.status(200).send({ response: data.data });
+});
+
+// Get post details
+router.post('/reddit/v2/getSentiments', async function (req, res, next) {
+    const { postid, subreddit } = req.body;
+    console.log("POST ID: ", postid);
+    console.log("SUBREDDIT: ", subreddit);
+    console.log("USER ID: ", req.user._id);
+
+    let data = await axios.get(`https://www.reddit.com/comments/${postid}.json`)
+
+    let sentiment = "";
+
+    // check if the post in user's account have num_comments and upvotes
+    await RedditModel.findOne(
+        {
+            userid: req.user._id,
+            subreddit: subreddit,
+            'posts.postid': postid
+        },
+        { 'posts.$': 1 } // Only retrieve the matched post
+    )
+        .then(async (doc) => {
+            if (doc) {
+                const post = doc.posts[0];
+                const numComments = post.num_comments;
+                console.log("Num comments: ", numComments);
+
+                if (numComments === undefined || post.avg_sentiments === undefined || post.avg_sentiments === null) {
+                    // update the post with num_comments and upvotes
+                    console.log("Updating post with num_comments and upvotes")
+                    await RedditModel.updateOne(
+                        {
+                            userid: req.user._id,
+                            subreddit: subreddit,
+                            'posts.postid': postid
+                        },
+                        {
+                            $set: {
+                                'posts.$.num_comments': data.data[0].data.children[0].data.num_comments,
+                                'posts.$.upvotes': data.data[0].data.children[0].data.ups
+                            }
+                        }
+                    )
+
+                    if (data.data[0].data.children[0].data.num_comments >= 1) {
+                        // perform the sentiment analysis
+                        // send the data back to the client and database
+                        let comments = [];
+                        for (let i = 0; i < data.data[1].data.children.length; i++) {
+                            comments.push(data.data[1].data.children[i].data.body);
+                        }
+                        console.log("Comments: ", comments);
+                        const sentiments = await sentimentAnalysis(comments);
+                        console.log("Sentiments: ", sentiments.response);
+                        await RedditModel.updateOne(
+                            {
+                                userid: req.user._id,
+                                subreddit: subreddit,
+                                'posts.postid': postid
+                            },
+                            {
+                                $set: {
+                                    'posts.$.avg_sentiments': sentiments.response
+                                }
+                            }
+                        )
+
+                        sentiment = sentiments;
+                    }
+
+                    console.log("Post updated with num_comments and upvotes")
+                    return res.status(200).send({ response: sentiment.response });
+                } else {
+                    if (numComments - data.data[0].data.children[0].data.num_comments >= 10) {
+                        // we got more than 10 new comments
+                        // perform the sentiment analysis
+
+                        let comments = [];
+                        for (let i = 0; i < data.data[1].data.children.length; i++) {
+                            comments.push(data.data[1].data.children[i].data.body);
+                        }
+                        console.log("Comments: ", comments);
+
+                        const sentiments = await sentimentAnalysis(comments);
+                        console.log("Sentiments: ", sentiments.response);
+
+                        await RedditModel.updateOne(
+                            {
+                                userid: req.user._id,
+                                subreddit: subreddit,
+                                'posts.postid': postid
+                            },
+                            {
+                                $set: {
+                                    'posts.$.avg_sentiments': sentiments.response
+                                }
+                            }
+                        )
+
+                        return res.status(200).send({ response: sentiments.response });
+                    } else {
+                        // get the sentiments from the database
+
+                        let sentiments = await RedditModel.findOne(
+                            {
+                                userid: req.user._id,
+                                subreddit: subreddit,
+                                'posts.postid': postid
+                            },
+                            { 'posts.$': 1 }
+                        )
+
+                        console.log("Sentiments Obj: ", sentiments)
+                        console.log("Sentiments: ", sentiments.posts[0].avg_sentiments)
+                        sentiment = sentiments.posts[0].avg_sentiments;
+                        return res.status(200).send({ response: sentiment });
+                    }
+                }
+
+            } else {
+                console.log("No post found");
+                return res.status(500).send({ error: "No post found" });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.status(500).send({ error: error });
+        });
+
 });
 
 // create a Post with media on reddit
@@ -201,7 +577,7 @@ router.get('/reddit/v2/getScheduledPosts', async function (req, res, next) {
     let data = await BulkSchedules.find({ userid: _id });
     console.log(data);
 
-    if(data.length == 0) {
+    if (data.length == 0) {
         return res.status(404).json({ error: "No scheduled posts found" });
     }
 
@@ -211,19 +587,19 @@ router.get('/reddit/v2/getScheduledPosts', async function (req, res, next) {
 // Find the document with the given userid and retrieve the postIds with status: Scheduled
 const getPostIdsWithScheduledStatus = async (userid) => {
     try {
-      const bulkSchedule = await BulkSchedules.findOne({ userid });
-      if (!bulkSchedule) {
-        console.log('Bulk schedule not found for the userid:', userid);
-        return [];
-      }
-      const postIds = bulkSchedule.schedules
-        .filter((schedule) => schedule.status === 'scheduled')
-        .map((schedule) => schedule.id);
-      return postIds;
+        const bulkSchedule = await BulkSchedules.findOne({ userid });
+        if (!bulkSchedule) {
+            console.log('Bulk schedule not found for the userid:', userid);
+            return [];
+        }
+        const postIds = bulkSchedule.schedules
+            .filter((schedule) => schedule.status === 'scheduled')
+            .map((schedule) => schedule.id);
+        return postIds;
     } catch (error) {
-      // Handle any errors
-      console.error('Error retrieving postIds:', error);
-      return [];
+        // Handle any errors
+        console.error('Error retrieving postIds:', error);
+        return [];
     }
 };
 
@@ -233,30 +609,30 @@ router.post('/reddit/v2/deleteScheduledPosts', async function (req, res, next) {
 
     // get the posts with status scheduled fron BulkSchedules
     getPostIdsWithScheduledStatus(_id)
-    .then(async (postIds) => {
-        console.log('PostIds with status: Scheduled:', postIds);
+        .then(async (postIds) => {
+            console.log('PostIds with status: Scheduled:', postIds);
 
-        // for every postid, delete the post from reddits posts array
-        postIds.forEach(async (postId) => {
-            await RedditModel.updateMany(
-                { userid: _id },
-                { $pull: { posts: { postid: postId } } }
-            );
+            // for every postid, delete the post from reddits posts array
+            postIds.forEach(async (postId) => {
+                await RedditModel.updateMany(
+                    { userid: _id },
+                    { $pull: { posts: { postid: postId } } }
+                );
+            });
+
+            // delete the document in BulkSchedules
+            await BulkSchedules.deleteOne({ userid: _id }).then((result) => {
+                console.log('BulkSchedule deleted:', result);
+            }).catch((error) => {
+                console.error('Error deleting BulkSchedule:', error);
+                res.status(500).json({ message: 'Server Error' });
+            });
+
+            res.status(200).json({ message: 'Scheduled posts deleted successfully' });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
-
-        // delete the document in BulkSchedules
-        await BulkSchedules.deleteOne({ userid: _id }).then((result) => {
-            console.log('BulkSchedule deleted:', result);
-        }).catch((error) => {
-            console.error('Error deleting BulkSchedule:', error);
-            res.status(500).json({ message: 'Server Error' });
-        });
-
-        res.status(200).json({ message: 'Scheduled posts deleted successfully' });
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
 
 });
 
@@ -326,23 +702,23 @@ router.post('/reddit/v2/bulkSchedule', async function (req, res, next) {
 
             newPost.status = "failed";
             newPost.error = "Subreddit not found";
-            
+
             BulkSchedules.findOneAndUpdate(
                 { userid: _id },
                 { $push: { schedules: newPost } },
                 { upsert: true }
-              )
-            .then(updatedSchedule => {
-                if (updatedSchedule) {
-                console.log('Document updated successfully:', updatedSchedule);
-                } else {
-                console.log('New document created and post added successfully.');
-                }
-            })
-            .catch(error => {
-                console.error('Failed to update or create document:', error);
-            });
-           
+            )
+                .then(updatedSchedule => {
+                    if (updatedSchedule) {
+                        console.log('Document updated successfully:', updatedSchedule);
+                    } else {
+                        console.log('New document created and post added successfully.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to update or create document:', error);
+                });
+
             console.log("Subreddit not found");
         } else if (scheduledTime.isBefore(currentTime)) {
             console.log("scheduled time is before current time");

@@ -2,19 +2,21 @@ import you
 from flask import Flask
 import json
 from flask import request, jsonify
+import aiassist
 
 app = Flask(__name__)
 
 def generate_response(prompt):
-    response=""
-    # for token in you.Completion.create(prompt="Generate 200 words ad descrption for hiking gear. Following are the keywords: kids, fun, all-in-one. add relevant hashtags at the end", detailed=True, include_links=True):
-    #     # print(token, end='', flush=True)
-    #     response += token
-    #     print(response)
-    response = you.Completion.create(prompt=prompt, detailed=True, include_links=True)
+    # response=""
+    # # for token in you.Completion.create(prompt="Generate 200 words ad descrption for hiking gear. Following are the keywords: kids, fun, all-in-one. add relevant hashtags at the end", detailed=True, include_links=True):
+    # #     # print(token, end='', flush=True)
+    # #     response += token
+    # #     print(response)
+    # response = you.Completion.create(prompt=prompt, detailed=True, include_links=True)
+    req = aiassist.Completion.create(prompt=prompt)
 
-    print(response.text)
-    return response.text
+    print(req["text"])
+    return req["text"]
 
 @app.route('/generate', methods=['POST'])
 def generate():

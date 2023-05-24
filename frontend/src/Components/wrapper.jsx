@@ -5,7 +5,7 @@ import { Footer } from "./brandComponents/footer";
 const Wrapper = ({ allowedRoles }) => {
   return(
     
-    <div className="h-screen">
+    <div className="flex flex-col">
         <Outlet />
         <Footer />
     </div>

@@ -78,6 +78,15 @@ const Reddit = new mongoose.Schema({
                 scheduledAt: {
                     type: Date,
                 },
+                num_comments: {
+                    type: Number,
+                },
+                avg_sentiments: {
+                    type: String,
+                },
+                upvotes: {
+                    type: Number,
+                },
             }
         ]
     }
