@@ -67,6 +67,7 @@ const Heatmap = ({ data }) => {
     const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const hourLabels = Array.from({ length: 24 }, (_, i) => `${i}h`);
     let dataMap = data.response;
+    console.log("HEAT MAPPPPP");
 
     for (const day in dataMap) {
         for (const hour in dataMap[day]) {
@@ -188,84 +189,104 @@ const getHeatMapData = async (profile, subreddits) => {
 
 const styles = StyleSheet.create({
     page: {
-        fontFamily: 'Helvetica',
-        padding: '2cm',
+      fontFamily: 'Helvetica',
+      padding: '20mm',
     },
     header: {
-        marginBottom: '1cm',
+      marginBottom: '20mm',
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      marginBottom: '10mm',
     },
     section: {
-        marginBottom: '1cm',
+      marginBottom: '10mm',
     },
     sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: '0.5cm',
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: '5mm',
+      textTransform: 'uppercase',
     },
     sectionText: {
-        fontSize: 14,
+      fontSize: 14,
+      marginBottom: '3mm',
+    },
+    card: {
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      padding: '5mm',
+      marginBottom: '5mm',
     },
     chartContainer: {
-        height: 300,
+      height: 200,
+      marginBottom: '5mm',
     },
-});
+  });
 
-const AnalyticsPDF = ({ data, posts, subreddit, avgData, averageUpvotesPerPost, subredditInfo, heatMapData }) => {
+const AnalyticsPDF = ({ data, posts, avgData, subredditInfo, subreddit }) => {
+    
     return (
         <Document>
-            <Page style={styles.page}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Analytics Report</Text>
-                </View>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Subreddits Joined</Text>
-                    <Text style={styles.sectionText}>{data.subreddits.length}</Text>
-                    {console.log("TEST: ", posts)}
-                </View>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Subreddit Posts</Text>
-                    <View style={styles.chartContainer}>
-                        {
-                            posts.length > 0 ?
-                                <StackedBarChart2 data={posts} />
-                                :
-                                <Text>No posts found</Text>
-                        }
-                    </View>
-                </View>
-                {/* <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Subreddit Data</Text>
-                    <View style={styles.chartContainer}>
-                        <StackedBarChart data={data.subredditData} />
-                    </View>
-                </View>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Average Upvotes/Post</Text>
-                    <Text style={styles.sectionText}>{data.avgData.response?.averageUpvotesPerPost}</Text>
-                </View>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Average Comments/Post</Text>
-                    <Text style={styles.sectionText}>{data.avgData.response?.averageCommentsPerPost}</Text>
-                </View>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Subreddit Information</Text>
-                    <View style={styles.chartContainer}>
-                        <StackedBarChart2 data={data.subredditInfo} />
-                    </View>
-                </View>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Heatmap</Text>
-                    <View style={styles.chartContainer}>
-                        <Heatmap data={data.heatMapData} />
-                    </View>
-                </View> */}
-            </Page>
-        </Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Analytics Report</Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Subreddits Joined</Text>
+          <Text style={styles.sectionText}>{data.subreddits.length}</Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Subreddit Posts</Text>
+          <View style={styles.card}>
+            {posts.response.map((post) => (
+              <Text style={styles.sectionText}>
+                {post._id}: {post.totalPosts}
+              </Text>
+            ))}
+          </View>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Subreddit Data</Text>
+          <View style={styles.card}>
+            {subredditInfo.response.map((subreddit) => (
+              <Text style={styles.sectionText}>
+                {subreddit.subreddit}: {subreddit.numMembers}
+                {' members | '}
+                {subreddit.numOnlineMembers}
+                {' online members'}
+              </Text>
+            ))}
+          </View>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Average Upvotes/Post</Text>
+          <Text style={styles.sectionText}>
+            {avgData.response.averageUpvotesPerPost}
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Average Comments/Post</Text>
+          <Text style={styles.sectionText}>
+            {avgData.response.averageCommentsPerPost}
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Test</Text>
+          <View style={styles.card}>
+            {subreddit.response.map((subreddit) => (
+              <Text style={styles.sectionText}>
+                {subreddit.subreddit}: posts: {subreddit.numPosts} | comments:{' '}
+                {subreddit.numComments} | upvotes: {subreddit.numUpvotes}
+              </Text>
+            ))}
+          </View>
+        </View>
+      </Page>
+    </Document>
     );
 };
 
@@ -276,6 +297,10 @@ export function AnalyticsPage(props) {
     const [avgData, setAvgData] = useState([]);
     const [subredditInfo, setSubredditInfo] = useState([]);
     const [heatMapData, setHeatMapData] = useState([]);
+    const [ subredditPostsLoaded, setSubredditPostsLoaded ] = useState(false);
+    const [ subredditDataLoaded, setSubredditDataLoaded ] = useState(false);
+    const [ avgDataLoaded, setAvgDataLoaded ] = useState(false);
+    const [ subredditInfoLoaded, setSubredditInfoLoaded ] = useState(false);
 
     useEffect(() => {
         console.log("isSuccess: ", isSuccess);
@@ -283,33 +308,42 @@ export function AnalyticsPage(props) {
 
         if (isSuccess && subreddits) {
             console.log(subreddits.subreddits);
+            let loads = 0
             loadPostsbySubreddit(subreddits.subreddits)
                 .then(data => {
                     setSubredditPosts(data);
+                    setSubredditPostsLoaded(true);
                 })
                 .catch(error => {
                     console.log(error);
+                    setSubredditPostsLoaded(false);
                 });
 
             getSubredditData(subreddits.profile, subreddits.subreddits).then(data => {
                 setSubredditData(data);
+                setSubredditDataLoaded(true)
                 console.log("DATATAT: ", data);
             }).catch(error => {
                 console.log(error);
+                setSubredditDataLoaded(false);
             });
 
             getAvgData(subreddits.profile, subreddits.subreddits).then(data => {
                 setAvgData(data);
+                setAvgDataLoaded(true)
                 console.log("AVG DATA: ", data);
             }).catch(error => {
                 console.log(error);
+                setAvgDataLoaded(false);
             });
 
             getSubredditInfo(subreddits.profile, subreddits.subreddits).then(data => {
                 setSubredditInfo(data);
+                setSubredditInfoLoaded(true)
                 console.log("SUBREDDIT INFO: ", data);
             }).catch(error => {
                 console.log(error);
+                setSubredditInfoLoaded(false);
             });
 
             getHeatMapData(subreddits.profile, subreddits.subreddits).then(data => {
@@ -348,17 +382,18 @@ export function AnalyticsPage(props) {
                                             <div className="card-box">
                                                 <h4 className="header-title">Analytics PDF</h4>
                                                 <div className="mb-2">
-                                                    
-                                                        {
-                                                            subredditPosts.length > 0 ? (
-                                                                <PDFDownloadLink document={<AnalyticsPDF data={subreddits} posts={subredditPosts}/>} fileName="analytics_report.pdf">
-                                                                    <button className="btn btn-primary">Download PDF</button>
-                                                                </PDFDownloadLink>
-                                                            ) : (
-                                                                <button className="btn btn-primary" disabled>Download PDF</button>
-                                                            )
-                                                        }
-                                                    
+                                                    {
+                                                        subredditPostsLoaded && subredditDataLoaded && avgDataLoaded && subredditInfoLoaded ? (
+                                                            <PDFDownloadLink document={<AnalyticsPDF data={subreddits} posts={subredditPosts} subreddit={subredditData} avgData={avgData} subredditInfo={subredditInfo} />} fileName="analytics_report.pdf">
+                                                                <button className="btn btn-primary">Download PDF</button>
+                                                            </PDFDownloadLink>
+                                                        ) : (
+                                                            <button className="btn btn-primary" disabled>Download PDF</button>
+                                                        )
+                                                    }
+                                                    {/* <PDFDownloadLink document={<AnalyticsPDF data={subreddits} posts={subredditPosts} heatMapData={heatMapData} />} fileName="analytics_report.pdf">
+                                                        <button className="btn btn-primary">Download PDF</button>
+                                                    </PDFDownloadLink> */}
                                                 </div>
                                             </div>
                                             <div className="bg-white rounded-lg shadow-lg p-4 flex items-start w-44 border-[1px] h-36">
