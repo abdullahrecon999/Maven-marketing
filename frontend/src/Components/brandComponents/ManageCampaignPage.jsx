@@ -5,7 +5,7 @@ import profileImage from "../../images/profile.jpg";
 import { Tabs, Table, Tag, Button, Space, Modal, Skeleton } from "antd";
 import { Collapse } from "antd";
 import { useQuery, useMutation } from "react-query";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import BrandContractModal from "./BrandContractModal";
 const { Panel } = Collapse;
 const { Column } = Table;
@@ -22,6 +22,7 @@ const Bids = ({ id }) => {
   const [acceptingBid, setAcceptingBid] = useState(false);
   const [isAcceptingSuccess, setAcceptingSuccess] = useState(false);
   const [openContractModal, setOpenContractModal] = useState(false);
+  const navigate = useNavigate();
   const showModal = () => {
     setIsBidModalOpen(true);
   };
@@ -643,9 +644,14 @@ const CurrentInfluencers = ({ id }) => {
           title="Influencer Profile"
           key="action"
           render={(record) => {
+            console.log(record);
             return (
               <Space size="middle">
-                <Link className="link text-blue" onClick={() => {}}>
+                <Link
+                  to={"/influencerprofile/" + record?.key}
+                  className="link text-blue"
+                  onClick={() => {}}
+                >
                   View Profile
                 </Link>
               </Space>

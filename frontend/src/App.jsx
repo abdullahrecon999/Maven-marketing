@@ -53,7 +53,7 @@ import ListDetails from "./Pages/brand/ListDetails";
 import ManageCampaignPage from "./Components/brandComponents/ManageCampaignPage";
 import BrandPayments from "./Pages/brand/BrandPayments";
 import RequireAuthChat from "./Components/ChatWrapper";
-import GeneratePdf from "./Pages/generatePdf";
+
 const Services = lazy(import("./Pages/Services"));
 // const Aboutus = lazy(import("./Pages/Aboutus"))
 // const Whyus = lazy(import('./Pages/Whyus'))
@@ -82,10 +82,6 @@ function App() {
         ) : (
           <Suspense fallback={<div>loading</div>}>
             <Routes>
-              <Route
-                path="/generate"
-                element={<GeneratePdf></GeneratePdf>}
-              ></Route>
               {/* Public Routes */}
               <Route
                 element={

@@ -1041,11 +1041,11 @@ export function Dashboard({ uid }) {
           </a>
         </div>
 
-        <div className="flex justify-between z-1">
+        <div className="flex justify-between z-1 mb-4">
           <TabComponent uid={uid} />
         </div>
 
-        <div className="flex justify-between py-5 min-w-xl">
+        {/* <div className="flex justify-between py-5 min-w-xl">
           <div
             className="flex-col card-body p-4 rounded-lg h-auto bg-base-100 w-full"
             data-theme="corporate"
@@ -1085,19 +1085,10 @@ export function Dashboard({ uid }) {
                   </Swiper>
                 )
               )}
-              {/* <Swiper
-                slidesPerView={5}
-                spaceBetween={250}
-                centeredSlides={true}
-                navigation={true}
-                modules={[Navigation]}
-                className="mySwiper w-full"
-              >
-                <SwiperSlide><ListingCard avatar="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" name="Jack Musk" followers="10k" video banner="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" /></SwiperSlide>
-              </Swiper> */}
+              
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

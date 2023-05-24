@@ -297,13 +297,15 @@ const Profile = ({ onEdit }) => {
                 <h1 className="text-gray-800 font-semibold  text-base">
                   Country
                 </h1>
-                {/* <Tag color="green">{user?.country[0]}</Tag> */}
+                <div>
+                  <Tag>{user?.country[0]}</Tag>
+                </div>
               </div>
               <div className="px-2 flex flex-col space-y-1">
                 <h1 className="text-gray-800 font-semibold  text-base">
                   languages{" "}
                 </h1>
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap gap-2">
                   {user?.language?.map((item) => {
                     return <Tag>{item}</Tag>;
                   })}
@@ -321,20 +323,20 @@ const Profile = ({ onEdit }) => {
                 })}
               </div>
             </div>
-            <div className="px-2 flex flex-col space-y-1">
+            {/* <div className="px-2 flex flex-col space-y-1">
               <h1 className="text-gray-800 font-semibold  text-base">
                 Social Media Accounts{" "}
               </h1>
               <div>
-                {/* {user?.socialMediaHandles.map(item => {
+                {user?.socialMediaHandles.map(item => {
 					return (
 						<div className="badge badge-lg badge-outline">
 							{item.platform} @ <div className="font-bold"> {item.handle} </div>
 						</div>
 					)
-				})} */}
+				})}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -414,7 +414,7 @@ export const Marketplace = () => {
 
   if (isRefetching) {
     return (
-      <div className="h-[60vh] flex justify-center items-center">
+      <div className="h-[85vh] flex justify-center items-center">
         <Spin size="large"></Spin>
       </div>
     );
@@ -451,7 +451,7 @@ export const Marketplace = () => {
         open={isModalOpen}
         onCancel={handleCancel}
       >
-        <div className="flex-col overflow-y-auto h-96 p-1">
+        <div className="flex-col overflow-y-auto min-h-96 p-1">
           <div>
             {/* <h1 className="text-xl font-bold">Folower Count</h1>
             <Slider
@@ -499,7 +499,7 @@ export const Marketplace = () => {
             </div>
 
             <div className="divider divider-vertical "></div> */}
-            <h1 className="text-xl font-bold mb-3">Followers/Subscriber</h1>
+            {/* <h1 className="text-xl font-bold mb-3">Followers/Subscriber</h1>
 
             <Row>
               <Col span={12}>
@@ -523,7 +523,7 @@ export const Marketplace = () => {
                   onChange={onChangeFolllowers}
                 />
               </Col>
-            </Row>
+            </Row> */}
 
             <div className="divider divider-vertical "></div>
 

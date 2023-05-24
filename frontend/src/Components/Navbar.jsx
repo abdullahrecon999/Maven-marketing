@@ -50,26 +50,26 @@ const Navbar = () => {
             onClick={() => {
               navigate("/");
             }}
-            className="text-white font-bold text-xl "
+            className="text-gray-800 font-bold text-xl "
           >
             Maven Marketing
           </h1>
           <div className="hidden space-x-6 md:flex">
             <Link
               to="/services"
-              className="text-white text-xl  hover:text-gray-800"
+              className="text-gray-800 font-medium text-xl  hover:text-blue"
             >
               Services
             </Link>
             <Link
               to="/aboutus"
-              className="text-white text-xl  hover:text-gray-800"
+              className="text-gray-800 font-medium text-xl  hover:text-blue"
             >
               about us
             </Link>
             <Link
               to="/whyus"
-              className="text-white text-xl  hover:text-gray-800"
+              className="text-gray-800 font-medium text-xl  hover:text-blue"
             >
               why us?
             </Link>
@@ -94,7 +94,7 @@ const Navbar = () => {
               >
                 <a onClick={(e) => e.preventDefault()}>
                   <Space>
-                    <label className="text-xl text-white  font-medium  ">
+                    <label className="text-xl text-blue  font-medium  ">
                       Get Started
                     </label>
                     <DownOutlined className="text-white " />

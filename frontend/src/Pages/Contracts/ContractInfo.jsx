@@ -91,7 +91,7 @@ const ContractInfo = () => {
           <Link
             to="/campaigndetails"
             state={{ id: contract?.campaignId?._id }}
-            className="text-sm link text-blue"
+            className="text-base link text-blue hover:cursor-pointer"
           >
             View Original Campaign
           </Link>

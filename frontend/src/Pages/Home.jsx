@@ -11,6 +11,8 @@ import brandAwarnessImage from "../images/pngwing.com (2).png";
 import roiImage from "../images/ROI.png";
 import targetImage from "../images/pngegg.png";
 import automationImage from "../images/automation.png";
+import monetizeImage from "../images/Z-Blog-Cover-Influencer-Affiliate-Marketing-2022-08-23-A2-1.png";
+import collaborationImage from "../images/Organizing projects-bro.png";
 const Home = () => {
   const [openSignupModal, setOpenSignup] = useState(false);
   const handleClose = () => setOpenSignup(false);
@@ -57,7 +59,7 @@ const Home = () => {
           ></img>
         </div>
       </section> */}
-      <header className=" px-6 text-center bg-gradient-to-r bg-gradient-to-r from-sky-400 to-blue  ">
+      <header className=" px-6 text-center bg-gradient-to-r bg-gradient-to-r from-gray-200 to-white ">
         <Navbar></Navbar>
         <div className="container mx-auto py-20">
           <div className="flex flex-wrap items-center -mx-4  ">
@@ -68,18 +70,18 @@ const Home = () => {
               transition={{ duration: 0.6 }}
             >
               <motion.h1
-                className="text-5xl font-bold text-white mb-6"
+                className="text-5xl font-bold text-gray-600 mb-6"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 1 }}
               >
-                Supercharge Your Marketing
+                <span className="text-blue">Supercharge</span> Your Marketing
               </motion.h1>
               <motion.p
-                className="text-xl leading-relaxed mb-12"
+                className="text-xl leading-relaxed font-medium mb-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{ duration: 1, delay: 0.2 }}
               >
                 Connect with the right influencers and grow your brand's reach.
                 Leverage marketing automation to streamline your campaigns and
@@ -90,7 +92,7 @@ const Home = () => {
               className="w-full md:w-1/2 px-4 mb-8"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 1 }}
             >
               <img src={headerImage} alt="Hero Image" className="rounded-lg" />
             </motion.div>
@@ -198,7 +200,7 @@ const Home = () => {
               <img
                 src={automationImage}
                 alt="Marketing Automation"
-                className="mb-4 rounded-lg"
+                className="mb-4  rounded-lg"
               />
             </motion.div>
             <motion.div
@@ -214,8 +216,7 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 Streamline your influencer marketing campaigns with our
-                automation tools. From finding influencers to tracking campaign
-                performance, we've got you covered.
+                automation tool.
               </motion.p>
               <motion.a
                 href="#"
@@ -253,14 +254,14 @@ const Home = () => {
                 <img
                   src={image}
                   alt="Influencer Benefits"
-                  className="mb-4 rounded-lg"
+                  className="mb-4 h-[60vh] rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-4">
                   Brand Collaborations
                 </h3>
                 <p className="text-gray-700">
                   Partner with top brands and showcase your content to their
-                  engaged audiences, earning income and recognition.
+                  engaged audiences
                 </p>
               </motion.div>
             </div>
@@ -272,9 +273,9 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <img
-                  src={image}
+                  src={monetizeImage}
                   alt="Influencer Benefits"
-                  className="mb-4 rounded-lg"
+                  className="mb-4 h-[60vh] rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-4">
                   Monetize Your Influence
@@ -293,9 +294,9 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <img
-                  src={image}
+                  src={collaborationImage}
                   alt="Influencer Benefits"
-                  className="mb-4 rounded-lg"
+                  className="mb-4 h-[60vh] rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-4">
                   Collaboration Management

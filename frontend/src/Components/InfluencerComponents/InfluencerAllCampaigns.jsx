@@ -171,6 +171,7 @@ const InfluencerAllCampaigns = () => {
     data: campaign,
     isLoading,
     isSuccess,
+    isRefetching,
     refetch,
     isError,
   } = useQuery(["campaign", search], fetchCampaigns);
@@ -257,6 +258,13 @@ const InfluencerAllCampaigns = () => {
       </div>
     );
   }
+  if (isRefetching) {
+    return (
+      <div className="h-[85vh] flex justify-center items-center">
+        <Spin size="large"></Spin>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -296,7 +304,7 @@ const InfluencerAllCampaigns = () => {
           setIsModalOpen(false);
         }}
       >
-        <div className="flex-col overflow-y-auto h-96 p-1">
+        <div className="flex-col overflow-y-auto min-h-96 p-1">
           <div>
             <h1 className="text-xl font-bold mb-3">Categories</h1>
             <Checkbox.Group
