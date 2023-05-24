@@ -2,7 +2,7 @@ import { Button, Modal, Spin } from "antd";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, InstagramOutlined, YoutubeOutlined, RedditOutlined, LinkedinOutlined } from "@ant-design/icons";
 import { UploadOutlined, PlusOutlined } from "@ant-design/icons";
 import { Upload, Tag, Alert } from "antd";
 import { Select } from "antd";
@@ -15,6 +15,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useQuery } from "react-query";
 import { AuthContext } from "../../utils/authProvider";
+const { Option } = Select;
 
 const { TextArea } = Input;
 const length = 0;
@@ -34,10 +35,33 @@ const InfluencerGigs = () => {
   const [gigsData, setGigsData] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { user, setUser } = useContext(AuthContext);
+  const [userLoading, setUserLoading] = useState(false);
+  const [accounts, setAccounts] = useState([]);
+  const [accountOptions, setAccountOptions] = useState([]);
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
+
+  useEffect(() => {
+    console.log('Get the Accounts object');
+    setUserLoading(true);
+    axios.get('http://localhost:3000/influencer/connectedaccounts').then((res) => {
+      console.log('res', res);
+      setAccounts(res.data.data);
+
+      const options = res.data.data.map((account) => {
+        return { value: account._id, label: account.username, pic: ((account.platform == "reddit")? account.profilePic.split("?")[0] : account.profilePic ), platform: account.platform };
+      });
+
+      setAccountOptions(options);
+
+      setUserLoading(false);
+    }).catch((err) => {
+      console.log('err', err);
+    })
+  }, []);
+
   // useEffect(() => {
   //   const fetch = async () => {
   //     const data = await axios.get(
@@ -244,7 +268,7 @@ const InfluencerGigs = () => {
         >
           {(formik) => (
             <form>
-              <div className="flex flex-col px-2 space-y-1 overflow-y-auto max-h-[350px]">
+              <div className="flex flex-col gap-y-2 px-2 space-y-1 overflow-y-auto max-h-[500px]">
                 <div>
                   <h1 className="text-base text-gray-700 font-semibold">
                     Title <span className="text-red-600">*</span>
@@ -366,56 +390,53 @@ const InfluencerGigs = () => {
                 </div>
                 <div>
                   <h1 className="text-base text-gray-700 font-semibold">
-                    Select Platform <span className="text-red-600">*</span>
+                    Select Account <span className="text-red-600">*</span>
                   </h1>
                   <Select
                     showSearch
                     style={{
-                      width: 200,
+                      width: 400,
                     }}
                     placeholder="Search to Select"
                     optionFilterProp="children"
                     filterOption={(input, option) =>
                       (option?.label ?? "").includes(input)
                     }
-                    filterSort={(optionA, optionB) =>
-                      (optionA?.label ?? "")
-                        .toLowerCase()
-                        .localeCompare((optionB?.label ?? "").toLowerCase())
-                    }
                     onSelect={(value) => {
                       formik.setFieldValue("platform", value);
                     }}
-                    options={[
-                      {
-                        value: "Instagram",
-                        label: "Instagram",
-                      },
-                      {
-                        value: "Facebook",
-                        label: "Facebook",
-                      },
-                      {
-                        value: "Twitter",
-                        label: "Twitter",
-                      },
-                      {
-                        value: "Redit",
-                        label: "Redit",
-                      },
-                      {
-                        value: "Pinterest",
-                        label: "Pinterest",
-                      },
-                      {
-                        value: "LinkedIn",
-                        label: "LinkedIn",
-                      },
-                    ]}
-                  />
+                    size="large"
+                  >
+                    {accountOptions.map((account) => (
+                      <Option
+                        key={account.value}
+                        value={account.value}
+                        label={account.platform}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                          {
+														account.platform === "youtube" ? (
+															<YoutubeOutlined className="text-red-600 text-xl" />
+														) : (
+														account.platform === "reddit" ? (
+															<RedditOutlined className="text-orange-500 text-xl" />
+														) : (
+															<LinkedinOutlined className="text-sky-800 text-xl" />
+														))
+													}
+                            <p>{account.label}</p>
+                          </div>
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden">
+                            <img src={account.pic} className="w-full h-full object-cover" />
+                          </div>
+                        </div>
+                      </Option>
+                    ))}
+                  </Select>
                 </div>
                 <div className="flex flex-col space-y-4">
-                  <div>
+                  {/* <div>
                     <h1 className="text-base text-gray-700 font-semibold">
                       Account Access <span className="text-red-600">*</span>
                     </h1>
@@ -426,12 +447,12 @@ const InfluencerGigs = () => {
                     <Button className="bg-blue text-white mt-3">
                       Give Access
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="my-2 flex flex-row-reverse">
                   <Button
                     loading={loading}
-                    disabled={success}
+                    disabled={(accountOptions.length === 0) || (formik.values.description === "") || (formik.values.platform === "")}
                     onClick={() => {
                       // handleUpload(formik.values);
                       handleSubmit(formik.values);

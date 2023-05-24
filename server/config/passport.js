@@ -51,7 +51,7 @@ module.exports = function(passport) {
   passport.use(new InstagramStrategy({
     clientID: "260983243038733",
     clientSecret: "552efe79cc45023aa5c058386a4c3c98",
-    callbackURL: "https://127.0.0.1:3000/users/instagram/callback",
+    callbackURL: "https://localhost:3000/users/instagram/callback",
     scope: ['user_profile', 'user_media', 'instagram_graph_user_profile'],
     accessType: 'offline',
     state: true,
@@ -65,9 +65,10 @@ module.exports = function(passport) {
       console.log("Access: ", accessToken)
       console.log("Refresh: ", refreshToken)
       console.log(profile)
+      let userid = request.user._id
 
       // Create a new Social account if not exists else create one
-      Social.findOne({ userid: request.session.user }).then((social) => {
+      Social.findOne({ userid: userid, platform: "instagram", handle: profile.id }).then((social) => {
         if (social) {
           // Update
           social.accessToken = accessToken;
@@ -84,7 +85,7 @@ module.exports = function(passport) {
           });
           newSocial.save();
           // add this to user's socials array
-          User.findOneAndUpdate({ _id: request.session.user }, { $push: { socialMediaAccounts: newSocial._id } }).then(user => {
+          User.findOneAndUpdate({ _id: userid }, { $push: { socialMediaAccounts: newSocial._id } }, {upsert: true}).then(user => {
             console.log("User: ", user)
           })
         }
@@ -147,7 +148,7 @@ module.exports = function(passport) {
   passport.use(new YoutubeV3Strategy({
     clientID: "865935877068-r5odj728n08546l2qdg8mme3nvhpqmrd.apps.googleusercontent.com",
     clientSecret: "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",
-    callbackURL: "http://127.0.0.1:3000/users/youtube/callback",
+    callbackURL: "http://localhost:3000/users/youtube/callback",
     scope: ['https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube.upload'],
     accessType: 'offline',
     state: true,
@@ -163,19 +164,25 @@ module.exports = function(passport) {
       console.log(profile)
       console.log("Profile: ", profile._json.items)
       console.log("Profile: ", profile._json.items[0].snippet.thumbnails)
+      console.log("user id: ", request.user._id)
+      let userid = request.user._id
+      let profileid = profile.id
 
       // Create a new Social account if not exists else create one
-      Social.findOne({ userid: request.session.user }).then(async social => {
-        console.log("social", social)
+      Social.findOne({ userid: userid, platform: "youtube", handle: profileid }).then(async social => {
+        console.log("social: ", social)
         if (social) {
           // update the access token value and save them
           social.accessToken = accessToken;
           social.refreshToken = refreshToken;
           social.save();
+
+          console.log("social: ", social)
+          
         } else {
           const newSocial = new Social({
             platform: "youtube",
-            userid: request.session.user,
+            userid: userid,
             handle: profile.id,
             username: profile._json.items[0].snippet.customUrl,
             accessToken: accessToken,
@@ -184,7 +191,7 @@ module.exports = function(passport) {
           });
           newSocial.save();
           // add this to user's socials array
-          User.findOneAndUpdate({ _id: request.session.user }, { $push: { socialMediaAccounts: newSocial._id } }).then(user => {
+          User.findOneAndUpdate({ _id: userid}, { $push: { socialMediaAccounts: newSocial._id } }, {upsert: true}).then(user => {
             console.log("user", user)
           });
         }
@@ -193,12 +200,12 @@ module.exports = function(passport) {
       return done(null, profile);
     });
   }
-  ));
+));
 
   passport.use(new LinkedInStrategy({
     clientID: "77oyqfmbrr2780",
     clientSecret: "7VhpJoOGUOjz6TdS",
-    callbackURL: "http://127.0.0.1:3000/users/linkedin/callback",
+    callbackURL: "http://localhost:3000/users/linkedin/callback",
     scope: ['r_emailaddress', 'r_liteprofile', 'w_member_social'],
     state: true,
     passReqToCallback: true,
@@ -212,9 +219,11 @@ module.exports = function(passport) {
       console.log("request:", request.session.user)
       console.log("profile", profile)
       console.log("accessToken", accessToken)
+      const userid = request.user._id
+      const profileid = profile.id
 
       // Create a new Social account if not exists else create one
-      Social.findOne({ userid: request.session.user, platform: 'linkedin' }).then(async social => {
+      Social.findOne({ userid: userid, platform: 'linkedin', handle: profileid }).then(async social => {
         console.log("social", social)
         if (social) {
           // update the access token value and save them
@@ -224,7 +233,7 @@ module.exports = function(passport) {
         } else {
           const newSocial = new Social({
             platform: "linkedin",
-            userid: request.session.user,
+            userid: userid,
             handle: profile.id,
             username: profile.displayName,
             accessToken: accessToken,
@@ -235,7 +244,7 @@ module.exports = function(passport) {
             console.log("[+] Success: ", social)
           });
           // add this to user's socials array
-          User.findOneAndUpdate({ _id: request.session.user }, { $push: { socialMediaAccounts: newSocial._id } }).then(user => {
+          User.findOneAndUpdate({ _id: userid }, { $push: { socialMediaAccounts: newSocial._id } }).then(user => {
             console.log("user", user)
           });
 

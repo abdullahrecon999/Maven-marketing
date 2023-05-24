@@ -15,7 +15,7 @@ const bids = require("../models/Proposals")
 const contracts = require("../models/Contracts")
 const invites = require("../models/Invites")
 const contacts = require("../models/MessageContacts")
-
+const Social = require("../models/Social")
 const Message = require("../models/MessageSchema")
 const ROLES = require('../utils/roles').ROLES;
 const sendEmail = require('../utils/sendEmail');
@@ -139,6 +139,25 @@ router.get("/influencers", async(req, res, next)=>{
   }
 })
 
+// get connected accounts of influencer
+router.get("/connectedaccounts", async(req, res, next)=>{
+  try{
+    const {id} = req.user
+    let data = await User.findById(id).select("socialMediaAccounts")
+    let accounts = await Social.find({_id : {$in : data.socialMediaAccounts}})    
+
+    res.status(200).json({
+      status: "success",
+      data: accounts
+    })
+
+  }catch(e){
+    console.log(e)
+    res.status(502).json({
+      status: "error"
+    })
+  }
+})
 
 // router.get("/influencers", async(req, res, next)=>{
 //   try{

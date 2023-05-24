@@ -285,7 +285,7 @@ router.get('/reddit/callback', async (req, res) => {
     console.log(userData.data);
 
     // Create a new Social account if not exists else create one
-    Social.findOne({ userid: user, platform: 'reddit' }).then((social) => {
+    Social.findOne({ userid: user, platform: 'reddit', handle: userData.data.id }).then((social) => {
       if (social) {
         // Update
         social.accessToken = accessToken;
@@ -348,21 +348,19 @@ router.get('/auth/tiktok',
 );
 
 router.get('/linkedin/callback', passport.authenticate('linkedin', {
-  successRedirect: 'http://localhost:5173/brandhome',
+  successRedirect: 'http://localhost:5173/SocialProfile',
   failureRedirect: '/login',
   session: false
 }));
 
-router.get('/auth/linkedin', (req, res, next) => {
-  req.session.user = req.query.user;
-  next();
-}, passport.authenticate('linkedin'));
-
+router.get('/auth/linkedin', 
+  passport.authenticate('linkedin', { session: false }),
+);
 
 router.get('/youtube/callback', passport.authenticate('youtube', {
-  successRedirect: 'http://localhost:5173/brandhome',
-  failureRedirect: '/login',
-  session: false
+  successRedirect: 'http://localhost:5173/SocialProfile',
+  failureRedirect: 'http://localhost:5173/SocialProfile/login',
+  session: false 
 }));
 
 router.get('/auth/youtube',

@@ -237,10 +237,11 @@ const ListDetails = () => {
         <div
           style={{
             backgroundImage: `url("${data?.banner}")`,
-            backgroundSize: "100% 100%",
+            backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            opacity: 0.6,
+            opacity: 0.8,
+            objectFit: "cover",
           }}
           className="w-full relative border rounded-t-2xl flex flex-col justify-center items-center "
         >
@@ -274,7 +275,7 @@ const ListDetails = () => {
             <div className="relative">
               <img
                 src={data?.profilePic}
-                className="w-36 rounded-full h-36 border-2 border-green opacity-100"
+                className="w-64 rounded-full h-64 border-2 border-green opacity-100"
               ></img>
               <div
                 className={`${
@@ -287,9 +288,7 @@ const ListDetails = () => {
               </div>
             </div>
           </div>
-          <h1 className="text-center text-white font-bold text-2xl">
-            {data?.title}
-          </h1>
+          
         </div>
       </header>
       <section
