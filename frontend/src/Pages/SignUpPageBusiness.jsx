@@ -142,6 +142,7 @@ const SignUpPageBusiness = () => {
                             label="Password"
                             name="password"
                             size="medium"
+                            placeholder="Password"
                             onChange={(e) => {
                               formik.setFieldValue("password", e.target.value);
                             }}
@@ -163,6 +164,7 @@ const SignUpPageBusiness = () => {
                           <Input.Password
                             name="confirmPass"
                             label="Confirm Password"
+                            placeholder="Confirm Password"
                             size="medium"
                             onChange={(e) => {
                               formik.setFieldValue(
