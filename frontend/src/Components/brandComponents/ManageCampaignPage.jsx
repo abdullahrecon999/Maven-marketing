@@ -5,7 +5,7 @@ import profileImage from "../../images/profile.jpg";
 import { Tabs, Table, Tag, Button, Space, Modal, Skeleton } from "antd";
 import { Collapse } from "antd";
 import { useQuery, useMutation } from "react-query";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import BrandContractModal from "./BrandContractModal";
 const { Panel } = Collapse;
 const { Column } = Table;
@@ -22,6 +22,7 @@ const Bids = ({ id }) => {
   const [acceptingBid, setAcceptingBid] = useState(false);
   const [isAcceptingSuccess, setAcceptingSuccess] = useState(false);
   const [openContractModal, setOpenContractModal] = useState(false);
+  const navigate = useNavigate();
   const showModal = () => {
     setIsBidModalOpen(true);
   };
@@ -508,59 +509,65 @@ const ProfileDetails = ({ item, id, brandId }) => {
     <div key={item} className="flex px-2 py-1 border rounded my-1">
       <div className="flex justify-center items-center">
         <img
-          src={item?.photo}
+          src={item?.profilePic}
           alt={profileImage}
           className="w-[50px] h-[50px] object-fit rounded-full"
         ></img>
       </div>
       <div className="mx-2 grid grid-cols-2">
         <h1 className="text-xs text-gray-800 font-semibold col-span-2">
-          {item?.name}
+          {item?.title}
         </h1>
         <div>
-          <h1 className="text-xxs text-gray-700 font-semibold">Platforms</h1>
-          {item?.platforms?.map((item) => {
-            const color =
-              item === "Any"
+          <h1 className="text-xxs text-gray-700 font-semibold">Platform</h1>
+          <Tag
+            className="text-xxs"
+            color={
+              item.platform === "Any"
                 ? "volcano"
                 : ["linkedIn", "twitter", "Facebook"].includes(item)
                 ? "blue"
-                : "purple";
-            return (
-              <Tag className="text-xxs" color={color}>
-                {item}
-              </Tag>
-            );
-          })}
-        </div>
-        <div>
-          <h1 className="text-xxs text-gray-700 font-semibold">Country</h1>
-          {item?.country?.map((item) => {
-            return (
-              <Tag className="text-xxs" color="green">
-                {item}
-              </Tag>
-            );
-          })}
-        </div>
-      </div>
-      <div className=" flex flex-1 justify-end items-end gap-1">
-        {isInviteSendSuccess ? (
-          <h1 className="text-xxs italic text-green">Invite Sent</h1>
-        ) : (
-          <Button
-            loading={invitesentloading}
-            onClick={() => {
-              setInviteSentLoading(true);
-              handleInviteSent();
-            }}
-            key={item}
-            size="small"
+                : "red"
+            }
           >
-            Invite
-          </Button>
-        )}
+            {item.platform}
+          </Tag>
+        </div>
       </div>
+      {item?.registered ? (
+        <>
+          <div className=" flex flex-1 justify-end items-end gap-1">
+            {isInviteSendSuccess ? (
+              <h1 className="text-xxs italic text-green">Invite Sent</h1>
+            ) : (
+              <Button
+                loading={invitesentloading}
+                onClick={() => {
+                  setInviteSentLoading(true);
+                  handleInviteSent();
+                }}
+                key={item}
+                size="small"
+              >
+                Invite
+              </Button>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className=" flex flex-1 justify-end items-end gap-1">
+            <Button
+              onClick={() => {
+                window.open("/listdetails/" + item._id, "_blank");
+              }}
+              size="small"
+            >
+              View
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -637,9 +644,14 @@ const CurrentInfluencers = ({ id }) => {
           title="Influencer Profile"
           key="action"
           render={(record) => {
+            console.log(record);
             return (
               <Space size="middle">
-                <Link className="link text-blue" onClick={() => {}}>
+                <Link
+                  to={"/influencerprofile/" + record?.key}
+                  className="link text-blue"
+                  onClick={() => {}}
+                >
                   View Profile
                 </Link>
               </Space>
@@ -695,7 +707,7 @@ const ManageCampaignPage = () => {
     const fetch = async () => {
       setLoadingInfluencers(true);
       const data = await axios.get(
-        "http://localhost:3000/brand/inviteinfluencers"
+        "http://localhost:3000/brand/inviteinfluencers/" + id
       );
 
       setInfluencerList(data?.data?.data);
@@ -722,6 +734,7 @@ const ManageCampaignPage = () => {
               Here are some influencers that you can invite for the campaigns
             </h1>
             {influencerList.map((item) => {
+              console.log(item);
               return (
                 <ProfileDetails
                   key={item}
@@ -735,7 +748,7 @@ const ManageCampaignPage = () => {
         )}
       </Modal>
       {loading ? null : (
-        <div className="gap-4">
+        <div className="gap-4 h-[90vh]">
           <section className="container mx-auto px-[10%] gap-5">
             <div className="flex flex-col">
               <div className="flex gap-3">

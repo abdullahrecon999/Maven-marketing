@@ -14,6 +14,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
 import { Input } from "antd";
+import { motion } from "framer-motion";
+
 const SignUpPageInfluencer = () => {
   const navigate = useNavigate();
   const [err, setErr] = useState(false);
@@ -53,7 +55,19 @@ const SignUpPageInfluencer = () => {
         console.log(err);
       });
   };
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
 
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const transition = {
+    duration: 0.8, // Adjust the duration here (in seconds)
+  };
   return (
     <Formik
       initialValues={{
@@ -69,7 +83,7 @@ const SignUpPageInfluencer = () => {
         <Form>
           <div>
             <Navbar></Navbar>
-            <section className="container mx-auto">
+            <section className="container mx-auto h-[85vh]">
               <div className="px-4 pt-8 mb-6 space-x-8 flex justify-center flex-col-reverse md:flex-row ">
                 <div className="flex flex-col justify-center  px-10 space-y-6 md:w-[30%] ">
                   <div>
@@ -179,7 +193,30 @@ const SignUpPageInfluencer = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start ">
+                <motion.div
+                  className="flex flex-col my-5 items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14 md:items-start"
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                  transition={transition}
+                >
+                  <motion.h1
+                    className="text-3xl text-blue font-semibold font-railway md:text-4xl"
+                    variants={textVariants}
+                    transition={transition}
+                  >
+                    Maven <span className="text-gray-600">Marketing</span>
+                  </motion.h1>
+                  <motion.p
+                    className="font-semibold text-gray-600 text-xl"
+                    variants={textVariants}
+                    transition={transition}
+                  >
+                    A Platform To Earn Money By Collaborating With Brands And
+                    Businesses
+                  </motion.p>
+                </motion.div>
+                {/* <div className="flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start ">
                   <h1 className="text-3xl text-blue font-semibold font-railway md:text-4xl">
                     Maven Marketing
                   </h1>
@@ -187,7 +224,7 @@ const SignUpPageInfluencer = () => {
                     A Platform To Earn Money By Collaborating With Brands And
                     Businesses
                   </p>
-                </div>
+                </div> */}
               </div>
             </section>
             {err && (

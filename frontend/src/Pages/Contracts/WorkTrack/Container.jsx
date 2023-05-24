@@ -211,9 +211,13 @@ const Container = () => {
                         {dayjs(item.date).toDate().toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex flex-col">
-                      <a className="link text-blue" href={item.url}>
-                        download
+                    <div className="flex items-center flex-col gap-3">
+                      <a
+                        className="link text-blue"
+                        href={item.url}
+                        target="_blank"
+                      >
+                        View
                       </a>
                       {user?.role === "brand" ? null : (
                         <Button

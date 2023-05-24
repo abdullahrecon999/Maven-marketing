@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
+import { SettingOutlined } from '@ant-design/icons';
 import { Cascader, Input, Select, Space, Button, Form, message, Spin, Modal } from 'antd';
 import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
@@ -235,5 +236,3 @@ const AddConnection = ({ id }) => {
 		</div>
 	)
 }
-
-export default AddConnection

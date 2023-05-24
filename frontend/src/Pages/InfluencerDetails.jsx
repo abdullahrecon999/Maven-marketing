@@ -167,7 +167,11 @@ const Profile = ({ id }) => {
               <h1 className=" text-lg text-gray-800 font-semibold">
                 View Profile
               </h1>
-              <a href={data?.data?.data?.url} className="link text-blue">
+              <a
+                href={data?.data?.data?.url}
+                target="_blank"
+                className="link text-blue"
+              >
                 View
               </a>
             </div>

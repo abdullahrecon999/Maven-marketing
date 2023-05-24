@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import GoogleIcon from "@mui/icons-material/Google";
 import { TailSpin } from "react-loader-spinner";
 import { Input } from "antd";
-
+import { motion } from "framer-motion";
 const style = {
   position: "absolute",
   top: "50%",
@@ -258,6 +258,18 @@ const BusinessLogin = () => {
         console.log(err.response.data.message);
       });
   };
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+  const transition = {
+    duration: 1.5, // Adjust the duration here (in seconds)
+  };
 
   return (
     <Formik
@@ -272,12 +284,12 @@ const BusinessLogin = () => {
         <Form>
           <div>
             <Navbar></Navbar>
-            <section className="container mx-auto">
+            <section className="container mx-auto h-[85vh]">
               <div className="px-4 pt-2  mb-6 space-x-8 flex justify-center flex-col-reverse md:flex-row md:pt-1">
                 <div className="flex flex-col justify-center  px-10 space-y-6 md:w-[30%] ">
                   <div>
                     <h1 className="text-left sm:text-lg md:text-xl font-railway">
-                      Login
+                      <span className="text-blue">Brand</span> Login
                     </h1>
                     <p className="text-sm text-grey">
                       Its good to see you back
@@ -373,14 +385,35 @@ const BusinessLogin = () => {
                     </Alert>
                   )}
                 </div>
-                <div className="flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start ">
+                <motion.div
+                  className="flex flex-col my-5 items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14 md:items-start"
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                >
+                  <motion.h1
+                    className="text-3xl text-blue font-semibold font-railway md:text-4xl"
+                    variants={textVariants}
+                    transition={transition}
+                  >
+                    Maven <span className="text-gray-600">Marketing</span>
+                  </motion.h1>
+                  <motion.p
+                    className="font-semibold sm:text-base text-gray-600 md:text-xl"
+                    variants={textVariants}
+                    transition={transition}
+                  >
+                    Login as a Brand and start your Business.
+                  </motion.p>
+                </motion.div>
+                {/* <div className="flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start ">
                   <h1 className="text-3xl text-blue font-semibold font-railway md:text-4xl">
                     Maven Marketing
                   </h1>
                   <p className="font-semibold sm: text-base md:text-xl">
                     Login as a Brand and start your Business.
                   </p>
-                </div>
+                </div> */}
               </div>
             </section>
             <Modal

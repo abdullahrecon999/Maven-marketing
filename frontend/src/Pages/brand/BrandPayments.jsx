@@ -91,7 +91,7 @@ const PaymentHistory = () => {
         ></Table.Column>
 
         <Table.Column title="Date" key="date" dataIndex="date"></Table.Column>
-        <Table.Column
+        {/* <Table.Column
           title="View Contract"
           key="action"
           render={(record) => {
@@ -103,7 +103,7 @@ const PaymentHistory = () => {
               </Space>
             );
           }}
-        ></Table.Column>
+        ></Table.Column> */}
       </Table>
     </div>
   );
@@ -158,7 +158,7 @@ const PendingPayment = () => {
             return <h1>{dayjs(record).toDate().toLocaleDateString()}</h1>;
           }}
         ></Table.Column>
-        <Table.Column
+        {/* <Table.Column
           title="View Contract"
           key="action"
           render={(record) => {
@@ -170,7 +170,7 @@ const PendingPayment = () => {
               </Space>
             );
           }}
-        ></Table.Column>
+        ></Table.Column> */}
       </Table>
     </div>
   );
@@ -259,7 +259,7 @@ const PaymentMethods = ({}) => {
     );
   }
   return (
-    <>
+    <div className="">
       <Modal
         title="Attach a Payment Method"
         open={isModalOpen}
@@ -391,7 +391,7 @@ const PaymentMethods = ({}) => {
           </Button>
         ) : null}
       </div>
-    </>
+    </div>
   );
 };
 const BrandPayments = () => {
@@ -435,14 +435,14 @@ const BrandPayments = () => {
   }, []);
 
   return (
-    <div className="container mx-auto my-auto">
+    <div className="container mx-auto my-auto h-screen">
       <React.Fragment>
         {loading ? (
           <div className="h-[80vh]">
             <Skeleton className="h-full" active></Skeleton>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-7 bg-white rounded-md border gap-3 px-3">
+          <div className="grid grid-cols-1 md:grid-cols-7 bg-white rounded-md border gap-3 pb-11 px-3">
             <div className="col-span-7  px-4 py-5">
               <h1 className="text-xl text-gray-800 font-semibold">Payments</h1>
             </div>

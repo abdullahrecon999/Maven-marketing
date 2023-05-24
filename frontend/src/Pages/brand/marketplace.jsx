@@ -61,6 +61,7 @@ export const Marketplace = () => {
     isLoading: isGigsLoading,
     isGigsSuccess,
     isError,
+    isRefetching,
     refetch: gigsRefecth,
   } = useQuery(["gigs"], () => {
     let queryParams =
@@ -410,6 +411,14 @@ export const Marketplace = () => {
       return nFormatter(data.followers_avg) + " Followers";
     }
   };
+
+  if (isRefetching) {
+    return (
+      <div className="h-[85vh] flex justify-center items-center">
+        <Spin size="large"></Spin>
+      </div>
+    );
+  }
   return (
     <>
       <Modal
@@ -424,6 +433,7 @@ export const Marketplace = () => {
                 setCategoriesList([]);
                 setStatus([]);
                 setInputValue(1000);
+                handleCancel();
               }}
               className="btn btn-sm btn-outline btn-warning"
             >
@@ -441,7 +451,7 @@ export const Marketplace = () => {
         open={isModalOpen}
         onCancel={handleCancel}
       >
-        <div className="flex-col overflow-y-auto h-96 p-1">
+        <div className="flex-col overflow-y-auto min-h-96 p-1">
           <div>
             {/* <h1 className="text-xl font-bold">Folower Count</h1>
             <Slider
@@ -489,7 +499,7 @@ export const Marketplace = () => {
             </div>
 
             <div className="divider divider-vertical "></div> */}
-            <h1 className="text-xl font-bold mb-3">Followers/Subscriber</h1>
+            {/* <h1 className="text-xl font-bold mb-3">Followers/Subscriber</h1>
 
             <Row>
               <Col span={12}>
@@ -513,7 +523,7 @@ export const Marketplace = () => {
                   onChange={onChangeFolllowers}
                 />
               </Col>
-            </Row>
+            </Row> */}
 
             <div className="divider divider-vertical "></div>
 
@@ -709,8 +719,8 @@ export const Marketplace = () => {
         <div className="mb-2">
           <h1 className="font-bold">All Influencer Listing</h1>
         </div>
-
-        <div className="flex flex-wrap justify-around gap-3">
+        {/* flex flex-wrap justify-around gap-3 */}
+        <div className="grid grid-cols-4 gap-3">
           {isGigsLoading ? (
             <div className="flex justify-center items-center h-[60vh]">
               <Spin></Spin>

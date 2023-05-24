@@ -34,9 +34,9 @@ const ProfileImage = ({ ...props }) => {
   };
   return (
     <div className="space-y-5">
-      <div className="my-2">
+      <div className="my-2 ">
         <img
-          className=" border rounded-full h-[100px] w-[100px] md:h-[100px] md:w-[100px] object-fill"
+          className=" rounded-full h-[100px] w-[100px] md:h-[100px] md:w-[100px] object-cover"
           src={uImage}
           alt={uImage}
         />

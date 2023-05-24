@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import { Autocomplete } from "@mui/material";
 import { styled } from "@mui/system";
 import GoogleSignup from "../Components/GoogleSignup";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 //import profileSchema from '../ValidationSchemas/profileSchema';
 import * as yup from "yup";
 import FormTextField2 from "../Components/FormTextFeild2";
@@ -15,7 +15,7 @@ import FormSelect2 from "../Components/FormSelect2";
 import axios from "axios";
 import { Alert } from "@mui/material";
 import { Input } from "antd";
-
+import { motion } from "framer-motion";
 let SignupSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
   email: yup
@@ -73,7 +73,19 @@ const SignUpPageBusiness = () => {
         console.log(err);
       });
   };
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
 
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const transition = {
+    duration: 0.8, // Adjust the duration here (in seconds)
+  };
   return (
     <Formik
       initialValues={{
@@ -89,7 +101,7 @@ const SignUpPageBusiness = () => {
         <Form>
           <div>
             <Navbar></Navbar>
-            <section className="container mx-auto">
+            <section className="container mx-auto h-[85vh]">
               <div className="px-4 h-96 pt-2 mb-6 space-x-8 flex justify-center flex-col-reverse md:flex-row md:pt-1  ">
                 <div className="flex flex-col justify-center  px-10 space-y-6 md:w-[30%] ">
                   <div>
@@ -123,27 +135,51 @@ const SignUpPageBusiness = () => {
                       <h1 className="text-gray-800 text-base md:text-base font-semibold mb-1">
                         Password *
                       </h1>
-                      <Input.Password
-                        label="Password"
+                      <Field name="password">
+                        {({ field }) => (
+                          <Input.Password
+                            {...field}
+                            label="Password"
+                            name="password"
+                            size="medium"
+                            placeholder="Password"
+                            onChange={(e) => {
+                              formik.setFieldValue("password", e.target.value);
+                            }}
+                          />
+                        )}
+                      </Field>
+                      <ErrorMessage
                         name="password"
-                        size="medium"
-                        onChange={(e) => {
-                          formik.setFieldValue("password", e.target.value);
-                        }}
-                      />
+                        component="div"
+                        className="text-xs text-red-500"
+                      ></ErrorMessage>
                     </div>
                     <div>
                       <h1 className="text-gray-800 text-base md:text-base font-semibold mb-1">
                         Confirm Password *
                       </h1>
-                      <Input.Password
+                      <Field name="confirmPass">
+                        {({ field }) => (
+                          <Input.Password
+                            name="confirmPass"
+                            label="Confirm Password"
+                            placeholder="Confirm Password"
+                            size="medium"
+                            onChange={(e) => {
+                              formik.setFieldValue(
+                                "confirmPass",
+                                e.target.value
+                              );
+                            }}
+                          />
+                        )}
+                      </Field>
+                      <ErrorMessage
                         name="confirmPass"
-                        label="Confirm Password"
-                        size="medium"
-                        onChange={(e) => {
-                          formik.setFieldValue("confirmPass", e.target.value);
-                        }}
-                      />
+                        component="div"
+                        className="text-xs text-red-500"
+                      ></ErrorMessage>
                     </div>
                     <div className="flex flex-col justify-center items-center space-y-2">
                       <div className="flex justify-center pt-1 pr-3">
@@ -161,14 +197,36 @@ const SignUpPageBusiness = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start ">
+                <motion.div
+                  className="flex flex-col my-5 items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14 md:items-start"
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                  transition={transition}
+                >
+                  <motion.h1
+                    className="text-3xl text-blue font-semibold font-railway md:text-4xl"
+                    variants={textVariants}
+                    transition={transition}
+                  >
+                    Maven <span className="text-gray-600">Marketing</span>
+                  </motion.h1>
+                  <motion.p
+                    className="font-semibold text-gray-600 text-xl"
+                    variants={textVariants}
+                    transition={transition}
+                  >
+                    An Expert Marketing Solution
+                  </motion.p>
+                </motion.div>
+                {/* <div className="flex flex-col  my-5  items-center sm:pt-5 sm:pb-5 md:space-y-1 md:pt-14  md:items-start ">
                   <h1 className="text-3xl text-blue font-semibold font-railway md:text-4xl">
-                    Maven Marketing
+                    Maven <span className="text-gray-600">Marketing</span>
                   </h1>
-                  <p className="font-semibold text-xl">
+                  <p className="font-semibold text-gray-600 text-xl">
                     An Expert Marketing Solution
                   </p>
-                </div>
+                </div> */}
               </div>
             </section>
             {err && (

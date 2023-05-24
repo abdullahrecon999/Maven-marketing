@@ -138,6 +138,7 @@ const InfluencerAllCampaigns = () => {
   const [categoriesList, setCategoriesList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [countries, SetSelectedCountries] = useState([]);
+  const [page, setPage] = useState(1);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -161,7 +162,9 @@ const InfluencerAllCampaigns = () => {
             "&category=" +
             categoriesList +
             "&country=" +
-            countries
+            countries +
+            "&page=" +
+            page
         )
     );
     return res.json();
@@ -171,6 +174,7 @@ const InfluencerAllCampaigns = () => {
     data: campaign,
     isLoading,
     isSuccess,
+    isRefetching,
     refetch,
     isError,
   } = useQuery(["campaign", search], fetchCampaigns);
@@ -223,8 +227,8 @@ const InfluencerAllCampaigns = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center h-[60vh]">
-        <div className="flex justify-center item-center h-[60vh]">
+      <div className="flex flex-col justify-center items-center h-[85vh]">
+        <div className="flex justify-center item-center">
           <Spin></Spin>
         </div>
       </div>
@@ -245,6 +249,12 @@ const InfluencerAllCampaigns = () => {
     SetSelectedCountries(checkedValues);
   };
 
+  const handleChange = (event, value) => {
+    setPage(value);
+    refetch();
+    // refetch();
+  };
+
   if (isError) {
     return (
       <div className="text-2xl h-[80vh] font-railway flex flex-col justify-center items-center">
@@ -254,6 +264,13 @@ const InfluencerAllCampaigns = () => {
         <p className="text-base text-grey md:text-xl">
           Please check your internet connect or try again later
         </p>
+      </div>
+    );
+  }
+  if (isRefetching) {
+    return (
+      <div className="h-[85vh] flex justify-center items-center">
+        <Spin size="large"></Spin>
       </div>
     );
   }
@@ -296,7 +313,7 @@ const InfluencerAllCampaigns = () => {
           setIsModalOpen(false);
         }}
       >
-        <div className="flex-col overflow-y-auto h-96 p-1">
+        <div className="flex-col overflow-y-auto min-h-96 p-1">
           <div>
             <h1 className="text-xl font-bold mb-3">Categories</h1>
             <Checkbox.Group
@@ -505,6 +522,8 @@ const InfluencerAllCampaigns = () => {
           <hr></hr>
           <div className="flex justify-center p-5">
             <Pagination
+              page={page}
+              onChange={handleChange}
               count={campaign?.data?.totalPages}
               showFirstButton
               showLastButton

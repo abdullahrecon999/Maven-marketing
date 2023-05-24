@@ -293,54 +293,56 @@ const Profile = ({ onEdit }) => {
 
 						<hr></hr>
 
-						<div className="grid grid-cols-2">
-							<div className="px-2 flex flex-col flex-1 space-y-1 ">
-								<h1 className="text-gray-800 font-semibold  text-base">
-									Country
-								</h1>
-								{/* <Tag color="green">{user?.country[0]}</Tag> */}
-							</div>
-							<div className="px-2 flex flex-col space-y-1">
-								<h1 className="text-gray-800 font-semibold  text-base">
-									languages{" "}
-								</h1>
-								<div className="flex flex-wrap">
-									{user?.language?.map((item) => {
-										return <Tag>{item}</Tag>;
-									})}
-								</div>
-							</div>
-						</div>
-						<hr></hr>
-						<div className="px-2 flex flex-col space-y-1">
-							<h1 className="text-gray-800 font-semibold  text-base">
-								Categories{" "}
-							</h1>
-							<div className="flex flex-wrap">
-								{user?.category?.map((item) => {
-									return <Tag>{item}</Tag>;
-								})}
-							</div>
-						</div>
-						<div className="px-2 flex flex-col space-y-1">
-							<h1 className="text-gray-800 font-semibold  text-base">
-								Social Media Accounts{" "}
-							</h1>
-							<div>
-								{/* {user?.socialMediaHandles.map(item => {
+            <div className="grid grid-cols-2">
+              <div className="px-2 flex flex-col flex-1 space-y-1 ">
+                <h1 className="text-gray-800 font-semibold  text-base">
+                  Country
+                </h1>
+                <div>
+                  <Tag>{user?.country[0]}</Tag>
+                </div>
+              </div>
+              <div className="px-2 flex flex-col space-y-1">
+                <h1 className="text-gray-800 font-semibold  text-base">
+                  languages{" "}
+                </h1>
+                <div className="flex flex-wrap gap-2">
+                  {user?.language?.map((item) => {
+                    return <Tag>{item}</Tag>;
+                  })}
+                </div>
+              </div>
+            </div>
+            <hr></hr>
+            <div className="px-2 flex flex-col space-y-1">
+              <h1 className="text-gray-800 font-semibold  text-base">
+                Categories{" "}
+              </h1>
+              <div className="flex flex-wrap">
+                {user?.category?.map((item) => {
+                  return <Tag>{item}</Tag>;
+                })}
+              </div>
+            </div>
+            {/* <div className="px-2 flex flex-col space-y-1">
+              <h1 className="text-gray-800 font-semibold  text-base">
+                Social Media Accounts{" "}
+              </h1>
+              <div>
+                {user?.socialMediaHandles.map(item => {
 					return (
 						<div className="badge badge-lg badge-outline">
 							{item.platform} @ <div className="font-bold"> {item.handle} </div>
 						</div>
 					)
-				})} */}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</>
-	);
+				})}
+              </div>
+            </div> */}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 const EditProfile = ({ onSave }) => {

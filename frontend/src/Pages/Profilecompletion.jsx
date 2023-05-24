@@ -59,6 +59,9 @@ const categories = [
   { label: "Design", value: "Design" },
   { label: "Food", value: "Food" },
   { label: "Entertainment", value: "Entertainment" },
+  { label: "Technology", value: "Technology" },
+  { label: "Fitness", value: "Fitness" },
+  { label: "Travel", value: "Travel" },
 ];
 const options = [];
 
@@ -243,6 +246,26 @@ const Profilecompletion = () => {
                         content creator and start earning
                       </p>
                     </div>
+                    <div
+                      className={
+                        isSuccess && !isError ? "flex flex-col mt-2" : "hidden"
+                      }
+                    >
+                      <Alert
+                        message="Profile Completed"
+                        description="Please wait our system will verfy your profile. Please login later to check if the profile is verified or not"
+                        type="success"
+                        showIcon
+                      />
+                    </div>
+                    <div className={isError ? "flex flex-col mt-2" : "hidden"}>
+                      <Alert
+                        message="Something went wrong"
+                        description="Check your internet connect or try again later"
+                        type="success"
+                        showIcon
+                      />
+                    </div>
                     <div className="border"></div>
                   </div>
                   <div
@@ -264,7 +287,7 @@ const Profilecompletion = () => {
                       ></ProfileImage>
                       <div className="space-y-3"></div>
                     </div>
-                    <div className="flex flex-col space-y-2">
+                    {/* <div className="flex flex-col space-y-2">
                       <h2 className=" text-sm md:text-base text-gray-800 font-medium ">
                         Full name{" "}
                         <span className="text-xl text-red-500">*</span>
@@ -276,7 +299,7 @@ const Profilecompletion = () => {
                         label="Enter your full name"
                         placeholder="Enter your full name"
                       ></FormTextField>
-                    </div>
+                    </div> */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
                       <div>
@@ -354,7 +377,10 @@ const Profilecompletion = () => {
                           ></Input.TextArea>
                         )}
                       </Field>
-                      <ErrorMessage name="discription"></ErrorMessage>
+                      <ErrorMessage
+                        className="text-xs text-red-500"
+                        name="discription"
+                      ></ErrorMessage>
                     </div>
                   </div>
                   <div className="border"></div>
@@ -424,10 +450,10 @@ const Profilecompletion = () => {
                         Social Media Url{" "}
                         <span className="text-xl text-red-500">*</span>
                       </h2>
-                      {/* <FormTextField name="url" label="Enter your social media profile link"></FormTextField> */}
-                      <div className="flex flex-row space-x-4">
-                        <FormTextField name="url"></FormTextField>
-                      </div>
+                      <FormTextField
+                        name="url"
+                        label="Enter your social media profile link"
+                      ></FormTextField>
                     </div>
                   </div>
                   <div>
@@ -444,7 +470,7 @@ const Profilecompletion = () => {
                     </Button>
                     {/* {console.log(formik)} */}
                     {/* needs to be fixed */}
-                    <div
+                    {/* <div
                       className={
                         isSuccess && !isError ? "flex flex-col mt-2" : "hidden"
                       }
@@ -463,7 +489,7 @@ const Profilecompletion = () => {
                         type="success"
                         showIcon
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

@@ -31,7 +31,7 @@ router.get("/getContacts/:id", async (req, res)=>{
     const id= req.params.id
     try{
         const data = await contact.find({user: id}).
-        populate("contacts.contact","name")
+        populate("contacts.contact")
 
         res.status(200).json({
             status: "success",

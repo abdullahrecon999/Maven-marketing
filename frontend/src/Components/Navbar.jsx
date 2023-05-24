@@ -24,6 +24,17 @@ const items = [
     label: <Link to="/BusinessSignup">As Brand</Link>,
   },
 ];
+
+const LoginItems = [
+  {
+    key: "1",
+    label: <Link to="/InfluencerSignup">As Influencer</Link>,
+  },
+  {
+    key: "2",
+    label: <Link to="/BusinessSignup">As Brand</Link>,
+  },
+];
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -39,26 +50,26 @@ const Navbar = () => {
             onClick={() => {
               navigate("/");
             }}
-            className="text-black font-railway"
+            className="text-gray-800 font-bold text-xl "
           >
             Maven Marketing
           </h1>
           <div className="hidden space-x-6 md:flex">
             <Link
               to="/services"
-              className="text-grey font-railway hover:text-blue"
+              className="text-gray-800 font-medium text-xl  hover:text-blue"
             >
               Services
             </Link>
             <Link
               to="/aboutus"
-              className="text-grey font-railway hover:text-blue"
+              className="text-gray-800 font-medium text-xl  hover:text-blue"
             >
               about us
             </Link>
             <Link
               to="/whyus"
-              className="text-grey font-railway hover:text-blue"
+              className="text-gray-800 font-medium text-xl  hover:text-blue"
             >
               why us?
             </Link>
@@ -79,14 +90,14 @@ const Navbar = () => {
                 menu={{
                   items,
                 }}
-                className=" px-2 py-1 rounded-lg hover:bg-gray-100 "
+                className=" px-2 py-1 rounded-lg  "
               >
                 <a onClick={(e) => e.preventDefault()}>
                   <Space>
-                    <label className="text-xl text-blue font-bold  ">
+                    <label className="text-xl text-blue  font-medium  ">
                       Get Started
                     </label>
-                    <DownOutlined className="text-blue " />
+                    <DownOutlined className="text-white " />
                   </Space>
                 </a>
               </Dropdown>
@@ -102,7 +113,7 @@ const Navbar = () => {
                       : "/businesshome"
                   )
                 }
-                className="p-3 text-grey baseline font-railway text-sm hover:text-blue"
+                className="p-3 text-grey baseline text-xl  font-medium hover:text-blue"
               >
                 Dashboard
               </button>
@@ -110,14 +121,14 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => navigate("/influencerlogin")}
-                  className="p-3 text-grey baseline font-railway text-sm hover:text-blue"
+                  className="p-3 text-grey baseline text-xl  font-medium hover:text-blue"
                 >
                   {" "}
                   Influencer login
                 </button>
                 <button
                   onClick={() => navigate("/businesslogin")}
-                  className="p-3 text-grey baseline font-railway text-sm hover:text-blue"
+                  className="p-3 text-grey baseline text-xl  font-medium hover:text-blue"
                 >
                   {" "}
                   Brand login
@@ -136,10 +147,10 @@ const Navbar = () => {
         </div>
         {open && <DropdownMenu></DropdownMenu>}
       </nav>
-      <SignupModal
+      {/* <SignupModal
         visible={openSignupModal}
         onClose={handleClose}
-      ></SignupModal>
+      ></SignupModal> */}
     </>
   );
 };
