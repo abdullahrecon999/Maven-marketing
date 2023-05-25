@@ -92,7 +92,7 @@ router.post('/verify', async function(req, res, next) {
   //  console.log(data);
   //  res.send(data);
 
-  const url = "http://127.0.0.1:6000/verifyprofile";
+  const url = "http://127.0.0.1:1234/verifyprofile";
   // make axios post call on url
 
   axios.post(url, {
@@ -112,7 +112,7 @@ router.post('/verify', async function(req, res, next) {
 
 router.post('/keywords', async function(req, res, next) {
 
-  const url = "http://127.0.0.1:6000/keywords";
+  const url = "http://127.0.0.1:1234/keywords";
   // make axios post call on url
 
   axios.post(url, {

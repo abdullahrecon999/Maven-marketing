@@ -218,7 +218,7 @@ router.delete("/delete/:id", async (req, res, next) => {
 
 const getKeywords = async (description, id) => {
 
-  const url = "http://127.0.0.1:6000/keywords";
+  const url = "http://127.0.0.1:1234/keywords";
   // make axios post call on url
 
   axios.post(url, {

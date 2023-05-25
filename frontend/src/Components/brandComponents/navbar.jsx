@@ -271,7 +271,7 @@ export function NavBar({ avatar, name, email, role, id, user, isSticky }) {
 
           {role === "brand" ? (
             <Link
-              to="/marketautomation"
+              to="/socialautomation"
               className="hover:text-blue-700 text-grey px-3 py-2 rounded-md text-sm font-medium"
             >
               Automation

@@ -1,5 +1,5 @@
 // boiler plate for simple component
-import React from "react";
+import React, { useState } from "react";
 import vid from "../../assets/pexels-mehmet-ali-turan-5512609.mp4";
 import HoverVideoPlayer from "react-hover-video-player";
 import { Tag } from "antd";
@@ -27,6 +27,17 @@ export const ListingCard = ({
     }
   };
 
+  const [bannerError, setBannerError] = useState(false);
+  const [profileImgError, setProfileImgError] = useState(false);
+
+  const handleBannerError = () => {
+    setBannerError(true);
+  };
+
+  const handleProfileImgError = () => {
+    setProfileImgError(true);
+  };
+
   return (
     <div
       onClick={onclick}
@@ -37,7 +48,19 @@ export const ListingCard = ({
           <div className="avatar online placeholder">
             <div className="bg-neutral-focus text-neutral-content rounded-full w-11 h-11">
               {/* <img src="https://www.rfa.org/english/news/china/warning-01082021091841.html/@@images/2ad7ab11-b78f-44d3-b587-618128d3dfc7.jpeg" /> */}
-              <img src={avatar} />
+              {/* <img src={avatar} /> */}
+              {!profileImgError ? (
+                <img
+                  src={avatar}
+                  alt="abc"
+                  onError={handleProfileImgError}
+                />
+              ) : (
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
+                  alt="Default Banner"
+                />
+              )}
             </div>
           </div>
           <div className="flex-col ml-2">
@@ -106,11 +129,25 @@ export const ListingCard = ({
           </div>
         ) : (
           <div className="flex justify-center">
-            <img
+            {!bannerError ? (
+              <img
+                className="object-cover h-[280px] w-[270px]"
+                src={banner}
+                alt="abc"
+                onError={handleBannerError}
+              />
+            ) : (
+              <img
+                className="object-cover h-[280px] w-[270px]"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
+                alt="Default Banner"
+              />
+            )}
+            {/* <img
               className="object-cover h-[280px] w-[270px]"
               src={banner}
               alt="abc"
-            />
+            /> */}
           </div>
         )}
       </div>

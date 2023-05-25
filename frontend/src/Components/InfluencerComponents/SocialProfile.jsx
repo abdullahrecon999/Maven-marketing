@@ -299,7 +299,7 @@ const Profile = ({ onEdit }) => {
                   Country
                 </h1>
                 <div>
-                  <Tag>{user?.country[0]}</Tag>
+                  <Tag>{user?.country}</Tag>
                 </div>
               </div>
               <div className="px-2 flex flex-col space-y-1">

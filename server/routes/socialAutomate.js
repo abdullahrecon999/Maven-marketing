@@ -67,7 +67,7 @@ router.get('/', function (req, res, next) {
 router.post('/gpt', async function (req, res, next) {
     const { prompt } = req.body;
 
-    const response = await axios.post('http://localhost:6000/generate', { prompt: prompt },
+    const response = await axios.post('http://127.0.0.1:9000/generate', { prompt: prompt },
         {
             headers: {
                 'Content-Type': 'application/json'
@@ -367,7 +367,7 @@ router.post('/reddit/v2/getAnalyticsPosts', async function (req, res, next) {
 // perform sentiment analysis on a post
 const sentimentAnalysis = async (comments) => {
     let prompt = "Analyze the average sentiment of the following list. just return one word as response.\n\n" + comments.join("\n\n");
-    const response = await axios.post('http://localhost:6000/generate', { prompt: prompt })
+    const response = await axios.post('http://localhost:9000/generate', { prompt: prompt })
 
     if (response.status != 200) {
         console.log(response.data);
@@ -583,7 +583,7 @@ router.post('/reddit/v2/createPost', upload.fields([{ name: 'media', maxCount: 1
 
                 if (req.files.media) {
                     post.file.path = req.files.media[0].path;
-                    post.file.url = "";
+                    post.file.url = await uploadFile(req.files.media[0].path);;
                     post.file.mimetype = req.files.media[0].mimetype;
                 } else if (req.body.mediaUrl) {
                     post.file.path = "";

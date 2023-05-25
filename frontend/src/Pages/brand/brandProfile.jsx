@@ -223,11 +223,11 @@ export const BrandProfile = (props) => {
 							<div className="flex flex-col items-center w-full">
 								<div className="avatar">
 									<div className="w-28 rounded-full">
-										<img src={user.photo} />
+										<img src={user?.photo} />
 									</div>
 								</div>
-								<p className="text-2xl font-bold">{user.name}</p>
-								<p className="text-sm text-stone-500">{user.email}</p>
+								<p className="text-2xl font-bold">{user?.name}</p>
+								<p className="text-sm text-stone-500">{user?.email}</p>
 								<div className="divider" />
 								<div className="flex-col items-start w-full min-h-[250px]">
 									<h1 className="text-lg font-bold mb-1">About</h1>
