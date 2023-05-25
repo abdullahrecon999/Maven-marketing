@@ -120,6 +120,46 @@ async function fetchData(subreddits, username) {
     return response.data.data.children;
 }
 
+// Function to fetch data from Reddit search endpoint for single subreddit
+async function fetchDataSingle(subreddit) {
+    const url = `https://old.reddit.com/search.json?q=(subreddit:${subreddit})&limit=1000`;
+    const response = await axios.get(url);
+    return response.data.data.children;
+}
+
+// Function to get top 3 days with most comments
+function getTopThreeDays(data) {
+    const flattenedData = Object.entries(data).reduce((acc, [day, hours]) => {
+      const dayName = moment().day(Number(day)).format('dddd');
+      const maxCount = Math.max(...Object.values(hours));
+      const maxHour = Object.keys(hours).find((hour) => hours[hour] === maxCount);
+      const formattedTime = moment(maxHour, 'H').format('h A');
+      acc.push({ day: dayName, time: `${formattedTime}: ${maxCount} comments` });
+      return acc;
+    }, []);
+  
+    const sortedDays = flattenedData.sort((a, b) => b.count - a.count);
+  
+    const topThreeDays = sortedDays.slice(0, 3).reduce((result, { day, time }) => {
+      result[day] = time;
+      return result;
+    }, {});
+  
+    return topThreeDays;
+  }
+
+router.post('/reddit/v2/getHeatmapSingle', async function (req, res, next) {
+    const { subreddit } = req.body;
+    console.log("SUBREDDIT: ", subreddit);
+
+    let posts = await fetchDataSingle(subreddit);
+    const data = generateData(posts);
+    const topThreeDays = getTopThreeDays(data);
+    console.log("DATA GENERATED: ", data);
+
+    res.status(200).send({ response: data, topThreeDays: topThreeDays });
+});
+
 router.post('/reddit/v2/getHeatmap', async function (req, res, next) {
     const { subreddits, profile } = req.body;
     console.log("SUBREDDITS: ", subreddits);

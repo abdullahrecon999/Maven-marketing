@@ -236,3 +236,5 @@ const AddConnection = ({ id }) => {
 		</div>
 	)
 }
+
+export default AddConnection;

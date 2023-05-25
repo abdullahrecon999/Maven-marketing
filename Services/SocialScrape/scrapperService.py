@@ -84,7 +84,7 @@ def allYoutubeData():
     df = pd.read_csv(filename, usecols=cols_to_read)
 
     users = []
-    for index, row in df.head(600).iterrows():
+    for index, row in df.head(990).iterrows():
 
         URL = "https://www.youtube.com/"+row["Youtube channel"]+"/about"
         headers = {

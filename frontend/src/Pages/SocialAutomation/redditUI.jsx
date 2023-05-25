@@ -8,7 +8,8 @@ import {
     SettingOutlined,
     LikeOutlined,
     CommentOutlined,
-    PlayCircleOutlined
+    PlayCircleOutlined,
+    LoadingOutlined
 } from '@ant-design/icons';
 import HoverVideoPlayer from 'react-hover-video-player';
 import axios from 'axios';
@@ -16,6 +17,8 @@ import moment from 'moment';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en';
 import AnalyticsPost from './postAnalytics';
+import HeatmapGrid from 'react-heatmap-grid';
+import 'moment-timezone';
 
 function getTimeElapsed(postedAt) {
     const now = new Date(); // Current date and time
@@ -69,6 +72,53 @@ function formatDate(timestamp) {
     return formattedDate;
 }
 
+const Heatmap = ({ data }) => {
+    if (!data || data.length === 0) {
+        // If data is empty or not available, render a placeholder or loading message
+        return (
+            <div>Loading...</div>
+        );
+    }
+    const heatmapData = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const hourLabels = Array.from({ length: 24 }, (_, i) => `${i}h`);
+    let dataMap = data;
+    console.log("HEAT MAPPPPP");
+
+    for (const day in dataMap) {
+        for (const hour in dataMap[day]) {
+            const utcMoment = moment.utc().day(day).hour(hour);
+            const karachiMoment = utcMoment.tz('Asia/Karachi');
+            const hourKarachi = karachiMoment.hour();
+            heatmapData[day][hourKarachi] = dataMap[day][hour];
+        }
+    }
+
+    return (
+        <HeatmapGrid
+            data={heatmapData}
+            xLabels={hourLabels}
+            yLabels={weekdayLabels}
+            squares
+            cellStyle={(background, value, min, max, data, x, y) => ({
+                background: `rgb(0, 151, 230, ${1 - (max - value) / (max - min)})`,
+                fontSize: "11px",
+                color: "#444",
+                border: "solid 1px #ccc",
+            })}
+            onClick={(x, y) => console.log(`Clicked on (${x}, ${y})`)}
+        />
+    );
+}
+
 export function RedditUI(props) {
     const [showMore, setShowMore] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -82,6 +132,9 @@ export function RedditUI(props) {
     const [showMoreVisible, setShowMoreVisible] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedPost, setSelectedPost] = useState('');
+    const [bestTimeVisible, setBestTimeVisible] = useState(false);
+    const [bestTimeData, setBestTimeData] = useState([]);
+    const [bestTimeLoading, setBestTimeLoading] = useState(false);
 
     const generateItems = (post) => { 
         return [
@@ -167,7 +220,19 @@ export function RedditUI(props) {
 
     const getPageInfo = async () => {
         setLoading(true);
+        setBestTimeLoading(true);
         let subredditSelected = pageInfo[0].subreddit;
+
+        // load the analytics for subreddit
+        const resp2 = await axios.post('http://localhost:3000/automate/reddit/v2/getHeatmapSingle', {
+            subreddit: pageInfo[0].subreddit,
+        }).then((response) => {
+            console.log(response.data);
+            setBestTimeData(response.data);
+            setBestTimeLoading(false);
+        }).catch((error) => {
+            console.log(error);
+        });
 
         // if already fetched, don't fetch again
         if (pageDescription[subredditSelected]) {
@@ -196,6 +261,7 @@ export function RedditUI(props) {
             console.log(error);
             setLoading(false);
         });
+
     };
 
     const fetchCommentsCount = async (postId) => {
@@ -320,6 +386,39 @@ export function RedditUI(props) {
 
     return (
         <div className='h-full flex flex-col'>
+            <Modal
+                visible={bestTimeVisible}
+                onCancel={() => setBestTimeVisible(false)}
+                footer={null}
+                width={900}
+                
+            >
+                <div className='flex flex-col'>
+                    <p className='text-xl font-railway'>Best Posting Times</p>
+                    <div className='flex flex-row justify-around'>
+                        {
+                            (bestTimeLoading) ? (
+                                <div className='flex flex-col items-center justify-center'>
+                                    <LoadingOutlined className='text-4xl text-amber-400' />
+                                    <p className='text-xl font-railway mt-5'>Loading...</p>
+                                </div>
+                            ) : (
+                                bestTimeData.topThreeDays &&
+                                Object.entries(bestTimeData?.topThreeDays).map(([day, times]) => {
+                                    return (
+                                        <div className='flex gap-2 border-[1px] rounded-md p-3 items-center mt-5 shadow-md tooltip tooltip-top' data-tip={times.split(":")[1]}>
+                                            <ClockCircleOutlined className='text-2xl text-amber-400' />
+                                            <p className='text-xl font-bold text-amber-300'>{day} at {moment.utc(times.split(":")[0], 'h A').tz('Asia/Karachi').format('h A')}</p>
+                                        </div>
+                                    );
+                                })
+                            )
+                        }
+                    </div>
+                    <p className='text-xl font-railway mt-10'>Heat Map</p>
+                    <Heatmap data={bestTimeData.response} />
+                </div>
+            </Modal>
 
             <AnalyticsPost subreddit={pageInfo[0].subreddit} post={selectedPost} visible={showModal} onClose={() => setShowModal(false)} />
 
@@ -342,6 +441,12 @@ export function RedditUI(props) {
                             <p className="flex justify-center items-center h-5 rounded-full pl-2 pr-2 bg-purple-800 text-zinc-50 font-railway text-sm">mod</p>
                         </div>
                         <p className='text-sm pl-3 text-stone-500'>r/{pageInfo[0].subreddit}</p>
+                    </div>
+                    <div className='ml-auto items-center justify-end flex gap-2 pl-3 mr-5'>
+                        <div onClick={() => setBestTimeVisible(true)} className='shadow-md btn btn-outline btn-warning border-[1px] border-[#ccc] p-3 rounded-sm border-dashed w-fit h-10 flex gap-2 items-center'>
+                            <ClockCircleOutlined className='text-stone-500 text-xl' />
+                            <p className='text-xl font-railway'>Best time for posts</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -535,7 +640,7 @@ export function RedditUI(props) {
                                         <div className='h-full w-1/6 pl-2'> {/* Post Analytics */}
                                             {/* status, Likes, shares and comments */}
                                             <div className='flex flex-col h-28 gap-2 sticky top-20 justify-start items-start'>
-                                                <Badge color="blue" count={post.postStatus} />
+                                                <Badge color={(post.postStatus == "posted")? "blue" : "cyan"} count={post.postStatus} />
                                                 <div className='flex gap-1 group'>
                                                     <LikeOutlined className='text-red-400 group-hover:text-red-600 group-hover:translate-x-1 transition-all duration-300' style={{ fontSize: 20 }} />
                                                     <p className='group-hover:font-semibold font-light transition-all duration-300'>{post.upvotes}</p>
