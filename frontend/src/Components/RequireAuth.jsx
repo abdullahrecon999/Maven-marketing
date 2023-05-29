@@ -6,6 +6,7 @@ import { NavBar } from "./brandComponents/navbar";
 import { Footer } from "./brandComponents/footer";
 import { useQuery } from "react-query";
 import Loader from "./InfluencerComponents/Loader.jsx";
+import {Spin} from 'antd';
 
 const fetchUser = async () => {
   // check if user exixts in local storage
@@ -33,7 +34,9 @@ const RequireAuth = ({ allowedRoles }) => {
 
   return (
     isLoading ? (
-      <Loader />
+      <div className="flex justify-center items-center h-screen">
+        <Spin spinning={true} size="large" tip="Loading..."/>
+      </div>
     ) : (
       isError ? (
         <ErrorLogin />

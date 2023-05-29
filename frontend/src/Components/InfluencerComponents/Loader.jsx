@@ -2,7 +2,7 @@ import React from 'react'
 import { LineWave } from 'react-loader-spinner'
 const Loader = ({title, subtitle}) => {
   return (
-    <div className='flex flex-col justify-center items-center'>
+    <div className='flex flex-col justify-center items-center h-screen'>
       <h1 className='text-xxl font-railway text-black md:text-3xl'>{title}</h1>
       <p className='text-base text-grey md:text-xl'>{subtitle}</p>
       <div className='flex justify-center'>

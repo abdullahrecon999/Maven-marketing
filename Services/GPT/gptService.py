@@ -4,6 +4,8 @@ import json
 from flask import request, jsonify
 import aiassist
 import deepai
+import gpt4free
+from gpt4free import Provider
 
 app = Flask(__name__)
 
@@ -14,9 +16,10 @@ def generate_response(prompt):
     #     response += token
     #     print(response)
     # response = you.Completion.create(prompt=prompt, detailed=True, include_links=True)
+    response = gpt4free.Completion.create(Provider.You, prompt=prompt)
     # req = aiassist.Completion.create(prompt=prompt)
-    for chunk in deepai.Completion.create(prompt=prompt):
-        response += chunk
+    # for chunk in deepai.Completion.create(prompt=prompt):
+    #     response += chunk
     # print(req["text"])
     # return req["text"]
     return response

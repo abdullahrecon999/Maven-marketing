@@ -494,9 +494,9 @@ const AutomationDashboard = () => {
         <div className="min-h-screen flex flex-col flex-grow bg-[#E9EBEE]">
             {contextHolder}
             {/* Navbar with dynamic tabs */}
-            <motion.div whileInView={{ animation: "fadeIn" }} >
+            {/* <motion.div whileInView={{ animation: "fadeIn" }} >
                 <NavBar isSticky={false} />
-            </motion.div>
+            </motion.div> */}
 
             <Modal
                 title="Compose a Post"

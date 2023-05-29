@@ -97,43 +97,16 @@ function App() {
               </Route>
               <Route element={<Wrapper />}>
                 <Route path="/" element={<Home />}></Route>
-                <Route
-                  path="/influencerlogin"
-                  element={<InfluencerLogin />}
-                ></Route>
-                <Route
-                  path="/contract/:id"
-                  element={<InfluencerContract />}
-                ></Route>
-                <Route
-                  path="/marketautomation"
-                  element={<MainScreen />}
-                ></Route>
-                <Route
-                  path="/socialautomation"
-                  element={<AutomationDashboard />}
-                ></Route>
-                <Route
-                  path="/socialautomation/bulkload"
-                  element={<BulkSchedule />}
-                ></Route>
-                <Route
-                  path="/socialautomation/analytics"
-                  element={<AnalyticsPage />}
-                ></Route>
-                <Route
-                  path="/businesslogin"
-                  element={<BusinessLogin />}
-                ></Route>
+                <Route path="/influencerlogin" element={<InfluencerLogin />} ></Route>
+                <Route path="/contract/:id" element={<InfluencerContract />} ></Route>
+                <Route path="/marketautomation" element={<MainScreen />} ></Route>
+                {/* <Route path="/socialautomation" element={<AutomationDashboard />} ></Route>
+                <Route path="/socialautomation/bulkload" element={<BulkSchedule />} ></Route>
+                <Route path="/socialautomation/analytics" element={<AnalyticsPage />} ></Route> */}
+                <Route path="/businesslogin" element={<BusinessLogin />} ></Route>
                 <Route path="/adminLogin" element={<AdminLogin />}></Route>
-                <Route
-                  path="/BusinessSignup"
-                  element={<SignUpPageBusiness />}
-                ></Route>
-                <Route
-                  path="/InfluencerSignup"
-                  element={<SignUpPageInfluencer />}
-                ></Route>
+                <Route path="/BusinessSignup" element={<SignUpPageBusiness />} ></Route>
+                <Route path="/InfluencerSignup" element={<SignUpPageInfluencer />} ></Route>
                 <Route path="/aboutus" element={<Aboutus />}></Route>
                 <Route path="/services" element={<Services />}></Route>
                 <Route path="/whyus" element={<Whyus />}></Route>
@@ -167,6 +140,9 @@ function App() {
 
               {/* Brand Protected Routes */}
               <Route element={<RequireAuth allowedRoles={["brand"]} />}>
+                <Route path="/socialautomation" element={<AutomationDashboard />} ></Route>
+                <Route path="/socialautomation/bulkload" element={<BulkSchedule />} ></Route>
+                <Route path="/socialautomation/analytics" element={<AnalyticsPage />} ></Route>
                 <Route path="/businesshome" element={<BusinessHome />}></Route>
                 <Route
                   path="/createCampaign"
