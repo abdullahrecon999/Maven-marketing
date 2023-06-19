@@ -179,7 +179,7 @@ def allTiktokData():
     df = pd.read_csv(filename, usecols=cols_to_read)
 
     users = []
-    for index, row in df.head(599).iterrows():
+    for index, row in df.head(100).iterrows():
 
         URL = "https://www.tiktok.com/@"+ row["Tiktoker name"]
         soup = BeautifulSoup(requests.get(URL).content, "html.parser")
@@ -187,6 +187,9 @@ def allTiktokData():
         try:
             data = re.search(r'<script id="SIGI_STATE" type="application/json">([\s\S]*?)<\/script>', str(soup)).group(1)
             data = json.loads(data)
+            # print("DATA-------------------------")
+            # print(data)
+            # print("DATA-------------------------")
 
             title = data["SEOState"]["metaParams"]["title"]
             url = data["SEOState"]["canonical"]
@@ -197,6 +200,7 @@ def allTiktokData():
             likes = (data["UserModule"]["stats"][row["Tiktoker name"]]["heartCount"])
             bio = data["UserModule"]["users"][row["Tiktoker name"]]["signature"]
             platform = "Tiktok"
+            
             try:
                 link = data["UserModule"]["users"][row["Tiktoker name"]]["bioLink"]["link"]
             except Exception as e:
@@ -204,12 +208,15 @@ def allTiktokData():
             
             # 5 posts
             posts = []
+            banner = ""
             for i in data["ItemList"]["user-post"]["list"]:
                 posts.append(i)
                 if len(posts) >= 5:
                     break
 
-            users.append({ "title": title, "url": url, "profilePic": profilePic, "followers_avg": followers, "followees_avg": followees, "no_posts": no_posts, "likes": likes, "description": bio, "posts": posts, "link": link, "platform": platform })
+            banner = data["ItemModule"][posts[0]]["video"]["cover"]
+
+            users.append({ "title": title, "url": url, "profilePic": profilePic, "followers_avg": followers, "followees_avg": followees, "no_posts": no_posts, "likes": likes, "description": bio, "posts": posts, "link": link, "platform": platform, "banner": banner })
             print(users[-1])
         except Exception as e:
             #users.append({"error": e})

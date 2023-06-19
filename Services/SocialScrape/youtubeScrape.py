@@ -79,7 +79,7 @@ for index, row in df.head(1).iterrows():
             if len(videos) >= 5:
                 break
         print(videos)
-        users.append({ "title": title, "views_avg": views_avg, "likes_avg": likes_avg, "comments_avg": comments_avg, "categories": category, "profilePic": profile_pic, "descriptionn": bio, "social_media_handle": handle, "platform": platform, "subscribers": subscribers, "videos": videos })
+        users.append({ "title": title, "views_avg": views_avg, "likes_avg": likes_avg, "comments_avg": comments_avg, "categories": category, "profilePic": profile_pic, "descriptionn": bio, "social_media_handle": handle, "platform": platform, "subscribers": subscribers, "videos": videos, "banner": banner, "country": country })
 
     except Exception as e:
         users.append({"error": e})

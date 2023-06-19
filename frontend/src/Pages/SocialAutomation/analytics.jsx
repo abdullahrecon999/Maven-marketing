@@ -358,7 +358,6 @@ export function AnalyticsPage(props) {
 
     return (
         <div className='flex flex-col'>
-            <NavBar isSticky={false} />
             <div className='m-4'>
                 <h1 className='text-3xl font-railway'>Analytics</h1>
             </div>
@@ -380,7 +379,6 @@ export function AnalyticsPage(props) {
                                     <div className='flex flex-col justify-center items-center h-full'>
                                         <div className='flex gap-3 p-4 h-full w-full flex-wrap'>
                                             <div className="card-box">
-                                                <h4 className="header-title">Analytics PDF</h4>
                                                 <div className="mb-2">
                                                     {
                                                         subredditPostsLoaded && subredditDataLoaded && avgDataLoaded && subredditInfoLoaded ? (

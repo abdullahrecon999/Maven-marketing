@@ -334,7 +334,7 @@ const AutomationDashboard = () => {
             formData.append("mediaType", selectedMedia.mimeType);
         } else {
             formData.append("media", "");
-            formData.append("mediaUrl", selectedMedia.media);
+            formData.append("mediaUrl", selecte0kdMedia.media);
             formData.append("mediaType", selectedMedia.mimeType);
         }
 

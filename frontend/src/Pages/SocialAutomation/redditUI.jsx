@@ -617,6 +617,7 @@ export function RedditUI(props) {
                                                                 src={post.file.url}
                                                             />
                                                         ) : (
+                                                            post.file?.mimetype.includes('video') &&
                                                             <HoverVideoPlayer
                                                                 className="object-cover overflow-clip"
                                                                 videoSrc={post.file?.path}

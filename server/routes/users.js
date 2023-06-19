@@ -379,7 +379,7 @@ router.get('/addInstaInfluencers', async (req, res, next) => {
       updateOne: {
         filter: { social_media_handle: val.social_media_handle },
         update: {
-          $setOnInsert: val,
+          $set: val,
         },
         upsert: true
       }
@@ -409,7 +409,7 @@ router.get('/addYoutubeInfluencers', async (req, res, next) => {
       updateOne: {
         filter: { social_media_handle: val.social_media_handle },
         update: {
-          $setOnInsert: val,
+          $set: val,
         },
         upsert: true
       }
@@ -433,13 +433,13 @@ router.get('/addYoutubeInfluencers', async (req, res, next) => {
 router.get('/addTiktokInfluencers', async (req, res, next) => {
   try{
     const data = await loadTiktok()
-    console.log(data)
+    console.log("TIKTOK DATA: ", data)
 
     const operations = data.map((val) => ({
       updateOne: {
         filter: { url: val.url },
         update: {
-          $setOnInsert: val,
+          $set: val,
         },
         upsert: true
       }
@@ -472,7 +472,7 @@ const loadTiktok = async () => {
   const url = "http://127.0.0.1:3333/tiktok_data";
 
   let resp = await axios.post(url)
-  console.log(resp.data);
+  // console.log(resp.data);
   return resp.data;
 }
 
